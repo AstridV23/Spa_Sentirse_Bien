@@ -9,7 +9,7 @@ dotenv.config();
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 export const register = async (req, res) => {
-    const {email, password, username} = req.body
+    const { email, username, password, phone, sex, role = 'usuario' } = req.body;  // role por defecto a 'user'
     
     console.log("Datos recibidos: ", req.body); // muestra los datos que mando el frontend
 
