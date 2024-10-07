@@ -9,6 +9,12 @@ export const registerSchema = z.object({
     }).email({
         message: 'El email ingresado no es válido.'
     }),
+    phone: z.string({
+        required_error: 'Teléfono es requerido.'
+    }),
+    sex: z.string({
+        required_error: 'Debe ingresar su sexo'
+    }),
     password: z.string({
         required_error: 'El campo contraseña no puede estar vacío.'
     }).min(8, {

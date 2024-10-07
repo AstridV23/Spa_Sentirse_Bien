@@ -17,7 +17,6 @@ function convertFieldValuesToUser(fields: FieldValues): IUser {
     phone: fields.phone,
     sex: fields.sex,
     role: fields.role,
-    isAdmin: fields.isAdmin, // Corregido de 'isAdmind' a 'isAdmin'
   };
 }
 

@@ -7,7 +7,6 @@ interface IUser {
   surnames: string;
   phone: string;
   sex: string;
-  isAdmin: boolean;
   role: string;
 }
 
