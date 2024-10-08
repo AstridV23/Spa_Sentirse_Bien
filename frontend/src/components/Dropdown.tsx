@@ -9,8 +9,8 @@ type Props = {
 
 export default function Dropdown({ label, options, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLabel, setSelectedLabel] = useState(label);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const toggleDropdown = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -27,7 +27,7 @@ export default function Dropdown({ label, options, onChange }: Props) {
   };
 
   const handleOptionClick = (option: string) => {
-    setSelectedLabel(option);
+    setSelectedOption(option);
     setIsOpen(false);
     if (onChange) onChange(option);
   };
@@ -39,10 +39,12 @@ export default function Dropdown({ label, options, onChange }: Props) {
     };
   }, []);
 
+  const displayLabel = selectedOption || label;
+
   return (
     <div className="dropdown" ref={dropdownRef}>
       <button onClick={toggleDropdown} className="SecondButton" type="button">
-        {selectedLabel}
+        {displayLabel}
       </button>
       {isOpen && (
         <ul className="dropdown-menu">

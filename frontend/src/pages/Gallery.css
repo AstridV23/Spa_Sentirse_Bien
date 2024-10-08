@@ -63,17 +63,23 @@
   box-shadow: 3px 3px 20px 1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
+
 .gallery-page .element-img {
   display: flex;
   flex-direction: column;
   text-align: left;
   width: 250px;
-  margin: 0;
+  margin: 10px;
   border-radius: 8px;
   background-color: var(--blanco);
   box-shadow: 3px 3px 20px 1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
 }
+.gallery-page .element-img:hover {
+  transform: scale(1.05);
+}
+
 .gallery-page .element h4 {
   margin: 20px 0 0;
   color: var(--rosa);
@@ -96,7 +102,6 @@
   object-fit: cover;
   cursor: pointer;
 }
-
 /* Estilos del modal */
 .modal {
   position: fixed;

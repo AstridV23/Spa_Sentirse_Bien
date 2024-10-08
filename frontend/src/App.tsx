@@ -8,7 +8,7 @@ import Gallery from "./pages/Gallery";
 import Turn from "./pages/Turns";
 import Perfil from "./pages/Perfil";
 import { PopUpProvider } from "./components/PopUpContext";
-import Admin from "./pages/Admin";
+import Admin from "./pages/Admin/Admin.tsx";
 import Footer from "./components/footer";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import ProtectedRoute from "./ProtectedRoutes.tsx";

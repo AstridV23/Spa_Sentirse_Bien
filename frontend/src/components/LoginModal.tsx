@@ -16,6 +16,9 @@ export default function LoginModal() {
               <br>
               <input id="swal-input-password" class="swal-content__input" placeholder="Contraseña" type="password">
             </div>
+            <div class="swal-footer">
+              <a href="/registro" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
+            </div>
           `,
       },
     },

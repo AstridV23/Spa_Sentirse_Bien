@@ -79,8 +79,9 @@ input[type="date"] {
   color: white;
   transition: transform 0.3s ease; /* Transición suave */
   opacity: 85%;
-  justify-content: center;
+
   font-weight: bold;
+  cursor: pointer;
 }
 .SecondButton {
   padding: 10px;
@@ -92,7 +93,9 @@ input[type="date"] {
   color: var(--rosa);
   transition: transform 0.3s ease; /* Transición suave */
   opacity: 85%;
+  justify-content: center;
   font-weight: bold;
+  cursor: pointer;
 }
 /* Botón de eliminar */
 .delete {

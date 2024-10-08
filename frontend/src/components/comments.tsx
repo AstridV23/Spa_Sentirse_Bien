@@ -110,10 +110,11 @@ export default function Comments() {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        const updatedComments = comments.filter((_, i) => i !== index);
+        const updatedComments = comments.filter((_, i) => i !== index); // aca se debe borrar el comentario de la base de datos y volver a definirlo en una const
         setComments(updatedComments);
         swal("Comentario eliminado con éxito", {
           icon: "success",
+          timer: 1500,
         });
       }
     });

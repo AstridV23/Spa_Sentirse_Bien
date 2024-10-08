@@ -4,12 +4,32 @@ import { useState } from "react";
 import "./Turno.css";
 import swal from "sweetalert";
 
-const servicios: { nombre: string; precio: number }[] = [
-  { nombre: "Antiestres", precio: 5000 },
-  { nombre: "Descontracturantes", precio: 6000 },
-  { nombre: "Con piedras calientes", precio: 7000 },
-  { nombre: "Circulatorios", precio: 5500 },
-];
+type Servicio = {
+  nombre: string;
+  precio: number;
+};
+
+type Servicios = {
+  [key: string]: Servicio[];
+};
+
+const servicios: Servicios = {
+  Masajes: [
+    { nombre: "Antiestres", precio: 5000 },
+    { nombre: "Descontracturantes", precio: 6000 },
+    { nombre: "Con piedras calientes", precio: 7000 },
+    { nombre: "Circulatorios", precio: 5500 },
+  ],
+  Belleza: [
+    { nombre: "Corte de cabello", precio: 2000 },
+    { nombre: "Manicura", precio: 1500 },
+  ],
+  Faciales: [
+    { nombre: "Limpieza facial", precio: 3000 },
+    { nombre: "Tratamiento antiarrugas", precio: 4500 },
+  ],
+};
+
 const horas: string[] = [
   "09:00",
   "10:00",
@@ -28,12 +48,11 @@ type Props = {
   onChange?: (value: string) => void;
 };
 function Box(props: Props) {
-  const { titulo, label, options, onChange } = props; // Asegúrate de incluir onChange aquí
+  const { titulo, label, options, onChange } = props;
   return (
     <div className="box">
       <h4>{titulo}</h4>
       <Dropdown label={label} options={options} onChange={onChange} />{" "}
-      {/* Asegúrate de pasar onChange aquí */}
     </div>
   );
 }
@@ -57,17 +76,41 @@ export function TurnPopUp() {
 
   // Maneja el cambio en los campos del formulario
   const handleChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+
+      // Si se cambia el tipo de tratamiento, reinicia el servicio seleccionado y el precio
+      if (name === "tipoTratamiento") {
+        newData.servicio = ""; // Reinicia el servicio
+        setPrecio(0); // Reinicia el precio
+      }
+      return newData;
+    });
 
     // Si se cambia el servicio, actualiza el precio
     if (name === "servicio") {
-      const selectedService = servicios.find((serv) => serv.nombre === value);
+      const selectedService = servicios[formData.tipoTratamiento]?.find(
+        (serv) => serv.nombre === value
+      );
       if (selectedService) {
         setPrecio(selectedService.precio);
       } else {
         setPrecio(0);
       }
     }
+  };
+
+  // Obtiene la fecha actual y la fecha de un mes en adelante
+  const today = new Date();
+  const oneMonthLater = new Date();
+  oneMonthLater.setMonth(today.getMonth() + 1);
+
+  // Formatear fecha a YYYY-MM-DD para el input date
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   // Maneja el envío del formulario
@@ -85,15 +128,21 @@ export function TurnPopUp() {
       });
       return; // Detiene la ejecución si hay campos vacíos
     } else {
+      // Formatear la fecha a dd/mm/yyyy
+      const formattedDate = new Date(fecha).toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+      });
+
       // Crear el string con la información
-      const turnoString = `Turno reservado: ${tipoTratamiento}, Servicio: ${servicio}, Fecha: ${fecha}, Hora: ${hora}, Información: ${informacion}, Precio: $${precio}`;
+      const turnoString = `Turno reservado: ${tipoTratamiento}, Servicio: ${servicio}, Fecha: ${formattedDate}, Hora: ${hora}, Información: ${informacion}, Precio: $${precio}`;
 
       // Mostrar el string en la consola
       console.log(turnoString);
       swal({
-        title: "Turno agendado 👍",
+        title: "¡Reserva confirmada!",
+        text: `Te esperamos el ${formattedDate}.`,
         icon: "success",
-        timer: 2500,
       });
 
       // Limpiar los campos del formulario
@@ -105,6 +154,7 @@ export function TurnPopUp() {
         informacion: "",
       });
       setPrecio(0);
+      closePopUp();
     }
   };
 
@@ -125,15 +175,19 @@ export function TurnPopUp() {
                 <Box
                   titulo="Tipo de Tratamiento"
                   label="Seleccione"
-                  options={["Masajes", "Belleza", "Faciales", "Corporales"]}
+                  options={Object.keys(servicios)} // Muestra los tipos de tratamiento (Masajes, Belleza, etc.)
                   onChange={(selectedOption) =>
                     handleChange("tipoTratamiento", selectedOption)
                   }
                 />
                 <Box
                   titulo="Servicio"
-                  label="Seleccione"
-                  options={servicios.map((servicio) => servicio.nombre)}
+                  label={formData.servicio ? formData.servicio : "Seleccione"}
+                  options={
+                    servicios[formData.tipoTratamiento]?.map(
+                      (servicio) => servicio.nombre
+                    ) || []
+                  } // Muestra los servicios del tipo de tratamiento seleccionado
                   onChange={(selectedOption) =>
                     handleChange("servicio", selectedOption)
                   }
@@ -149,7 +203,10 @@ export function TurnPopUp() {
                     name="fecha"
                     id="fecha"
                     placeholder="Ingresar Fecha"
+                    min={formatDate(today)}
+                    max={formatDate(oneMonthLater)}
                     onChange={(e) => handleChange("fecha", e.target.value)}
+                    required
                   />
                 </div>
                 <Box
@@ -169,10 +226,10 @@ export function TurnPopUp() {
                 name="informacion"
                 id="informacion"
                 placeholder="Escriba brevemente información que deberá ser considerada por los empleados"
-                onChange={(e) => handleChange("informacion", e.target.value)} // Asegúrate de que esto es correcto
+                onChange={(e) => handleChange("informacion", e.target.value)}
               />
             </div>
-            <h2>Precio: ${precio}</h2> {/* Muestra el precio actualizado */}
+            <h2>Precio: ${precio}</h2>
             <div className="buttons">
               <button type="submit" className="MainButton">
                 Agendar
