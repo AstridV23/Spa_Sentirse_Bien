@@ -112,10 +112,12 @@
   object-fit: cover;
   cursor: pointer;
 }
-.admin-page .news-section .buttons {
+.admin-page .news-section .buttons,
+.admin-page .services-section .buttons {
   align-items: start;
 }
-.admin-page .news-section .buttons .par {
+.admin-page .news-section .buttons .par,
+.admin-page .services-section .buttons .par {
   align-items: start;
 }
 .admin-page .news-section .par label {
@@ -133,12 +135,12 @@
   color: var(--rosa);
 }
 .admin-page .image-preview img {
-  max-height: 300px;
+  max-height: 200px;
   max-width: 300px;
   border: 1px solid var(--rosa);
 }
 
-.admin-page .news-section textarea {
+.admin-page textarea {
   min-height: 39px;
   min-width: 215px;
   max-height: 150px;
@@ -146,7 +148,7 @@
   height: 39px;
 }
 
-.admin-page .services-section .buttons input[type="text"],
+.admin-page .services-section #precio,
 .admin-page .hours-section .buttons input[type="text"] {
   width: 80px;
   text-align: left;
@@ -230,6 +232,18 @@
 }
 .close:hover {
   opacity: 0.8;
+}
+
+/* Para navegadores Webkit (Chrome, Safari) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Para Firefox */
+input[type="number"] {
+  -moz-appearance: textfield; /* Cambia la apariencia a un campo de texto */
 }
 
 @media screen and (max-width: 650px) {

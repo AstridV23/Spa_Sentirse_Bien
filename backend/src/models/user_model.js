@@ -26,12 +26,12 @@ const userSchema = new Schema({
        // type: ImageBitmap
     },
     sex: {
-        type: Boolean,
+        type: String,
     },
     role: {
         type: String,
         enum: ["usuario", "admin", "secretario", "profesional"],
-        default: "user",
+        default: "usuario",
     },
 
 },    {

@@ -8,6 +8,7 @@ import commentRoutes from "./routes/comment.routes.js";
 import newsRoutes from "./routes/news.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import pdfRoutes from "./routes/pdf.routes.js";
+import serviceRoutes from "./routes/service.routes.js"
 
 const app = express();
 
@@ -21,7 +22,7 @@ console.log("Frontend URL:", origin);
 
 app.use(
   cors({
-    origin: origin,
+    origin: 'http://localhost:5173',
     credentials: true,
   })
 );
@@ -35,6 +36,7 @@ app.use("/api", commentRoutes);
 app.use("/api", newsRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", pdfRoutes);
+app.use("/api", serviceRoutes);
 
 // Ruta principal
 app.get("/", (req, res) => {

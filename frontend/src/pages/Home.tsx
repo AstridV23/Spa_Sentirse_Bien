@@ -43,6 +43,7 @@ function Home() {
   return (
     <div className="Home-page">
       <div className="background-image" />
+      <TurnPopUp />
       <main>
         <section className="first">
           <div className="first-content">
@@ -75,7 +76,6 @@ function Home() {
               )}
             </div>
           </div>
-          <TurnPopUp />
         </section>
         <section className="about">
           <img src="../assets/imagen1.jpg" alt="imagen1" />

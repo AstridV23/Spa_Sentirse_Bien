@@ -1,12 +1,14 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import Dropdown from "../../components/Dropdown";
 import "./Admin.css";
 import NewsSection from "./Noticias";
 import PhotosSection from "./Fotos";
 import ServicesSection from "./Servicios";
+import HorasSection from "./Horas";
 
 type Servicio = {
-  nombre: string;
+  img: string;
+  titulo: string;
+  descripcion: string;
   precio: number;
 };
 
@@ -16,21 +18,61 @@ type Servicios = {
 
 const servicios: Servicios = {
   Masajes: [
-    { nombre: "Antiestres", precio: 5000 },
-    { nombre: "Descontracturantes", precio: 6000 },
-    { nombre: "Con piedras calientes", precio: 7000 },
-    { nombre: "Circulatorios", precio: 5500 },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Antiestres",
+      descripcion: "Antiestres asdasdasd",
+      precio: 5000,
+    },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Descontracturantes",
+      descripcion: " Descontracturantes asdasdas",
+      precio: 6000,
+    },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Con piedras calientes",
+      descripcion: "Con piedras calientes  asdasd",
+      precio: 7000,
+    },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Circulatorios",
+      descripcion: "",
+      precio: 5500,
+    },
   ],
   Belleza: [
-    { nombre: "Corte de cabello", precio: 2000 },
-    { nombre: "Manicura", precio: 1500 },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Corte de cabello",
+      descripcion: "Corte de cabello asda s",
+      precio: 2000,
+    },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Manicura",
+      descripcion: "Manicura asda sdas asd",
+      precio: 1500,
+    },
   ],
   Faciales: [
-    { nombre: "Limpieza facial", precio: 3000 },
-    { nombre: "Tratamiento antiarrugas", precio: 4500 },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Limpieza facial",
+      descripcion: "Limpieza facial asd as da",
+      precio: 3000,
+    },
+    {
+      img: "/assets/masaje-antiestres.jpg",
+      titulo: "Tratamiento antiarrugas",
+      descripcion: "Tratamiento antiarrugas asda ",
+      precio: 4500,
+    },
   ],
 };
-const horas: string[] = [
+const horasArray: string[] = [
   "09:00",
   "10:00",
   "11:00",
@@ -40,7 +82,6 @@ const horas: string[] = [
   "19:00",
   "20:00",
 ];
-
 type Media = {
   img: string;
   titulo?: string;
@@ -85,7 +126,7 @@ const photosArray: Media[] = [
     img: "../assets/Dermohealth.jpg",
   },
 ];
-
+/*
 type Turno = {
   usuario: string;
   servicio: string;
@@ -129,7 +170,7 @@ const turnos: Turno[] = [
     tipo: "Tratamientos Corporales",
     hora: "13:00",
   },
-];
+];*/
 
 export default function Admin() {
   useLayoutEffect(() => {
@@ -139,20 +180,17 @@ export default function Admin() {
   const [news, setNews] = useState<Array<Media>>([]);
   const [photos, setPhotos] = useState<Array<Media>>([]);
 
-  const [precio, setPrecio] = useState<number>(0);
-  const [services, setServices] = useState<Servicios>(servicios);
+  const [services, setServices] = useState<Servicios>({});
+
+  const [horas, setHoras] = useState<string[]>([]);
 
   // Cargar comentarios simulados al montar el componente
   useEffect(() => {
     setNews(newsArray);
     setPhotos(photosArray);
     setServices(servicios);
+    setHoras(horasArray);
   }, []);
-
-  const [Data, setData] = useState({
-    tipoTratamiento: "",
-    servicio: "",
-  });
 
   return (
     <div className="admin-page">
@@ -165,32 +203,10 @@ export default function Admin() {
         <div className="admin-types">
           <NewsSection news={news} setNews={setNews} />
           <PhotosSection photos={photos} setPhotos={setPhotos} />
-          <ServicesSection
-            services={services}
-            setServices={setServices}
-            precio={precio}
-            setPrecio={setPrecio}
-            Data={Data}
-            setData={setData}
-          />
+          <ServicesSection services={services} setServices={setServices} />
+          <HorasSection horas={horas} setHoras={setHoras} />
 
-          <div className="hours-section">
-            <h3>Horarios</h3>
-            <div className="buttons">
-              <div className="par">
-                <Dropdown label="Horarios" options={horas} />
-                <input
-                  type="text"
-                  className="textbox"
-                  placeholder="Agregar hora"
-                />
-              </div>
-              <div className="par">
-                <input type="submit" className="MainButton" value="Guardar" />
-                <input type="submit" className="SecondButton" value="Borrar" />
-              </div>
-            </div>
-          </div>
+          {/*
           <div className="turns-section">
             <h3>Turnos</h3>
             <div className="buttons">
@@ -222,6 +238,7 @@ export default function Admin() {
               ))}
             </div>
           </div>
+          */}
         </div>
       </div>
     </div>

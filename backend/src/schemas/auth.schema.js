@@ -1,4 +1,4 @@
-import {z} from 'zod'
+import {optional, z} from 'zod'
 
 export const registerSchema = z.object({
     username: z.string({
@@ -11,10 +11,9 @@ export const registerSchema = z.object({
     }),
     phone: z.string({
         required_error: 'Teléfono es requerido.'
-    }),
-    sex: z.string({
-        required_error: 'Debe ingresar su sexo'
-    }),
+    }).min(10, "Número de telefono inválido."),
+    sex: z.enum(["hombre", "mujer", "otro"]),
+    role: z.enum(["usuario", "admin", "secretario", "profesional"]),
     password: z.string({
         required_error: 'El campo contraseña no puede estar vacío.'
     }).min(8, {

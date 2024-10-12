@@ -17,8 +17,8 @@
   flex-direction: column;
   justify-content: left;
   width: 80vw;
-  padding: 50px 40px 40px;
-  margin: 130px 0 100px;
+  padding: 30px 40px 40px;
+  margin: 90px 0 100px;
   background-color: var(--contenedor);
   border-radius: 30px;
 }
@@ -35,40 +35,58 @@
 .perfil-container .section-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  justify-content: space-around;
+  justify-content: space-between;
+  width: 100%;
+  gap: 5%;
 }
 
-.perfil-section h3 {
-  font-size: 23px;
-  color: var(--gris);
-  letter-spacing: 1px;
-  margin-top: 2em;
-}
 .perfil-container .perfil-section {
   display: flex;
   flex-direction: column;
-  min-width: 150px;
+  width: 35%;
+  min-width: 300px;
 }
-
-.tarjetaPerfil {
+.perfil-container .editperfil-section {
   display: flex;
   flex-direction: column;
-  margin: auto;
+  flex-grow: 1;
+  min-width: 300px;
+}
+
+.perfil-container .section-container h3 {
+  font-size: 23px;
+  color: var(--gris);
+  letter-spacing: 1px;
+  margin: 15px 0 10px 10px;
+}
+
+.tarjetaPerfil, .tarjetaEditarPerfil{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: auto;
   height: auto;
-  min-height: 300px;
-  max-width: 600px;
+  width: 100%;
   padding: 20px 40px 20px;
   align-items: center;
   text-align: center;
   background-color: var(--blanco);
   border-radius: 15px;
   box-shadow: 0px 5px 15px 1px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+.tarjetaEditarPerfil{
+  padding: 27px 40px 20px;
+}
+.tarjetaPerfil .nombres{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px 10px;
+  justify-content: center;
 }
 .tarjetaPerfil h2 {
   margin: 5px 0 0px;
   color: var(--rosa);
-  font-size: 27px;
+  font-size: 23px;
 }
 .tarjetaPerfil p {
   margin: 5px 0px 0px;
@@ -89,34 +107,39 @@
 .tarjetaPerfil .button {
   margin: 10px 0 20px;
 }
-.tarjetaPerfil form {
+.tarjetaEditarPerfil form {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.tarjetaPerfil form .par {
+.tarjetaEditarPerfil form .par {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 10px 0;
   gap: 10px;
 }
-.tarjetaPerfil form .par input {
-  width: 200px;
+.tarjetaEditarPerfil form .par input,.tarjetaEditarPerfil .dropdown {
+  width: 45%;
+  min-width: 150px;
 }
-.tarjetaPerfil form .MensajeError {
-  color: var(--rojo);
-  margin: 10px 0 10px;
-}
-.tarjetaPerfil form .MainButton {
+.tarjetaEditarPerfil form .MainButton {
   width: 160px;
-  margin: auto;
+  margin: 10px auto 0;
 }
+
 
 @media screen and (max-width: 500px) {
   .perfil-container {
     margin: 0px 0;
     border-radius: 0px;
     padding-top: 80px;
+  }
+  .tarjetaEditarPerfil{
+    padding: 20px 15px 20px;
+  }
+  .tarjetaEditarPerfil form .par input,.tarjetaEditarPerfil .dropdown {
+    font-size: 11px;
+    min-width: 110px;
   }
 }

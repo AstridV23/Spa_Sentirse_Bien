@@ -13,7 +13,8 @@ function Header({ SetIsOpen, IsOpen }: Props) {
   const isOnSpecificPage = location.pathname === "/admin";
 
   // Simulando el estado de inicio de sesión
-  const isLoggedIn = false; // Cambia esto a true para simular que el usuario está logueado
+  const isLoggedIn = true; // Cambia esto a true para simular que el usuario está logueado
+  const isAdmin = false;
 
   return (
     <header>
@@ -44,10 +45,19 @@ function Header({ SetIsOpen, IsOpen }: Props) {
         {/* Rendnerizado condicional */}
         {isLoggedIn ? (
           <>
-            <Link to="/turnos">Turnos</Link>
+            {!isAdmin && (
+              <>
+                <Link to="/turnos">Turnos</Link>
+              </>
+            )}
             <Link to="/perfil" className="SecondButton">
               Perfil
             </Link>
+            <img
+              className="logout"
+              src="/assets/logout.png"
+              alt="Cerrar Sesion"
+            />
           </>
         ) : (
           <>

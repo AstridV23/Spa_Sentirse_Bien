@@ -27,7 +27,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 700px;
+  height: 95vh;
   z-index: 1; /* Asegura que el contenido esté encima del pseudo-elemento */
 }
 

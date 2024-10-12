@@ -45,20 +45,28 @@ type Props = {
   titulo: string;
   label: string;
   options: string[];
+  reset: boolean;
   onChange?: (value: string) => void;
 };
 function Box(props: Props) {
-  const { titulo, label, options, onChange } = props;
+  const { titulo, label, options, reset, onChange } = props;
   return (
     <div className="box">
       <h4>{titulo}</h4>
-      <Dropdown label={label} options={options} onChange={onChange} />{" "}
+      <Dropdown
+        label={label}
+        options={options}
+        reset={reset}
+        onChange={onChange}
+      />{" "}
     </div>
   );
 }
 
 export function TurnPopUp() {
   const { activePopUp, closePopUp } = usePopUp();
+
+  const [reset, setReset] = useState(false);
 
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
@@ -76,6 +84,8 @@ export function TurnPopUp() {
 
   // Maneja el cambio en los campos del formulario
   const handleChange = (name: string, value: string) => {
+    setReset(false);
+
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
 
@@ -155,6 +165,7 @@ export function TurnPopUp() {
       });
       setPrecio(0);
       closePopUp();
+      setReset(true);
     }
   };
 
@@ -176,6 +187,7 @@ export function TurnPopUp() {
                   titulo="Tipo de Tratamiento"
                   label="Seleccione"
                   options={Object.keys(servicios)} // Muestra los tipos de tratamiento (Masajes, Belleza, etc.)
+                  reset={reset}
                   onChange={(selectedOption) =>
                     handleChange("tipoTratamiento", selectedOption)
                   }
@@ -188,6 +200,7 @@ export function TurnPopUp() {
                       (servicio) => servicio.nombre
                     ) || []
                   } // Muestra los servicios del tipo de tratamiento seleccionado
+                  reset={reset}
                   onChange={(selectedOption) =>
                     handleChange("servicio", selectedOption)
                   }
@@ -213,6 +226,7 @@ export function TurnPopUp() {
                   titulo="Hora"
                   label="Seleccione"
                   options={horas}
+                  reset={reset}
                   onChange={(selectedOption) =>
                     handleChange("hora", selectedOption)
                   }
