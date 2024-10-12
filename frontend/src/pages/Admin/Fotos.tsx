@@ -44,6 +44,12 @@ const PhotosSection: React.FC<PhotosSectionProps> = ({ photos, setPhotos }) => {
       });
       return;
     } else {
+      swal({
+        title: "Carga exitosa",
+        icon: "success",
+        timer: 1000,
+      });
+
       const newPhotos: Media = {
         img: imagePreviewPhoto,
       };

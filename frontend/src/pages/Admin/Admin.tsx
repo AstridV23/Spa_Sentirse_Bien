@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import Dropdown from "../../components/Dropdown";
 import "./Admin.css";
 import NewsSection from "./Noticias";
 import PhotosSection from "./Fotos";
 import ServicesSection from "./Servicios";
+import HorasSection from "./Horas";
 
 type Servicio = {
   img: string;
@@ -72,7 +72,7 @@ const servicios: Servicios = {
     },
   ],
 };
-const horas: string[] = [
+const horasArray: string[] = [
   "09:00",
   "10:00",
   "11:00",
@@ -126,13 +126,13 @@ const photosArray: Media[] = [
     img: "../assets/Dermohealth.jpg",
   },
 ];
+/*
 type Turno = {
   usuario: string;
   servicio: string;
   tipo: string;
   hora: string;
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const turnos: Turno[] = [
   {
     usuario: "JuanPerez",
@@ -170,7 +170,7 @@ const turnos: Turno[] = [
     tipo: "Tratamientos Corporales",
     hora: "13:00",
   },
-];
+];*/
 
 export default function Admin() {
   useLayoutEffect(() => {
@@ -182,11 +182,14 @@ export default function Admin() {
 
   const [services, setServices] = useState<Servicios>({});
 
+  const [horas, setHoras] = useState<string[]>([]);
+
   // Cargar comentarios simulados al montar el componente
   useEffect(() => {
     setNews(newsArray);
     setPhotos(photosArray);
     setServices(servicios);
+    setHoras(horasArray);
   }, []);
 
   return (
@@ -201,24 +204,8 @@ export default function Admin() {
           <NewsSection news={news} setNews={setNews} />
           <PhotosSection photos={photos} setPhotos={setPhotos} />
           <ServicesSection services={services} setServices={setServices} />
+          <HorasSection horas={horas} setHoras={setHoras} />
 
-          <div className="hours-section">
-            <h3>Horarios</h3>
-            <div className="buttons">
-              <div className="par">
-                <Dropdown label="Horarios" options={horas} />
-                <input
-                  type="text"
-                  className="textbox"
-                  placeholder="Agregar hora"
-                />
-              </div>
-              <div className="par">
-                <input type="submit" className="MainButton" value="Guardar" />
-                <input type="submit" className="SecondButton" value="Borrar" />
-              </div>
-            </div>
-          </div>
           {/*
           <div className="turns-section">
             <h3>Turnos</h3>

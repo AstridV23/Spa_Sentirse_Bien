@@ -58,6 +58,12 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news, setNews }) => {
       });
       return;
     } else {
+      swal({
+        title: "Carga exitosa",
+        icon: "success",
+        timer: 1000,
+      });
+
       const newNew: Media = {
         img: imagePreviewNew,
         titulo,

@@ -4,10 +4,11 @@ import "./Dropdown.css";
 type Props = {
   label: string;
   options: string[];
+  reset?: boolean;
   onChange?: (selectedOption: string) => void; // Esto está bien
 };
 
-export default function Dropdown({ label, options, onChange }: Props) {
+export default function Dropdown({ label, options, reset, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -38,6 +39,12 @@ export default function Dropdown({ label, options, onChange }: Props) {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (reset) {
+      setSelectedOption(null); // Restablece la opción seleccionada a null
+    }
+  }, [reset]); // Solo escucha los cambios en "reset"
 
   const displayLabel = selectedOption || label;
 

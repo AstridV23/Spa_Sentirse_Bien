@@ -35,6 +35,8 @@ export function ServicesSection({
     string | null
   >(null); // imagePreviewNew es la version URL de image, para poder verla necesitamos string
 
+  const [reset, setReset] = useState(false);
+
   const [Data, setData] = useState<DataState>({
     tipoTratamiento: "",
     servicio: "",
@@ -42,12 +44,10 @@ export function ServicesSection({
 
   const handleChangeOptions = (name: string, value: string) => {
     const ServiceData: DataState = { ...Data, [name]: value };
+    setReset(false);
 
     if (name === "tipoTratamiento") {
       ServiceData.servicio = ""; // Reiniciar el servicio cuando se cambia el tipo de tratamiento
-      setTitulo("");
-      setText("");
-      setPrecioNuevo(0);
     }
     if (name === "servicio") {
       const selectedService = services[ServiceData.tipoTratamiento]?.find(
@@ -57,10 +57,12 @@ export function ServicesSection({
         setTitulo(selectedService.titulo);
         setText(selectedService.descripcion);
         setPrecioNuevo(selectedService.precio);
+        setImagePreviewServicio(selectedService.img);
       } else {
         setTitulo("");
         setText("");
         setPrecioNuevo(0);
+        setImagePreviewServicio("");
       }
     }
     setData(ServiceData); // Actualiza el estado con el nuevo objeto
@@ -89,52 +91,117 @@ export function ServicesSection({
   };
 
   function handleUpdateServicio() {
-    const updatedServices = services[Data.tipoTratamiento]?.map((servicio) =>
-      servicio.titulo === Data.servicio
-        ? {
-            ...servicio,
+    if (
+      !Data.tipoTratamiento ||
+      !titulo ||
+      !text ||
+      precioNuevo === null ||
+      !imagePreviewServicio
+    ) {
+      swal({
+        title: "Falta información",
+        icon: "warning",
+        timer: 1000,
+      });
+      return;
+    } else {
+      swal({
+        title: "Carga exitosa",
+        icon: "success",
+        timer: 1000,
+      });
+
+      const currentServices = services[Data.tipoTratamiento] || [];
+
+      // Comprobar si el servicio existe
+      const existingService = currentServices.find(
+        (servicio) =>
+          servicio.titulo.trim().toLowerCase() ===
+          Data.servicio.trim().toLowerCase()
+      );
+
+      let updatedServices;
+
+      if (existingService) {
+        // Si el servicio existe, lo actualiza
+        updatedServices = currentServices.map((servicio) =>
+          servicio.titulo.trim().toLowerCase() ===
+          Data.servicio.trim().toLowerCase()
+            ? {
+                ...servicio,
+                titulo: titulo,
+                descripcion: text,
+                precio: precioNuevo,
+                img: imagePreviewServicio,
+              }
+            : servicio
+        );
+      } else {
+        // Si no existe, lo agrega
+        updatedServices = [
+          ...currentServices,
+          {
+            img: imagePreviewServicio,
             titulo: titulo,
             descripcion: text,
             precio: precioNuevo,
-          }
-        : servicio
-    );
-    setServices({
-      ...services,
-      [Data.tipoTratamiento]: updatedServices || [],
-    });
+          },
+        ];
+      }
+
+      setServices({
+        ...services,
+        [Data.tipoTratamiento]: updatedServices,
+      });
+
+      // Reseteo de imagen
+      setTitulo("");
+      setText("");
+      setPrecioNuevo(0);
+      setImage(null);
+      setImagePreviewServicio(null);
+    }
   }
 
   function handleDeleteService() {
-    swal({
-      title: "¿Estás seguro?",
-      text: "Una vez eliminado, deberas subirlo de nuevo.",
-      icon: "warning",
-      buttons: ["Cancelar", "Eliminar"],
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        const updatedServicios = {
-          ...services,
-          [Data.tipoTratamiento]:
-            services[Data.tipoTratamiento]?.filter(
-              (servicio) => servicio.titulo !== Data.servicio
-            ) || [],
-        };
+    if (!titulo) {
+      swal({
+        title: "Falta información",
+        icon: "warning",
+        timer: 1000,
+      });
+    } else {
+      swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, deberas subirlo de nuevo.",
+        icon: "warning",
+        buttons: ["Cancelar", "Eliminar"],
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          const updatedServicios = {
+            ...services,
+            [Data.tipoTratamiento]:
+              services[Data.tipoTratamiento]?.filter(
+                (servicio) => servicio.titulo !== Data.servicio
+              ) || [],
+          };
 
-        setServices(updatedServicios);
-        setTitulo("");
-        setText("");
-        setPrecioNuevo(0);
-        setImage(null);
-        setImagePreviewServicio(null);
-        swal({
-          title: "Servicio eliminado",
-          icon: "success",
-          timer: 1000,
-        });
-      }
-    });
+          setServices(updatedServicios);
+          setTitulo("");
+          setText("");
+          setPrecioNuevo(0);
+          setImage(null);
+          setImagePreviewServicio(null);
+          setReset(true);
+          swal({
+            title: "Servicio eliminado",
+            icon: "success",
+            timer: 1000,
+          });
+        }
+      });
+    }
   }
 
   return (
@@ -156,6 +223,7 @@ export function ServicesSection({
                 (servicio) => servicio.titulo
               ) || []
             }
+            reset={reset}
             onChange={(selectedOption) =>
               handleChangeOptions("servicio", selectedOption)
             }
@@ -207,12 +275,12 @@ export function ServicesSection({
             />
           </div>
           <input className="MainButton" type="submit" value="Guardar" />
-          <button
+          <input
             className="SecondButton"
+            type="button"
+            value="Borrar"
             onClick={() => handleDeleteService()}
-          >
-            Borrar
-          </button>
+          />
         </div>
       </form>
       {imagePreviewServicio && (

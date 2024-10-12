@@ -2,12 +2,13 @@
 .dropdown {
   position: relative;
   display: inline-block;
+  width: 200px;
 }
 
 /* Estilo del botón que abre el dropdown */
 .dropdown .SecondButton {
   margin-top: 0;
-  width: 200px;
+  width: 100%;
 }
 
 /* Estilo del menú desplegable */
@@ -48,7 +49,6 @@
 @media screen and (max-width: 500px) {
   .dropdown .SecondButton {
     margin-top: 0;
-    width: 160px;
     font-size: 14px;
     padding: 10px;
   }
