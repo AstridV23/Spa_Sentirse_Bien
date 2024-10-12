@@ -4,45 +4,43 @@ import { useAuth } from "../context/AuthContext.tsx";
 import IUser from "../types/IUser.ts";
 import { useForm, FieldValues } from "react-hook-form";
 import { useState, useEffect } from "react";
-import Dropdown from "../components/Dropdown.tsx";
-
 
 function convertFieldValuesToUser(fields: FieldValues): IUser {
-    return {
-      id: fields.id || "",
-      email: fields.email || "",
-      username: fields.username || "",
-      password: fields.password || "",
-      names: fields.names,
-      phone: fields.phone  ||"",
-      surnames: fields.surnames,
-      sex: fields.sex,
-      role: fields.role,
-    };
-  }
+  return {
+    id: fields.id || "",
+    email: fields.email || "",
+    username: fields.username || "",
+    password: fields.password || "",
+    firstname: fields.firstname || "",
+    lastname: fields.lastname || "",
+    phone: fields.phone || "",
+    sex: fields.sex || "otro",
+    role: fields.role || "usuario",
+  };
+}
 
-export function Register() {
+  export function Register() {
     const {
       register,
       handleSubmit,
       formState: { errors },
     } = useForm();
+    
     const { signup, isAuthenticated, errors: registerErrors } = useAuth();
-    const [selectedGender, setSelectedGender] = useState<string>("");
-    const [passwordMatch, setPasswordMatch] = useState<boolean>(true);
-    const [password2, setPassword2] = useState<string>("");
+  
+    const [/*passwordMatch*/, setPasswordMatch] = useState<boolean>(true);
     const navigate = useNavigate();
   
     useEffect(() => {
       if (isAuthenticated) {
         navigate("/");
       }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated]);
   
     const onSubmit = handleSubmit(async (values) => {
       if (values.password === values.password2) {
         setPasswordMatch(true);
-        signup({...convertFieldValuesToUser(values), sex: selectedGender});
+        signup(convertFieldValuesToUser(values));
       } else {
         setPasswordMatch(false);
       }
@@ -52,108 +50,96 @@ export function Register() {
       <div className="ingreso">
         <div className="background-image" />
         <div className="contenedor R">
-          {/* Mostrar errores de registro, si existen */}
-          {registerErrors.map((error, i) => (
+        {Array.isArray(registerErrors) && registerErrors.map((error, i) => (
             <div key={i}>{error}</div>
           ))}
           <div className="titulo">
             <h1>Bienvenido!</h1>
             <p id="R">🙌</p>
           </div>
-  
           <p>
             <Link to="/login">Inicia sesión</Link> o regístrate para solicitar un
             turno
           </p>
   
-          {/* Formulario de registro */}
-          <form onSubmit={onSubmit}>
-            <label>
-              <p>Nombre de usuario</p>
+          <form onSubmit= {onSubmit}>
+            <label htmlFor="username">Nombre de Usuario:</label>
+             <input
+              className="textbox"
+              type="text"
+              id="username"
+              {...register('username', { required: true })}
+            />
+            {errors.username && <span>Este campo es obligatorio</span>}
+  
+            <label htmlFor="firstname">Nombres:</label>
               <input
                 className="textbox"
                 type="text"
-                {...register("username", { required: true })}
-              />
-              {errors.username && (
-                <p className="MensajeError">
-                  El campo nombre de usuario es requerido
-                </p>
-              )}
-            </label>
-            <label>
-              <p>Correo electrónico</p>
-              <input
-                className="textbox"
-                type="email"
-                {...register("email", { required: true })}
-              />
-              {errors.email && (
-                <p className="MensajeError">El campo email es requerido</p>
-              )}
-            </label>
+                id="firstname"
+                {...register('firstname', { required: true })}
+            />
+            {errors.firstname && <span>Este campo es obligatorio</span>}
   
-            <div className="par">
-              <label className="item">
-                <p>Teléfono</p>
-                <input
-                  className="textbox"
-                  type="text"
-                  {...register("phone", { required: true })}
-                />
-              </label>
-              <label className="item">
-                <p>Genero</p>
-                <Dropdown
-                  label={"Genero"}
-                  options={["Mujer", "Hombre", "Otro"]}
-                  onChange={(selectedOption) => setSelectedGender(selectedOption)}
-                />
-              </label>
-              {errors.phone && (
-                <p className="MensajeError">Debe indicar su número de teléfono</p>
-              )}
-            </div>
+            <label htmlFor="lastname">Apellidos:</label>
+            <input
+              className="textbox"
+              type="text"
+              id="lastname"
+              {...register('lastname', { required: true })}
+            />
+            {errors.lastname && <span>Este campo es obligatorio</span>}
   
-            <label>
-              <p>Contraseña</p>
-              <input
-                className="textbox"
-                type="password"
-                {...register("password", { required: true })}
-              />
-              {errors.password && (
-                <p className="MensajeError">El campo contraseña es requerido</p>
-              )}
-            </label>
-            <label>
-              <p>Confirmar contraseña</p>
-              <input
-                className="textbox"
-                type="password"
-                value={password2} // Asignamos el valor de password2
-                onChange={(e) => setPassword2(e.target.value)} // Manejamos el cambio con setPassword2
-              />
-              {errors.password && (
-                <p className="MensajeError">Debe confirmar su contraseña</p>
-              )}
-            </label>
+            <label htmlFor="email">Correo Electrónico:</label>
+            <input
+              className="textbox"
+              type="email"
+              id="email"
+              {...register('email', { required: true })}
+            />
+            {errors.email && <span>Este campo es obligatorio</span>}
   
-            {/* Mensaje de error si las contraseñas no coinciden */}
-            {!passwordMatch && <p>Las contraseñas no coinciden</p>}
-            {/* Error de correo ya en uso */}
-            {registerErrors.includes("Correo ya en uso") && (
-              <p className="MensajeError">* Correo ya en uso.</p>
-            )}
+            <label htmlFor="phone">Teléfono:</label>
+            <input
+              className="textbox"
+              type="text"
+              id="phone"
+              {...register('phone', { required: true })}
+            />
+            {errors.phone && <span>Este campo es obligatorio</span>}
   
-            <button className="MainButton" type="submit">
-              Registrarse
-            </button>
+            <label htmlFor="sex">Sexo:</label>
+            <select id="sex" {...register('sex', { required: true })}>
+              <option value="">Selecciona tu sexo</option>
+              <option value="hombre">Hombre</option>
+              <option value="mujer">Mujer</option>
+              <option value="otro">Otro</option>
+            </select>
+            {errors.sex && <span>Este campo es obligatorio</span>}
+  
+            <label htmlFor="password">Contraseña:</label>
+            <input
+              className="textbox"
+              type="password"
+              id="password"
+              {...register('password', { required: true })}
+            />
+            {errors.password && <span>Este campo es obligatorio</span>}
+  
+            <label htmlFor="password2">Confirmar contraseña</label>
+            <input
+              className="textbox"
+              type="password"
+              id="password2"
+              {...register('password2', { required: true })}
+            />
+            {errors.password && <span>Este campo es obligatorio</span>}
+  
+            <button type="submit">Registrarse</button>
           </form>
         </div>
       </div>
     );
   }
-
 
 export default Register

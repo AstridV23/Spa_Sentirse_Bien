@@ -12,31 +12,34 @@ const userSchema = new Schema({
         trim: true,
         unique: true
     },
-    password:{
+    password: {
         type: String,
-        required: true,
+        required: true
     },
-    names: {
+    firstname: {  // Corrección del typo 'fistname'
         type: String,
+        trim: true
     },
-    surnames: {
+    lastname: {
         type: String,
+        trim: true
     },
     profilepic: {
-       // type: ImageBitmap
+        type: Buffer, // Puedes usar Buffer para imágenes o URL como String
+        contentType: String
     },
     sex: {
-        type: String,
+        type: String,  // Falta definir el tipo
+        enum: ["hombre", "mujer", "otro"],
+        default: "otro"
     },
     role: {
         type: String,
         enum: ["usuario", "admin", "secretario", "profesional"],
-        default: "usuario",
-    },
-
-
-},    {
+        default: "usuario"
+    }
+}, {
     timestamps: true
-})
+});
 
 export default model('User', userSchema)

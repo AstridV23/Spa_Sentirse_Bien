@@ -9,34 +9,39 @@ dotenv.config();
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 export const register = async (req, res) => {
-    const {email, password, username, phone, sex} = req.body
+    const {email, password, username, firstname, lastname, phone, role} = req.body
     
-    console.log("Datos recibidos: ", req.body); // muestra los datos que mando el frontend
-
     try {
 
-        const userFoundByEmail = await User.findOne ({email})
+        console.log("Verificando si el correo ya está registrado...");
+        const userFoundByEmail = await User.findOne({ email });
         
-        if (userFoundByEmail) 
-            return res.status(400).json(["Ya existe un ususario registrado con este email."]);
-
-        const userFoundByUsername = await User.findOne({username})
-
+        if (userFoundByEmail)
+          return res.status(400).json(["Ya existe un ususario registrado con este email."]);
+    
+        console.log("Verificando si el nombre de usuario ya está registrado...");
+        const userFoundByUsername = await User.findOne({ username });
+    
         if (userFoundByUsername)
-            return res.status(400).json(["Ya existe un usuario registrado con este nombre de usuario."])
-
-        const passwordHash = await bcrypt.hash(password, 10)
-
+          return res.status(400).json(["Ya existe un usuario registrado con este nombre de usuario."]);
+    
+        console.log("Hashing la contraseña...");
+        const passwordHash = await bcrypt.hash(password, 10);
+    
+        console.log("Creando un nuevo usuario...");
         const newUser = new User({
             username,
+            firstname,
+            lastname,
             email,
             phone,
-            sex,
-            role: "usuario",
+            role,
             password: passwordHash
         })
     
         const userSaved = await newUser.save();
+
+        console.log("debe ser acá")
         const token = await createAccessToken({id: userSaved._id});
 
         res.cookie('token', token)
@@ -49,7 +54,6 @@ export const register = async (req, res) => {
         })
     }
     catch (error) {
-        console.error("Error en el registro:", error);
         res.status(500).json({message: error.message});
     }
 };
