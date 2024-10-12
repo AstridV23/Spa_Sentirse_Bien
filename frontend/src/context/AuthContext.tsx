@@ -46,12 +46,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log(res.data);
       setUser(res.data.user);
       setIsAuthenticated(true);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        setErrors([error.message]); // Manejo básico del error
+    } catch (error: any) {
+      console.log(error.response);
+  
+      // Asegúrate de que `error.response.data` sea un array
+      if (Array.isArray(error.response?.data)) {
+        setErrors(error.response.data);
+      } else if (typeof error.response?.data === "object") {
+        // Si es un objeto, convierte los mensajes de error en un array
+        const errorMessages = Object.values(error.response.data).filter((msg: unknown) => typeof msg === "string") as string[];;
+        setErrors(errorMessages);
       } else {
-        setErrors(['Error desconocido']);
+        // Si no es ni array ni objeto, establece un error genérico
+        setErrors(["An unexpected error occurred."]);
       }
     }
   };
@@ -62,12 +69,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log(res);
       setUser(res.data.user);
       setIsAuthenticated(true);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setErrors([error.message]);
-      } else {
-        setErrors(['Error desconocido']);
+    } catch (error: any) {
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data);
       }
+
+      setErrors([error.response.data.message])
     }
   };
   
