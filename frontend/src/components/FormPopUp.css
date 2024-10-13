@@ -48,6 +48,9 @@
 .form-group {
   margin-bottom: 15px;
 }
+.par .form-group input {
+  width: 100px;
+}
 
 .form-group label {
   display: block;
@@ -59,7 +62,7 @@
 
 .form-group input,
 .form-group textarea {
-  width: 99%;
+  width: 100%;
   padding: 10px;
   border: 2px solid var(--rosa-fuerte);
   border-radius: 5px;

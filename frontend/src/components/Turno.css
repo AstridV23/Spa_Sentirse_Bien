@@ -126,9 +126,9 @@
 
 @media screen and (max-width: 560px) {
   .turno-component-content .dropdown .SecondButton {
-    width: 110px;
+    width: 130px;
   }
-  .turno-component-content .Contenedor-dropdowns .input[type="date"] {
+  .turno-component-content .Contenedor-dropdowns #fecha {
     width: 110px;
   }
 }
