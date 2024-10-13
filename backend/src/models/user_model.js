@@ -16,7 +16,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    firstname: {  // Corrección del typo 'fistname'
+    firstname: { 
         type: String,
         trim: true
     },
@@ -25,18 +25,16 @@ const userSchema = new Schema({
         trim: true
     },
     profilepic: {
-        type: Buffer, // Puedes usar Buffer para imágenes o URL como String
+        type: Buffer,
         contentType: String
     },
     sex: {
-        type: String,  // Falta definir el tipo
+        type: String,
         enum: ["hombre", "mujer", "otro"],
-        default: "otro"
     },
     role: {
         type: String,
         enum: ["usuario", "admin", "secretario", "profesional"],
-        default: "usuario"
     }
 }, {
     timestamps: true

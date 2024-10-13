@@ -56,7 +56,7 @@ export const getPersonalBookings = async(req, res) => {
 export const getActiveBookings = async(req, res) => {
     try {
         const booking = await Booking.find({
-            satus: true
+            satus: "reservado" || "pagado",
         }).populate('user')
         res.json(booking)
     } catch (error) {

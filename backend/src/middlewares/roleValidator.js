@@ -11,7 +11,7 @@ const isProfesional = (req, res, next) => {
         return next()
     }
 
-    return res.status(403).json({message: "Acceso denegado. Se requieren permisos de profesional."})
+    return res.status(403).json({message: "Acceso denegado. Se requieren permisos de profesional o administrador."})
 }
 
 const isSecretario = (req, res, next) => {
@@ -19,5 +19,5 @@ const isSecretario = (req, res, next) => {
         return next()
     }
 
-    return res.status(403).json({message: "Acceso denegado. Se requieren permisos de secretario."})
+    return res.status(403).json({message: "Acceso denegado. Se requieren permisos de secretario o administrador."})
 }

@@ -21,7 +21,7 @@ export const registerSchema = z.object({
         .or(z.literal('')), // Permitir vacío o valor válido
     sex: z.enum(['hombre', 'mujer', 'otro'], {
         required_error: 'El campo sexo es requerido.',
-    }),
+    }).default('otro'),
     role: z.enum(['usuario', 'admin', 'secretario', 'profesional']).default('usuario'),
     password: z.string({
         required_error: 'El campo contraseña no puede estar vacío.',

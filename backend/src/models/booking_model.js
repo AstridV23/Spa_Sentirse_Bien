@@ -24,8 +24,9 @@ const bookingSchema = new mongoose.Schema({
         require: true
     },
     status: {
-        type: Boolean,
-        default: true
+        type: String,
+        enum: ["reservado", "pagado", "cancelado", "finalizado"],
+        default: "reservado"
     }
 },    {
     timestamps: true
