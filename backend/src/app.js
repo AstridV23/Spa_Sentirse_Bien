@@ -22,7 +22,7 @@ console.log("Frontend URL:", origin);
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: origin,
     credentials: true,
   })
 );
