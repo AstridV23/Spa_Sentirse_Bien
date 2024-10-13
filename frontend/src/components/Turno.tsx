@@ -1,8 +1,9 @@
 import Dropdown from "../components/Dropdown";
 import { usePopUp } from "../components/PopUpContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Turno.css";
 import swal from "sweetalert";
+import FormPago from "./FormPago";
 
 type Servicio = {
   nombre: string;
@@ -65,8 +66,9 @@ function Box(props: Props) {
 
 export function TurnPopUp() {
   const { activePopUp, closePopUp } = usePopUp();
-
+  const [reservaCompleta, setReservaCompleta] = useState(false);
   const [reset, setReset] = useState(false);
+  const [precio, setPrecio] = useState<number>(0);
 
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
@@ -75,10 +77,23 @@ export function TurnPopUp() {
     fecha: "",
     hora: "",
     informacion: "",
+    formattedDate: "",
   });
 
-  // Estado para almacenar el precio
-  const [precio, setPrecio] = useState<number>(0);
+  // Efecto para limpiar el formulario al cargar el componente
+  useEffect(() => {
+    if (!reservaCompleta) {
+      setFormData({
+        tipoTratamiento: "",
+        servicio: "",
+        fecha: "",
+        hora: "",
+        informacion: "",
+        formattedDate: "",
+      });
+      setPrecio(0)
+    }
+  }, [reservaCompleta]);
 
   if (activePopUp !== "turn") return null;
 
@@ -125,62 +140,62 @@ export function TurnPopUp() {
 
   // Maneja el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Evita que se recargue la página
-    const { tipoTratamiento, servicio, fecha, hora, informacion } = formData;
+  e.preventDefault(); 
+  const { tipoTratamiento, servicio, fecha, hora } = formData;
+  if (!tipoTratamiento || !servicio || !fecha || !hora) {
+    swal({
+      title: "Campos vacios",
+      text: "Ingrese toda la información solicitada",
+      icon: "warning",
+      timer: 2500,
+    });
+    return;
+  } else {
+    const formattedDate = new Date(fecha + "T00:00:00"); // Añadir hora para asegurar que se trate como fecha local
+    const displayDate = formattedDate.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+    });
 
-    // Validación de campos obligatorios
-    if (!tipoTratamiento || !servicio || !fecha || !hora) {
-      swal({
-        title: "Campos vacios",
-        text: "Ingrese toda la información solicitada",
-        icon: "warning",
-        timer: 2500,
-      });
-      return; // Detiene la ejecución si hay campos vacíos
-    } else {
-      // Formatear la fecha a dd/mm/yyyy
-      const formattedDate = new Date(fecha).toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-      });
+    setFormData((prev) => ({
+      ...prev,
+      formattedDate: displayDate, 
+    }));
 
-      // Crear el string con la información
-      const turnoString = `Turno reservado: ${tipoTratamiento}, Servicio: ${servicio}, Fecha: ${formattedDate}, Hora: ${hora}, Información: ${informacion}, Precio: $${precio}`;
-
-      // Mostrar el string en la consola
-      console.log(turnoString);
-      swal({
-        title: "¡Reserva confirmada!",
-        text: `Te esperamos el ${formattedDate}.`,
-        icon: "success",
-      });
-
-      // Limpiar los campos del formulario
-      setFormData({
-        tipoTratamiento: "",
-        servicio: "",
-        fecha: "",
-        hora: "",
-        informacion: "",
-      });
-      setPrecio(0);
-      closePopUp();
-      setReset(true);
+      // Cambiar el estado para mostrar el formulario de pago
+      setReservaCompleta(true);   
     }
   };
+
+  function handleCancel(e: React.MouseEvent<HTMLButtonElement>){
+    e.preventDefault(); 
+    closePopUp(),
+
+    setFormData({
+      tipoTratamiento: "",
+      servicio: "",
+      fecha: "",
+      hora: "",
+      informacion: "",
+      formattedDate: "",
+    });
+    setPrecio(0)
+    setReset(true);
+
+  }
 
   return (
     <div className="turno-component">
       <div className="popup-overlay">
         <div className="turno-component-content">
+        {!reservaCompleta ? (
           <form onSubmit={handleSubmit}>
             <div className="icon">
-              <img src="../assets/calendario.png" />
+              <img src="/assets/calendario.png" />
               <h1>AGENDÁ TU TURNO</h1>
             </div>
             <p>Completa el siguiente formulario para reservar tu turno.</p>
             <hr />
-            <h2>Reserva</h2>
             <div className="Contenedor-dropdowns">
               <div className="par">
                 <Box
@@ -194,7 +209,7 @@ export function TurnPopUp() {
                 />
                 <Box
                   titulo="Servicio"
-                  label={formData.servicio ? formData.servicio : "Seleccione"}
+                  label={"Seleccione"}
                   options={
                     servicios[formData.tipoTratamiento]?.map(
                       (servicio) => servicio.nombre
@@ -248,15 +263,17 @@ export function TurnPopUp() {
               <button type="submit" className="MainButton">
                 Agendar
               </button>
-              <button className="SecondButton" onClick={closePopUp}>
+              <button className="SecondButton"  onClick={handleCancel}>
                 Cancelar
               </button>
             </div>
             <p className="pagos">
-              La transacción se realiza de forma presencial. Aceptamos como
-              método de pago: efectivo, transferencia, débito y credito.
+              Aceptamos métodos de pago: débito y credito.
             </p>
           </form>
+        ) : (
+              <FormPago DatosTurno={formData} setReservaCompleta={setReservaCompleta} />
+          )}
         </div>
       </div>
     </div>
