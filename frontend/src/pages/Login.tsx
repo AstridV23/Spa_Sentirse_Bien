@@ -1,24 +1,10 @@
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
-import IUser from "../types/IUser.ts";
-import { useForm, FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { convertFieldValuesToUser } from "../libs/convertirValuesAUSer.ts";
 
-// Función para convertir FieldValues a User
-function convertFieldValuesToUser(fields: FieldValues): IUser {
-  return {
-    id: fields.id || "",
-    email: fields.email || "",
-    username: fields.username || "",
-    password: fields.password || "",
-    names: fields.names,
-    surnames: fields.surnames,
-    phone: fields.phone,
-    sex: fields.sex,
-    role: fields.role,
-  };
-}
 
 // Componente Login
 export function Login() {
@@ -31,8 +17,8 @@ export function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IUser>(); // Tipado mejorado con IUser para validación
-  const { signin, isAuthenticated, errors: signinErrors } = useAuth(); // Cambié errors por signinErrors para más claridad
+  } = useForm();
+  const { signin, isAuthenticated, errors: signinErrors } = useAuth();
   const navigate = useNavigate();
 
   // Función onSubmit que maneja el envío del formulario
@@ -40,7 +26,7 @@ export function Login() {
     signin(convertFieldValuesToUser(data));
   });
 
-  // Efecto que redirige si el usuario ya está autenticado
+ 
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
@@ -52,9 +38,9 @@ export function Login() {
       <div className="background-image" />
       <div className="contenedor ">
         {/* Mostrar errores de autenticación, si existen */}
-        {signinErrors.map((error, i) => (
-          <div key={i}>{error}</div>
-        ))}
+        {Array.isArray(signinErrors) && signinErrors.map((error, i) => (
+            <div key={i}>{error}</div>
+          ))}
 
         <div className="titulo">
           <h1>Hola de nuevo!</h1>
