@@ -1,23 +1,9 @@
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
-import IUser from "../types/IUser.ts";
-import { useForm, FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-
-function convertFieldValuesToUser(fields: FieldValues): IUser {
-  return {
-    id: fields.id || "",
-    email: fields.email || "",
-    username: fields.username || "",
-    password: fields.password || "",
-    firstname: fields.firstname || "",
-    lastname: fields.lastname || "",
-    phone: fields.phone || "",
-    sex: fields.sex || "otro",
-    role: fields.role || "usuario",
-  };
-}
+import { convertFieldValuesToUser } from "../libs/convertirValuesAUSer.ts";
 
   export function Register() {
     const {

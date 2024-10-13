@@ -23,6 +23,9 @@ export const registerRequest = (user: IUser): Promise<UserResponse> =>
 export const loginRequest = (user: IUser): Promise<UserResponse> => 
   axios.post('/login', user);
 
+export const logoutRequest = (user: IUser): Promise<UserResponse> =>
+  axios.post('/loguot', user)
+
 export const verificarToken = (): Promise<VerificarTokenResponse> => 
   axios.get('/verify');
 
