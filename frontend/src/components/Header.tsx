@@ -13,7 +13,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
   const isOnSpecificPage = location.pathname === "/admin";
 
   // Simulando el estado de inicio de sesión
-  const isLoggedIn = false; // Cambia esto a true para simular que el usuario está logueado
+  const isLoggedIn = true; // Cambia esto a true para simular que el usuario está logueado
   const isAdmin = false;
 
   return (
