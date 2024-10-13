@@ -55,14 +55,14 @@ export function Login() {
         {/* Formulario de inicio de sesión */}
         <form onSubmit={onSubmit}>
           <label>
-            <p>Correo electrónico</p>
+            <p>Correo electrónico o Nombre de Usuario</p>
             <input
               className="textbox"
-              type="email"
-              {...register("email", { required: true })}
+              type="text"
+              {...register("identifier", { required: true })}
             />
             {errors.email && (
-              <p className="MensajeError">El campo email es requerido</p>
+              <p className="MensajeError">El campo es requerido</p>
             )}
           </label>
           <label>

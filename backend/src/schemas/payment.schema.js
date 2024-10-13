@@ -1,28 +1,31 @@
-import {z} from 'zod' 
+import { z } from 'zod';
 
 export const paymentSchema = z.object({
-    cardType: z.string({
-        required_error: "Ingrese el tipo de tarjeta."
-    }),
-    
-    cardNumber: z.string({
-        required_error: "Ingrese el núemro de tarjeta."
-    })
-    .min(16, {message: "Ingrese un núemro de tarjeta válido."})
-    .max(16, {message: "Ingrese un núemro de tarjeta válido."})
-    .regex(/^\d+$/, {message: "Ingrese un núemro de tarjeta válido."}),
+  cardType: z.enum(["crédito", "débito"], {
+    required_error: "Ingrese el tipo de tarjeta."
+  }),
 
-    cardName: z.string({
-        required_error: "Ingrese el nombre que aparece en la tarjeta."
-    }),
+  cardNumber: z.string({
+    required_error: "Ingrese el número de tarjeta."
+  })
+  .length(16, { message: "Ingrese un número de tarjeta válido de 16 dígitos." })
+  .regex(/^\d+$/, { message: "El número de tarjeta solo debe contener dígitos." }),
 
-    expirationDate: z.date({
-        required_error: "Ingrese la fecha de expiración de la tarjeta."
-    }),
+  cardName: z.string({
+    required_error: "Ingrese el nombre que aparece en la tarjeta."
+  }),
 
-    cvv: z.string({
-        required_error: "CVV es requerido."
-    })
-    .min(3, {message: "Ingrese un CVV válido."})
-    .max(3, {message: "Ingrese un CVV válido."})
-})
+  expirationDate: z.string({
+    required_error: "Ingrese la fecha de expiración de la tarjeta."
+  })
+  .regex(/^(0[1-9]|1[0-2])\/?([0-9]{2}|[0-9]{4})$/, {
+    message: "Ingrese una fecha de expiración válida en formato MM/YY o MM/YYYY."
+  }),
+
+  cvv: z.string({
+    required_error: "El CVV es requerido."
+  })
+  .length(3, { message: "El CVV debe tener 3 dígitos." })
+  .or(z.string().length(4, { message: "El CVV debe tener 4 dígitos." }))
+  .regex(/^\d+$/, { message: "El CVV solo debe contener dígitos." }),
+});

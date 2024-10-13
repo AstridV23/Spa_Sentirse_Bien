@@ -30,15 +30,19 @@ export const registerSchema = z.object({
     }),
 });
 
-export const loginSchema = z.object ({
-    email: z.string({
-        required_error: 'El campo email no puede estar vacío.'
-    }).email({
-        message: 'El email ingresado no es válido.'
-    }),
-    password: z.string({
-        required_error: 'El campo contraseña no puede estar vacío.'
-    }).min(8, {
-        message: 'La contraseña debe tener al menos 8 caracteres.'
-    })
-})
+import { z } from 'zod';
+
+export const loginSchema = z.object({
+  identifier: z.string({
+    required_error: "Debe ingresar un correo electrónico o nombre de usuario."
+  })
+  .refine(value => /\S+@\S+\.\S+/.test(value) || /^[a-zA-Z0-9._-]+$/.test(value), {
+    message: "Debe ser un correo electrónico o nombre de usuario válido."
+  }),
+
+  password: z.string({
+    required_error: "El campo contraseña no puede estar vacío."
+  }).min(8, {
+    message: "La contraseña debe tener al menos 8 caracteres."
+  }),
+});

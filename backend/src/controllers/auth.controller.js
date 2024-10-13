@@ -67,11 +67,11 @@ export const login = async (req, res) => {
             $or: [{email}, {username}]
         });
 
-        if (!userFound) return res.status(400).json({message: "User not found"});
+        if (!userFound) return res.status(400).json({message: "No se ha encontrado al usuario."});
 
         const isMatch = await bcrypt.compare(password, userFound.password);
 
-        if(!isMatch) return res.status(400).json({message: "Invalid credential"});
+        if(!isMatch) return res.status(400).json({message: "Correo o contraseña incorrectos."});
 
         const token = await createAccessToken({id: userFound._id});
 
