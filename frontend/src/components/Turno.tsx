@@ -169,7 +169,7 @@ export function TurnPopUp() {
 
   function handleCancel(e: React.MouseEvent<HTMLButtonElement>){
     e.preventDefault(); 
-    closePopUp(),
+    closePopUp();
 
     setFormData({
       tipoTratamiento: "",
@@ -179,6 +179,7 @@ export function TurnPopUp() {
       informacion: "",
       formattedDate: "",
     });
+
     setPrecio(0)
     setReset(true);
 
