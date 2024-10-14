@@ -35,12 +35,12 @@ export function Register() {
   return (
     <div className="ingreso">
       <div className="background-image" />
-      <div className="contenedor R">
+      <div className="contenedorRegistro">
         {Array.isArray(registerErrors) &&
           registerErrors.map((error, i) => <div key={i}>{error}</div>)}
         <div className="titulo">
           <h1>Bienvenido!</h1>
-          <p id="R">🙌</p>
+          <img src="/assets/registro.png" alt="" />
         </div>
         <p>
           <Link to="/login">Inicia sesión</Link> o regístrate para solicitar un
@@ -48,98 +48,122 @@ export function Register() {
         </p>
 
         <form onSubmit={onSubmit}>
-          <label htmlFor="username">
-            <p>Nombre de Usuario:</p>
-            <input
-              className="textbox"
-              type="text"
-              id="username"
-              {...register("username", { required: true })}
-            />
-          </label>
-          {errors.username && <span>Este campo es obligatorio</span>}
+          <div>
+            <label htmlFor="username">
+              <p>Nombre de Usuario</p>
+              <input
+                className="textbox"
+                type="text"
+                id="username"
+                {...register("username", { required: true })}
+              />
+            </label>
+            {errors.username && (
+              <span className="MensajeError">Este campo es obligatorio</span>
+            )}
+          </div>
+          <div>
+            <div className="par">
+              <label htmlFor="firstname">
+                <p>Nombres</p>
+                <input
+                  className="textbox"
+                  type="text"
+                  id="firstname"
+                  {...register("firstname", { required: true })}
+                />
+              </label>
+              <label htmlFor="lastname">
+                <p>Apellidos</p>
+                <input
+                  className="textbox"
+                  type="text"
+                  id="lastname"
+                  {...register("lastname", { required: true })}
+                />
+              </label>
+            </div>
+            {errors.firstname && (
+              <span className="MensajeError">
+                Estos campos son obligatorios
+              </span>
+            )}
+          </div>
 
-          <label htmlFor="firstname">
-            <p>Nombres:</p>
-            <input
-              className="textbox"
-              type="text"
-              id="firstname"
-              {...register("firstname", { required: true })}
-            />
-          </label>
-          {errors.firstname && <span>Este campo es obligatorio</span>}
+          <div>
+            <label htmlFor="email">
+              <p>Correo Electrónico</p>
+              <input
+                className="textbox"
+                type="email"
+                id="email"
+                {...register("email", { required: true })}
+              />
+            </label>
+            {errors.email && (
+              <span className="MensajeError">Este campo es obligatorio</span>
+            )}
+          </div>
 
-          <label htmlFor="lastname">
-            <p>Apellidos:</p>
-            <input
-              className="textbox"
-              type="text"
-              id="lastname"
-              {...register("lastname", { required: true })}
-            />
-          </label>
-          {errors.lastname && <span>Este campo es obligatorio</span>}
+          <div>
+            <div className="par">
+              <label htmlFor="phone">
+                <p>Teléfono</p>
+                <input
+                  className="textbox"
+                  type="text"
+                  id="phone"
+                  {...register("phone", { required: true })}
+                />
+              </label>
+              <label htmlFor="sex">
+                <p>Sexo</p>
+                <select
+                  id="sex"
+                  className="textbox"
+                  {...register("sex", { required: true })}
+                >
+                  <option value="">Selecciona</option>
+                  <option value="hombre">Hombre</option>
+                  <option value="mujer">Mujer</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </label>
+            </div>
+            {errors.phone && (
+              <span className="MensajeError">
+                Estos campos son obligatorios
+              </span>
+            )}
+          </div>
 
-          <label htmlFor="email">
-            <p>Correo Electrónico:</p>
-            <input
-              className="textbox"
-              type="email"
-              id="email"
-              {...register("email", { required: true })}
-            />
-          </label>
-          {errors.email && <span>Este campo es obligatorio</span>}
-
-          <label htmlFor="phone">
-            <p>Teléfono:</p>
-            <input
-              className="textbox"
-              type="text"
-              id="phone"
-              {...register("phone", { required: true })}
-            />
-          </label>
-          {errors.phone && <span>Este campo es obligatorio</span>}
-
-          <label htmlFor="sex">
-            <p>Sexo:</p>
-            <select
-              id="sex"
-              className="textbox"
-              {...register("sex", { required: true })}
-            >
-              <option value="">Selecciona tu sexo</option>
-              <option value="hombre">Hombre</option>
-              <option value="mujer">Mujer</option>
-              <option value="otro">Otro</option>
-            </select>
-          </label>
-          {errors.sex && <span>Este campo es obligatorio</span>}
-
-          <label htmlFor="password">
-            <p>Contraseña:</p>
-            <input
-              className="textbox"
-              type="password"
-              id="password"
-              {...register("password", { required: true })}
-            />
-          </label>
-          {errors.password && <span>Este campo es obligatorio</span>}
-
-          <label htmlFor="password2">
-            <p>Confirmar contraseña</p>
-            <input
-              className="textbox"
-              type="password"
-              id="password2"
-              {...register("password2", { required: true })}
-            />
-          </label>
-          {errors.password && <span>Este campo es obligatorio</span>}
-
+          <div>
+            <div className="par">
+              <label htmlFor="password">
+                <p>Contraseña</p>
+                <input
+                  className="textbox"
+                  type="password"
+                  id="password"
+                  {...register("password", { required: true })}
+                />
+              </label>
+              <label htmlFor="password2">
+                <p>Confirmar contraseña</p>
+                <input
+                  className="textbox"
+                  type="password"
+                  id="password2"
+                  {...register("password2", { required: true })}
+                />
+              </label>
+            </div>
+            {errors.password && (
+              <span className="MensajeError">
+                Estos campos son obligatorios
+              </span>
+            )}
+          </div>
           <button type="submit" className="MainButton">
             Registrarse
           </button>
