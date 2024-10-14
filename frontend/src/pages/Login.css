@@ -13,18 +13,26 @@
   z-index: -1;
 }
 
-.ingreso .contenedor {
-  margin: 100px 0 100px;
+.ingreso .contenedor,
+.ingreso .contenedorRegistro {
   background-color: var(--blanco);
   border-radius: 1em;
-  padding: 3em 3em;
   box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: relative;
   width: 370px;
   height: auto;
 }
-.ingreso .contenedor form {
+.ingreso .contenedor {
+  margin: 200px 0 208px;
+  padding: 3em 3em;
+}
+.ingreso .contenedorRegistro {
+  margin: 100px 0 100px;
+  padding: 2em 3em;
+}
+
+.ingreso form {
   margin: 30px 0px 0px;
   gap: 20px;
   display: flex;
@@ -32,26 +40,26 @@
   justify-content: center;
 }
 
-.ingreso .contenedor .titulo {
+.ingreso .titulo {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+.ingreso .titulo img {
+  height: 45px;
+  width: auto;
+  margin: 0 0 10px 15px;
+}
+
 .ingreso h1 {
   color: var(--rosa);
   font-size: 40px;
   margin: 0;
 }
-.ingreso .titulo p {
-  font-size: 50px;
-  margin: -20px -5px 0 10px;
-}
-#R {
-  font-size: 60px;
-  margin: -31px -5px 0 10px;
-}
 
-.contenedor p {
+.ingreso .contenedor p,
+.contenedorRegistro p {
   text-align: center;
   margin-left: 3px;
 }
@@ -68,21 +76,19 @@
   align-items: end;
   justify-content: space-between;
 }
-.ingreso .par .item {
+.ingreso .par label {
   display: flex;
   flex-direction: column;
   text-align: left;
-  width: auto;
-}
-.ingreso .par .item input {
-  width: 180px;
+  width: 45%;
 }
 .ingreso .par .dropdown .SecondButton {
   width: 90px;
   text-align: center;
 }
 
-.contenedor form p {
+.ingreso .contenedor form p,
+.ingreso .contenedorRegistro form p {
   text-align: left;
   margin: 0 3px 3px;
   color: var(--rosa);
@@ -97,25 +103,35 @@
   color: var(--rojo);
 }
 
-.ingreso .contenedor form .MainButton {
-  width: 80%;
+.ingreso form .MainButton {
+  width: 40%;
   margin: auto;
 }
 
 @media screen and (max-width: 550px) {
   .ingreso h1 {
-    font-size: 30px;
+    font-size: 35px;
   }
-  .ingreso .titulo p {
-    font-size: 40px;
+  .ingreso .titulo img {
+    height: 35px;
+    margin: 0 0 7px 10px;
   }
-  .ingreso .contenedor {
+  .ingreso .contenedor,
+  .ingreso .contenedorRegistro {
     font-size: 12px;
     width: 300px;
   }
+  .ingreso .contenedor p,
+  .contenedorRegistro p {
+    font-size: 12px;
+  }
+  .ingreso .textbox {
+    font-size: 13px;
+  }
 }
 @media screen and (max-width: 450px) {
-  .ingreso .contenedor {
+  .ingreso .contenedor,
+  .ingreso .contenedorRegistro {
     box-shadow: none;
   }
   .ingreso .background-image {
