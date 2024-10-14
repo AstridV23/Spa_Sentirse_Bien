@@ -16,6 +16,19 @@ function Header({ SetIsOpen, IsOpen }: Props) {
   const isLoggedIn = false; // Cambia esto a true para simular que el usuario está logueado
   const isAdmin = false;
 
+  function handleLogOut() {
+    swal({
+      title: "¿Cerrar Sesión?",
+      icon: "warning",
+      buttons: ["Cancelar", "Confirmar"],
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        //Cerrar sesion
+      }
+    });
+  }
+
   return (
     <header>
       <div className="marca">
@@ -57,6 +70,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
               className="logout"
               src="/assets/logout.png"
               alt="Cerrar Sesion"
+              onClick={handleLogOut}
             />
           </>
         ) : (
