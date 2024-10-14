@@ -4,7 +4,7 @@ import swal from "sweetalert";
 import axios from "../api/axios";
 
 // Simulamos un usuario logueado o no logueado con una constante
-const loggedInUser: string | null = "Juan Pérez"; // Cambiar a `null` si no está logueado
+const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
 
 // Simulando que el usuario es admin
 const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
@@ -42,7 +42,7 @@ export default function Comments() {
     }, []);
 
   // Maneja el envío de un nuevo comentario
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (text.trim() !== "") {
@@ -55,8 +55,15 @@ export default function Comments() {
           year: "numeric",
         }),
       };
-      setComments([...comments, newComment]);
-      setText("");
+
+      try {
+        // Enviar el nuevo comentario al backend
+        const response = await axios.post("/comment", newComment);
+        setComments([...comments, response.data]); // Agregar el comentario enviado a la lista
+        setText(""); // Limpiar el campo de texto
+      } catch (error) {
+        console.error("Error al enviar el comentario:", error);
+      }
     }
   }
 
@@ -131,7 +138,7 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.author}</strong> ({comment.date}): {comment.content}
+            <strong>{comment.author}</strong> ({comment.date}): <br/>{comment.content}
             {/* Mostrar la respuesta si existe */}
             {comment.reply && (
               <ul>
