@@ -22,3 +22,12 @@ export const createService = async (req, res) => {
         res.status(500).json({ message: 'Error al crear el servicio.', error });
     }
 };
+
+export const getServices = async (req, res) => {
+    try {
+        const services = await Service.find()
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los Servicio.', error });
+    }
+}
