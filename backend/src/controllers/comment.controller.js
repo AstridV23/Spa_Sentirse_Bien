@@ -10,7 +10,7 @@ export const createComment = async (req, res) => {
         const newComment = new Comment({
             author,
             content,
-            date: onlyDate
+            date: Date.now()
         })
     
         const savedComment = await newComment.save()
