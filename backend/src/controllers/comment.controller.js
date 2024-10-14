@@ -4,9 +4,6 @@ export const createComment = async (req, res) => {
     try{
         const {author, content } = req.body
 
-        const now = new Date();
-        const onlyDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
         const newComment = new Comment({
             author,
             content,
