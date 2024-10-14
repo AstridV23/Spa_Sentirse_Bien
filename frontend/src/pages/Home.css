@@ -83,33 +83,30 @@
   width: 140px;
 }
 .about {
-  display: flex;
-  flex-direction: column;
   padding: 100px 0;
   margin: 0;
   display: flex;
   justify-content: center;
 }
 .about img {
-  margin-left: 5%;
+  margin-left: -15%;
   object-fit: cover;
   height: 500px;
   width: 400px;
 }
 .about .text {
-  margin: auto 20%;
+  margin: auto -60px;
   display: block;
-  padding: 25px 30px 25px;
+  padding: 30px 30px 40px;
   background-color: var(--header);
   box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   height: auto;
   width: 35%;
-  position: absolute;
 }
 .about .text p {
   text-align: justify;
-  margin: 0 20px 30px;
+  margin: 0 20px 40px;
 }
 .about .text h4 {
   margin: 20px 0 0;
@@ -121,13 +118,9 @@
   margin-bottom: 20px;
 }
 .about .SecondButton {
-  display: flex;
   width: 100px;
-  justify-content: center;
-  position: relative;
-  align-self: flex-end;
-  margin-right: 10px;
-  margin-left: auto;
+  margin: 0 10px 0 auto;
+  text-align: center;
 }
 
 .top {
@@ -191,16 +184,20 @@
     font-size: 13px;
   }
   .about .text h1 {
-    font-size: 25px;
+    font-size: 30px;
   }
 }
 @media screen and (max-width: 620px) {
-  .about {
-    align-items: center;
+  .about .SecondButton {
+    font-size: 12px;
+    width: 80px;
   }
   .about .text p {
     margin: 0 5px 40px;
     font-size: 11px;
+  }
+  .about .text h1 {
+    font-size: 25px;
   }
   .about .text {
     padding: 20px 15px 40px;
@@ -212,12 +209,7 @@
     margin-left: 0;
     position: static;
     object-fit: contain;
-    width: 90%;
-  }
-  .about .SecondButton {
-    font-size: 12px;
-    width: 80px;
-    padding: 7px;
+    width: 350px;
   }
   .top .container {
     display: flex;
