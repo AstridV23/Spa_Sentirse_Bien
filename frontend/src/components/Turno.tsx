@@ -69,6 +69,7 @@ export function TurnPopUp() {
   const [reservaCompleta, setReservaCompleta] = useState(false);
   const [reset, setReset] = useState(false);
   const [precio, setPrecio] = useState<number>(0);
+  const [pagoEnLocal, setPagoEnLocal] = useState(false);
 
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
@@ -91,6 +92,7 @@ export function TurnPopUp() {
         informacion: "",
         formattedDate: "",
       });
+      setPagoEnLocal(false);
       setPrecio(0);
     }
   }, [reservaCompleta]);
@@ -138,6 +140,11 @@ export function TurnPopUp() {
     return `${year}-${month}-${day}`;
   };
 
+  // Maneja el cambio del checkbox
+  const handlePagoEnLocalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPagoEnLocal(e.target.checked);
+  };
+
   // Maneja el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,8 +169,32 @@ export function TurnPopUp() {
         formattedDate: displayDate,
       }));
 
-      // Cambiar el estado para mostrar el formulario de pago
-      setReservaCompleta(true);
+      const alertaString = `Te esperamos el ${formData.formattedDate} a las ${formData.hora}hs`;
+      // Verificar si el pago será en local o en línea
+      if (pagoEnLocal) {
+        console.log(formData); //info del turno AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        swal({
+          title: "¡Reserva confirmada!",
+          text: alertaString,
+          icon: "success",
+        });
+        closePopUp();
+      } else {
+        // Cambiar el estado para mostrar el formulario de pago
+        setReservaCompleta(true);
+      }
+
+      setFormData({
+        tipoTratamiento: "",
+        servicio: "",
+        fecha: "",
+        hora: "",
+        informacion: "",
+        formattedDate: "",
+      });
+      setPrecio(0);
+      setPagoEnLocal(false);
+      setReset(true);
     }
   };
 
@@ -181,6 +212,7 @@ export function TurnPopUp() {
     });
 
     setPrecio(0);
+    setPagoEnLocal(false);
     setReset(true);
   }
 
@@ -259,6 +291,24 @@ export function TurnPopUp() {
                 />
               </div>
               <h2>Precio: ${precio}</h2>
+
+              <div>
+                <input
+                  type="checkbox"
+                  id="pago"
+                  name="pago"
+                  value="Pago en local"
+                  onChange={handlePagoEnLocalChange}
+                />
+                <label htmlFor="pago">Pago en local</label>
+              </div>
+
+              <p className="pagos">
+                <br />
+                Aceptamos métodos de pago: efectivo, transferencia, débito y
+                credito.
+              </p>
+
               <div className="buttons">
                 <button type="submit" className="MainButton">
                   Agendar
@@ -267,9 +317,6 @@ export function TurnPopUp() {
                   Cancelar
                 </button>
               </div>
-              <p className="pagos">
-                Aceptamos métodos de pago: débito y credito.
-              </p>
             </form>
           ) : (
             <FormPago
