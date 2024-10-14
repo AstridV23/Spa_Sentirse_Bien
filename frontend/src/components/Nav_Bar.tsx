@@ -11,7 +11,7 @@ export default function NavBar({ IsOpen }: Props) {
   const isOnSpecificPage = location.pathname === "/admin";
 
   // Simulando el estado de admin
-  const isAdmin = false; // Cambia esto a true para simular que el usuario está logueado
+  const isAdmin = true; // Cambia esto a true para simular que el usuario está logueado
   const AdminType = 1; // Cambia esto a 1 para doctora, 2 para profesional, 3 secretario
 
   // useEffect para corroborar el estado de IsOpen cada vez que cambie
