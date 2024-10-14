@@ -24,7 +24,20 @@ const GoogleMaps = () => {
 
     }, []);
 
-    return <div ref={ref} style={{ width: "300px", height: "200px" }} />;
+    return (
+        <div
+            ref={ref}
+            style={{
+                display: "flex",
+                width: "130%",
+                height: "230px",
+                aspectRatio: "1",
+                border: "2px solid #f7f7f7",
+                borderRadius: "15px",
+                marginTop: "5px",
+            }}
+        />
+    );
 };
 
 export default GoogleMaps;
