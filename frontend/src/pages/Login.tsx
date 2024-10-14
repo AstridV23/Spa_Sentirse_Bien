@@ -59,9 +59,9 @@ export function Login() {
             <input
               className="textbox"
               type="text"
-              {...register("identifier", { required: true })}
+              {...register("username", { required: true })}
             />
-            {errors.email && (
+            {errors.username && (
               <p className="MensajeError">El campo es requerido</p>
             )}
           </label>
