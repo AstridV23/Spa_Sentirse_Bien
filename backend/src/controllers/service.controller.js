@@ -27,6 +27,9 @@ export const getServices = async (req, res) => {
     try {
         const services = await Service.find()
 
+        if(!services) return res.status(404).json({message: "Error al obtener los servicios"})
+
+        res.json(services)
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los Servicio.', error });
     }
