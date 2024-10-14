@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "./Header.css";
 import { Dispatch } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 type Props = {
   SetIsOpen: Dispatch<React.SetStateAction<boolean>>;
@@ -13,10 +14,10 @@ function Header({ SetIsOpen, IsOpen }: Props) {
   const isOnSpecificPage = location.pathname === "/admin";
 
   // Simulando el estado de inicio de sesión
-  const isLoggedIn = false; // Cambia esto a true para simular que el usuario está logueado
+  const { logout, isAuthenticated } = useAuth()
   const isAdmin = false;
 
-  function handleLogOut() {
+  async function handleLogOut() {
     swal({
       title: "¿Cerrar Sesión?",
       icon: "warning",
@@ -24,7 +25,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        //Cerrar sesion
+        logout()
       }
     });
   }
@@ -56,7 +57,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
         <Link to="/servicios">Servicios</Link>
 
         {/* Rendnerizado condicional */}
-        {isLoggedIn ? (
+        {isAuthenticated ? (
           <>
             {!isAdmin && (
               <>

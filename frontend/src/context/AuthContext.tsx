@@ -14,6 +14,7 @@ interface AuthContextType {
   errors: string[];
   signup: (user: IUser) => Promise<void>;
   signin: (user: IUser) => Promise<void>;
+  logout: () => Promise<void>
 }
 
 // Crear contexto con el tipo definido
@@ -85,7 +86,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     }
   };
-  
+
+  const logout = () => {
+    Cookies.remove("token")
+    setIsAuthenticated(false)
+    setUser(null)
+    return Promise.resolve()
+  }
 
   useEffect(() => {
     if (errors.length > 0) {
@@ -132,6 +139,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <AuthContext.Provider value={{
       signup,
       signin,
+      logout,
       loading,
       user,
       isAuthenticated,
