@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "./comments.css";
 import swal from "sweetalert";
+import axios from "../api/axios";
 
 // Simulamos un usuario logueado o no logueado con una constante
 const loggedInUser: string | null = "Juan Pérez"; // Cambiar a `null` si no está logueado
@@ -9,8 +10,8 @@ const loggedInUser: string | null = "Juan Pérez"; // Cambiar a `null` si no est
 const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
 
 type Comment = {
-  name: string;
-  text: string;
+  author: string;
+  content: string;
   date: string;
   reply?: {
     name: string;
@@ -19,39 +20,26 @@ type Comment = {
   };
 };
 
-const initialComments: Array<Comment> = [
-  {
-    name: "Carlos López",
-    text: "¡Este es un comentario interesante!",
-    date: "01/10/2024",
-    reply: {
-      name: "Ana Gómez",
-      text: "Gracias, Carlos. Estoy de acuerdo.",
-      date: "02/10/2024",
-    },
-  },
-  {
-    name: "Marta Pérez",
-    text: "No me gustó mucho este tema.",
-    date: "03/10/2024",
-  },
-  {
-    name: "Luis Rodríguez",
-    text: "Me encanta lo que están haciendo.",
-    date: "04/10/2024",
-  },
-];
-
 export default function Comments() {
-  const [text, setText] = useState("");
   const [comments, setComments] = useState<Array<Comment>>([]);
-  const [replyText, setReplyText] = useState(""); // Estado para la respuesta
-  const [replyIndex, setReplyIndex] = useState<number | null>(null); // Para saber qué comentario se está respondiendo
+  const [text, setText] = useState("");
+  const [replyText, setReplyText] = useState(""); 
+  const [replyIndex, setReplyIndex] = useState<number | null>(null); 
 
-  // Cargar comentarios simulados al montar el componente
-  useEffect(() => {
-    setComments(initialComments);
-  }, []);
+  // Función para obtener los comentarios del backend
+  async function fetchComments() {
+    try {
+      const response = await axios.get("/comment");
+      setComments(response.data);
+    } catch (error) {
+      console.error("Error al obtener los comentarios:", error);
+    }
+  }
+
+    // Llamar a la función fetchComments cuando el componente se monte
+    useEffect(() => {
+      fetchComments();
+    }, []);
 
   // Maneja el envío de un nuevo comentario
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -59,8 +47,8 @@ export default function Comments() {
 
     if (text.trim() !== "") {
       const newComment: Comment = {
-        name: loggedInUser ?? "Anónimo", // Si no hay usuario logueado, usar "Anónimo"
-        text: text,
+        author: loggedInUser ?? "Anónimo", // Si no hay usuario logueado, usar "Anónimo"
+        content: text,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
           month: "2-digit",
@@ -143,7 +131,7 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.name}</strong> ({comment.date}): {comment.text}
+            <strong>{comment.author}</strong> ({comment.date}): {comment.content}
             {/* Mostrar la respuesta si existe */}
             {comment.reply && (
               <ul>
