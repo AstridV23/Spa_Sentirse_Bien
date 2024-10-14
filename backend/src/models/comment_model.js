@@ -4,7 +4,6 @@ const commentSchema = new mongoose.Schema({
     author: {
         type: String,
         trim: true,
-        default: "Anónimo"
     },
     content: {
         type: String,
