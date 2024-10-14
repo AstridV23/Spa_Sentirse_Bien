@@ -101,11 +101,15 @@
 .ingreso .MensajeError {
   margin: 0px;
   color: var(--rojo);
+  text-align: left;
 }
 
 .ingreso form .MainButton {
   width: 40%;
   margin: auto;
+}
+.ingreso .contenedor form .br {
+  height: 5px;
 }
 
 @media screen and (max-width: 550px) {

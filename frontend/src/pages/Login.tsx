@@ -35,10 +35,6 @@ export function Login() {
     <div className="ingreso">
       <div className="background-image" />
       <div className="contenedor ">
-        {/* Mostrar errores de autenticación, si existen */}
-        {Array.isArray(signinErrors) &&
-          signinErrors.map((error, i) => <div key={i}>{error}</div>)}
-
         <div className="titulo">
           <h1>Hola de nuevo!</h1>
           <img src="/assets/login.png" alt="" />
@@ -52,32 +48,38 @@ export function Login() {
         {/* Formulario de inicio de sesión */}
         <form onSubmit={onSubmit}>
           <label>
-            <p>Correo electrónico o Nombre de Usuario</p>
+            <p className="text">Correo electrónico o Nombre de Usuario</p>
             <input
               className="textbox"
               type="text"
               {...register("username", { required: true })}
             />
+            <div className="br"></div>
             {errors.username && (
-              <span>
-                <p className="MensajeError">El campo es requerido</p>
-              </span>
+              <span className="MensajeError">* El campo es requerido</span>
             )}
           </label>
           <label>
-            <p>Contraseña</p>
+            <p className="text">Contraseña</p>
             <input
               className="textbox"
               type="password"
               {...register("password", { required: true })}
             />
+            <div className="br"></div>
             {errors.password && (
-              <span>
-                <p className="MensajeError">El campo contraseña es requerido</p>
+              <span className="MensajeError">
+                * El campo contraseña es requerido
               </span>
             )}
+            {/* Mostrar errores de autenticación, si existen */}
+            {Array.isArray(signinErrors) &&
+              signinErrors.map((error, i) => (
+                <span className="MensajeError" key={i}>
+                  * {error}
+                </span>
+              ))}
           </label>
-
           <button className="MainButton" type="submit">
             Ingresar
           </button>

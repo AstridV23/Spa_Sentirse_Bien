@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { Dispatch } from "react";
 import { useLocation } from "react-router-dom";
@@ -13,9 +13,11 @@ function Header({ SetIsOpen, IsOpen }: Props) {
   const location = useLocation();
   const isOnSpecificPage = location.pathname === "/admin";
 
+  const navigate = useNavigate();
+
   // Simulando el estado de inicio de sesión
-  const { logout, isAuthenticated } = useAuth()
-  const isAdmin = false;
+  const { logout, isAuthenticated } = useAuth();
+  const isAdmin = true;
 
   async function handleLogOut() {
     swal({
@@ -25,7 +27,8 @@ function Header({ SetIsOpen, IsOpen }: Props) {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        logout()
+        logout();
+        navigate("/");
       }
     });
   }
@@ -59,10 +62,12 @@ function Header({ SetIsOpen, IsOpen }: Props) {
         {/* Rendnerizado condicional */}
         {isAuthenticated ? (
           <>
-            {!isAdmin && (
+            {!isAdmin ? (
               <>
                 <Link to="/turnos">Turnos</Link>
               </>
+            ) : (
+              <Link to="/admin">Admin</Link>
             )}
             <Link to="/perfil" className="SecondButton">
               Perfil

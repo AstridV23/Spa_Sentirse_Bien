@@ -36,8 +36,6 @@ export function Register() {
     <div className="ingreso">
       <div className="background-image" />
       <div className="contenedorRegistro">
-        {Array.isArray(registerErrors) &&
-          registerErrors.map((error, i) => <div key={i}>{error}</div>)}
         <div className="titulo">
           <h1>Bienvenido!</h1>
           <img src="/assets/registro.png" alt="" />
@@ -167,6 +165,12 @@ export function Register() {
           <button type="submit" className="MainButton">
             Registrarse
           </button>
+          {Array.isArray(registerErrors) &&
+            registerErrors.map((error, i) => (
+              <p className="MensajeError" key={i}>
+                {error}
+              </p>
+            ))}
         </form>
       </div>
     </div>
