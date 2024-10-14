@@ -1,9 +1,8 @@
-import Dropdown from "../components/Dropdown";
+import "./Turno.css";
 import { usePopUp } from "../components/PopUpContext";
 import { useEffect, useState } from "react";
-import "./Turno.css";
+import { useForm } from "react-hook-form";
 import swal from "sweetalert";
-import FormPago from "./FormPago";
 
 type Servicio = {
   nombre: string;
@@ -42,114 +41,82 @@ const horas: string[] = [
   "20:00",
 ];
 
-type Props = {
-  titulo: string;
-  label: string;
-  options: string[];
-  reset: boolean;
-  onChange?: (value: string) => void;
+type Data = {
+  tipoTratamiento: string;
+  servicio: string;
+  fecha: string;
+  hora: string;
+  informacion: string;
+  costo: number;
+  pagoLocal: boolean;
 };
-function Box(props: Props) {
-  const { titulo, label, options, reset, onChange } = props;
-  return (
-    <div className="box">
-      <h4>{titulo}</h4>
-      <Dropdown
-        label={label}
-        options={options}
-        reset={reset}
-        onChange={onChange}
-      />{" "}
-    </div>
-  );
-}
 
 export function TurnPopUp() {
   const { activePopUp, closePopUp } = usePopUp();
-  const [reservaCompleta, setReservaCompleta] = useState(false);
-  const [reset, setReset] = useState(false);
   const [precio, setPrecio] = useState<number>(0);
-  const [pagoEnLocal, setPagoEnLocal] = useState(false);
+  const [, setPagoEnLocal] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<Data>();
 
-  // Estado para almacenar los datos del formulario
-  const [formData, setFormData] = useState({
-    tipoTratamiento: "",
-    servicio: "",
-    fecha: "",
-    hora: "",
-    informacion: "",
-    formattedDate: "",
-  });
-
-  // Efecto para limpiar el formulario al cargar el componente
   useEffect(() => {
-    if (!reservaCompleta) {
-      setFormData({
-        tipoTratamiento: "",
-        servicio: "",
-        fecha: "",
-        hora: "",
-        informacion: "",
-        formattedDate: "",
-      });
-      setPagoEnLocal(false);
-      setPrecio(0);
+    reset({
+      tipoTratamiento: "",
+      servicio: "",
+      fecha: "",
+      hora: "",
+      informacion: "",
+      costo: 0,
+      pagoLocal: false,
+    });
+    setPagoEnLocal(false);
+    setPrecio(0);
+  }, [reset]);
+
+  const tipoTratamiento = watch("tipoTratamiento");
+  const servicio = watch("servicio");
+  // Actualiza el precio si cambia el servicio
+  useEffect(() => {
+    if (tipoTratamiento && servicio) {
+      const selectedService = servicios[tipoTratamiento]?.find(
+        (serv) => serv.nombre === servicio
+      );
+      setPrecio(selectedService ? selectedService.precio : 0);
     }
-  }, [reservaCompleta]);
+  }, [tipoTratamiento, servicio]);
 
   if (activePopUp !== "turn") return null;
-
-  // Maneja el cambio en los campos del formulario
-  const handleChange = (name: string, value: string) => {
-    setReset(false);
-
-    setFormData((prev) => {
-      const newData = { ...prev, [name]: value };
-
-      // Si se cambia el tipo de tratamiento, reinicia el servicio seleccionado y el precio
-      if (name === "tipoTratamiento") {
-        newData.servicio = ""; // Reinicia el servicio
-        setPrecio(0); // Reinicia el precio
-      }
-      return newData;
-    });
-
-    // Si se cambia el servicio, actualiza el precio
-    if (name === "servicio") {
-      const selectedService = servicios[formData.tipoTratamiento]?.find(
-        (serv) => serv.nombre === value
-      );
-      if (selectedService) {
-        setPrecio(selectedService.precio);
-      } else {
-        setPrecio(0);
-      }
-    }
-  };
-
-  // Obtiene la fecha actual y la fecha de un mes en adelante
-  const today = new Date();
-  const oneMonthLater = new Date();
-  oneMonthLater.setMonth(today.getMonth() + 1);
-
-  // Formatear fecha a YYYY-MM-DD para el input date
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
 
   // Maneja el cambio del checkbox
   const handlePagoEnLocalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPagoEnLocal(e.target.checked);
   };
 
-  // Maneja el envío del formulario
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const { tipoTratamiento, servicio, fecha, hora } = formData;
-    if (!tipoTratamiento || !servicio || !fecha || !hora) {
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0"); // Asegúrate de que el día tenga 2 dígitos
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses son 0-indexados
+    return `${day}/${month}`; // Formato dd/mm
+  };
+
+  const onSubmit = (data: Data) => {
+    const reservaTurno = {
+      tipoTratamiento: data.tipoTratamiento,
+      servicio: data.servicio,
+      fecha: data.fecha,
+      hora: data.hora,
+      informacion: data.informacion,
+      costo: precio, // Incluye el costo
+      pagoLocal: data.pagoLocal, // Incluye si es pago en local
+    };
+
+    console.log("Formulario enviado:", reservaTurno);
+
+    if (!data.tipoTratamiento || !data.servicio || !data.fecha || !data.hora) {
       swal({
         title: "Campos vacios",
         text: "Ingrese toda la información solicitada",
@@ -158,174 +125,175 @@ export function TurnPopUp() {
       });
       return;
     } else {
-      const formattedDate = new Date(fecha + "T00:00:00"); // Añadir hora para asegurar que se trate como fecha local
-      const displayDate = formattedDate.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
+      const formattedDate = formatDate(data.fecha);
+      const alertaString = `Te esperamos el ${formattedDate} a las ${data.hora}hs`;
+      swal({
+        title: "¡Reserva confirmada!",
+        text: alertaString,
+        icon: "success",
       });
 
-      setFormData((prev) => ({
-        ...prev,
-        formattedDate: displayDate,
-      }));
-
-      const alertaString = `Te esperamos el ${formData.formattedDate} a las ${formData.hora}hs`;
-      // Verificar si el pago será en local o en línea
-      if (pagoEnLocal) {
-        console.log(formData); //info del turno AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        swal({
-          title: "¡Reserva confirmada!",
-          text: alertaString,
-          icon: "success",
-        });
-        closePopUp();
-      } else {
-        // Cambiar el estado para mostrar el formulario de pago
-        setReservaCompleta(true);
-      }
-
-      setFormData({
-        tipoTratamiento: "",
-        servicio: "",
-        fecha: "",
-        hora: "",
-        informacion: "",
-        formattedDate: "",
-      });
+      // Resetear el formulario
+      reset();
       setPrecio(0);
       setPagoEnLocal(false);
-      setReset(true);
+      closePopUp();
     }
   };
 
-  function handleCancel(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    closePopUp();
-
-    setFormData({
-      tipoTratamiento: "",
-      servicio: "",
-      fecha: "",
-      hora: "",
-      informacion: "",
-      formattedDate: "",
-    });
-
-    setPrecio(0);
-    setPagoEnLocal(false);
-    setReset(true);
-  }
+  // Funciones para limitar la fecha
+  const today = new Date();
+  const minDate = today.toISOString().split("T")[0]; // Fecha de hoy
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 30);
+  const maxDateString = maxDate.toISOString().split("T")[0]; // Fecha + 30 días
 
   return (
     <div className="turno-component">
       <div className="popup-overlay">
         <div className="turno-component-content">
-          {!reservaCompleta ? (
-            <form onSubmit={handleSubmit}>
-              <div className="icon">
-                <img src="/assets/calendario.png" />
-                <h1>AGENDÁ TU TURNO</h1>
-              </div>
-              <p>Completa el siguiente formulario para reservar tu turno.</p>
-              <hr />
-              <div className="Contenedor-dropdowns">
-                <div className="par">
-                  <Box
-                    titulo="Tipo de Tratamiento"
-                    label="Seleccione"
-                    options={Object.keys(servicios)} // Muestra los tipos de tratamiento (Masajes, Belleza, etc.)
-                    reset={reset}
-                    onChange={(selectedOption) =>
-                      handleChange("tipoTratamiento", selectedOption)
-                    }
-                  />
-                  <Box
-                    titulo="Servicio"
-                    label={"Seleccione"}
-                    options={
-                      servicios[formData.tipoTratamiento]?.map(
-                        (servicio) => servicio.nombre
-                      ) || []
-                    } // Muestra los servicios del tipo de tratamiento seleccionado
-                    reset={reset}
-                    onChange={(selectedOption) =>
-                      handleChange("servicio", selectedOption)
-                    }
-                  />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="icon">
+              <img src="/assets/calendario.png" alt="Calendario" />
+              <h1>AGENDÁ TU TURNO</h1>
+            </div>
+            <p>Completa el siguiente formulario para reservar tu turno.</p>
+            <hr />
+            <div className="Contenedor-dropdowns">
+              <div className="par">
+                <div className="box">
+                  <label htmlFor="tipoTratamiento">
+                    <h4>Tipo de Tratamiento</h4>
+                    <select
+                      className="textbox"
+                      id="tipoTratamiento"
+                      {...register("tipoTratamiento", { required: true })}
+                    >
+                      <option value="">Seleccione</option>
+                      {Object.keys(servicios).map((tipo) => (
+                        <option key={tipo} value={tipo}>
+                          {tipo}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {errors.tipoTratamiento && (
+                    <span className="MensajeError">
+                      Este campo es obligatorio
+                    </span>
+                  )}
                 </div>
-                <div className="par">
-                  <div className="box">
+                <div className="box">
+                  <label htmlFor="servicio">
+                    <h4>Servicio</h4>
+                    <select
+                      className="textbox"
+                      id="servicio"
+                      {...register("servicio", { required: true })}
+                    >
+                      <option value="">Seleccione</option>
+                      {servicios[tipoTratamiento]?.map((serv) => (
+                        <option key={serv.nombre} value={serv.nombre}>
+                          {serv.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {errors.servicio && (
+                    <span className="MensajeError">
+                      Este campo es obligatorio
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="par">
+                <div className="box">
+                  <label htmlFor="fecha">
                     <h4>
                       Fecha <span className="required"></span>
                     </h4>
                     <input
+                      className="textbox"
                       type="date"
-                      name="fecha"
                       id="fecha"
-                      placeholder="Ingresar Fecha"
-                      min={formatDate(today)}
-                      max={formatDate(oneMonthLater)}
-                      onChange={(e) => handleChange("fecha", e.target.value)}
-                      required
+                      {...register("fecha", { required: true })}
+                      min={minDate}
+                      max={maxDateString} // Limitar la fecha
                     />
-                  </div>
-                  <Box
-                    titulo="Hora"
-                    label="Seleccione"
-                    options={horas}
-                    reset={reset}
-                    onChange={(selectedOption) =>
-                      handleChange("hora", selectedOption)
-                    }
-                  />
+                  </label>
+                  {errors.fecha && (
+                    <span className="MensajeError">
+                      Este campo es obligatorio
+                    </span>
+                  )}
+                </div>
+                <div className="box">
+                  <label htmlFor="hora">
+                    <h4>Hora</h4>
+                    <select
+                      id="hora"
+                      className="textbox"
+                      {...register("hora", { required: true })}
+                    >
+                      <option value="">Seleccione</option>
+                      {horas.map((hora) => (
+                        <option key={hora} value={hora}>
+                          {hora}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {errors.hora && (
+                    <span className="MensajeError">
+                      Este campo es obligatorio
+                    </span>
+                  )}
                 </div>
               </div>
-              <div className="detalles">
-                <h4>Información importante</h4>
-                <textarea
-                  className="textbox"
-                  name="informacion"
-                  id="informacion"
-                  placeholder="Escriba brevemente información que deberá ser considerada por los empleados"
-                  onChange={(e) => handleChange("informacion", e.target.value)}
-                />
-              </div>
-              <h2>Precio: ${precio}</h2>
+            </div>
+            <div className="detalles">
+              <h4>Información importante</h4>
+              <textarea
+                className="textbox"
+                {...register("informacion")}
+                placeholder="Escriba brevemente información que deberá ser considerada por los empleados"
+              />
+            </div>
+            <h2>Precio: ${precio}</h2>
 
-              <div>
-                <input
-                  type="checkbox"
-                  id="pago"
-                  name="pago"
-                  value="Pago en local"
-                  onChange={handlePagoEnLocalChange}
-                />
-                <label htmlFor="pago">Pago en local</label>
-              </div>
+            <div>
+              <input
+                type="checkbox"
+                id="pago"
+                {...register("pagoLocal")}
+                onChange={handlePagoEnLocalChange}
+              />
+              <label htmlFor="pago">Pago en local</label>
+            </div>
 
-              <p className="pagos">
-                <br />
-                Aceptamos métodos de pago: efectivo, transferencia, débito y
-                credito.
-              </p>
+            <p className="pagos">
+              <br />
+              Aceptamos métodos de pago: efectivo, transferencia, débito y
+              crédito.
+            </p>
 
-              <div className="buttons">
-                <button type="submit" className="MainButton">
-                  Agendar
-                </button>
-                <button className="SecondButton" onClick={handleCancel}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          ) : (
-            <FormPago
-              DatosTurno={formData}
-              setReservaCompleta={setReservaCompleta}
-            />
-          )}
+            <div className="buttons">
+              <button type="submit" className="MainButton">
+                Agendar
+              </button>
+              <button
+                type="button"
+                className="SecondButton"
+                onClick={closePopUp}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   );
 }
+
+export default TurnPopUp;

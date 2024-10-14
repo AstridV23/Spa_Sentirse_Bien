@@ -7,8 +7,10 @@ type Data = {
   tipoTratamiento: string;
   servicio: string;
   formattedDate: string;
+  fecha: string;
   hora: string;
   informacion: string;
+  costo: number;
 };
 
 type Props = {
