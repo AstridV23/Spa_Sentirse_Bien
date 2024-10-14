@@ -59,7 +59,9 @@ export function Login() {
               {...register("username", { required: true })}
             />
             {errors.username && (
-              <p className="MensajeError">El campo es requerido</p>
+              <span>
+                <p className="MensajeError">El campo es requerido</p>
+              </span>
             )}
           </label>
           <label>
@@ -70,7 +72,9 @@ export function Login() {
               {...register("password", { required: true })}
             />
             {errors.password && (
-              <p className="MensajeError">El campo contraseña es requerido</p>
+              <span>
+                <p className="MensajeError">El campo contraseña es requerido</p>
+              </span>
             )}
           </label>
 
