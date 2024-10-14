@@ -26,6 +26,7 @@ export default function Comments() {
   const [replyText, setReplyText] = useState(""); 
   const [replyIndex, setReplyIndex] = useState<number | null>(null); 
 
+
   // Función para obtener los comentarios del backend
   async function fetchComments() {
     try {
@@ -44,10 +45,10 @@ export default function Comments() {
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+  
     if (text.trim() !== "") {
       const newComment: Comment = {
-        author: loggedInUser ?? "Anónimo", // Si no hay usuario logueado, usar "Anónimo"
+        author: loggedInUser ?? "Anónimo",
         content: text,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
@@ -55,17 +56,28 @@ export default function Comments() {
           year: "numeric",
         }),
       };
-
+  
       try {
         // Enviar el nuevo comentario al backend
         const response = await axios.post("/comment", newComment);
-        setComments([...comments, response.data]); // Agregar el comentario enviado a la lista
+        // Formatear la fecha al obtener el comentario desde el backend
+        const formattedComment = {
+          ...response.data,
+          date: new Date(response.data.date).toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }),
+        };
+        setComments([formattedComment, ...comments]); // Agregar el comentario al inicio
         setText(""); // Limpiar el campo de texto
+  
       } catch (error) {
         console.error("Error al enviar el comentario:", error);
       }
     }
   }
+  
 
   // Maneja el cambio en el campo de texto del comentario
   function handleTextChange(event: ChangeEvent<HTMLInputElement>) {
