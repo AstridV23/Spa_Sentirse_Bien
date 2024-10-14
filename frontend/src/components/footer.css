@@ -12,10 +12,12 @@
 .contact {
   display: flex;
   justify-content: center;
-  gap: 50px 0;
+  gap: 50px 20px;
   width: 100%;
   align-items: baseline;
   margin: auto;
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 .contactInfo {
   width: 40%;
@@ -34,7 +36,6 @@
   gap: 40px 15px;
   justify-content: space-evenly;
   width: 260px;
-  margin-right: 5%;
 }
 .contact h3 {
   color: var(--blanco);

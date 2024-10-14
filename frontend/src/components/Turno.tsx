@@ -69,6 +69,7 @@ export function TurnPopUp() {
   const [reservaCompleta, setReservaCompleta] = useState(false);
   const [reset, setReset] = useState(false);
   const [precio, setPrecio] = useState<number>(0);
+  const [pagoEnLocal, setPagoEnLocal] = useState(false);
 
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
@@ -91,7 +92,8 @@ export function TurnPopUp() {
         informacion: "",
         formattedDate: "",
       });
-      setPrecio(0)
+      setPagoEnLocal(false);
+      setPrecio(0);
     }
   }, [reservaCompleta]);
 
@@ -138,38 +140,67 @@ export function TurnPopUp() {
     return `${year}-${month}-${day}`;
   };
 
+  // Maneja el cambio del checkbox
+  const handlePagoEnLocalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPagoEnLocal(e.target.checked);
+  };
+
   // Maneja el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault(); 
-  const { tipoTratamiento, servicio, fecha, hora } = formData;
-  if (!tipoTratamiento || !servicio || !fecha || !hora) {
-    swal({
-      title: "Campos vacios",
-      text: "Ingrese toda la información solicitada",
-      icon: "warning",
-      timer: 2500,
-    });
-    return;
-  } else {
-    const formattedDate = new Date(fecha + "T00:00:00"); // Añadir hora para asegurar que se trate como fecha local
-    const displayDate = formattedDate.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-    });
+    e.preventDefault();
+    const { tipoTratamiento, servicio, fecha, hora } = formData;
+    if (!tipoTratamiento || !servicio || !fecha || !hora) {
+      swal({
+        title: "Campos vacios",
+        text: "Ingrese toda la información solicitada",
+        icon: "warning",
+        timer: 2500,
+      });
+      return;
+    } else {
+      const formattedDate = new Date(fecha + "T00:00:00"); // Añadir hora para asegurar que se trate como fecha local
+      const displayDate = formattedDate.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+      });
 
-    setFormData((prev) => ({
-      ...prev,
-      formattedDate: displayDate, 
-    }));
+      setFormData((prev) => ({
+        ...prev,
+        formattedDate: displayDate,
+      }));
 
-      // Cambiar el estado para mostrar el formulario de pago
-      setReservaCompleta(true);   
+      const alertaString = `Te esperamos el ${formData.formattedDate} a las ${formData.hora}hs`;
+      // Verificar si el pago será en local o en línea
+      if (pagoEnLocal) {
+        console.log(formData); //info del turno AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        swal({
+          title: "¡Reserva confirmada!",
+          text: alertaString,
+          icon: "success",
+        });
+        closePopUp();
+      } else {
+        // Cambiar el estado para mostrar el formulario de pago
+        setReservaCompleta(true);
+      }
+
+      setFormData({
+        tipoTratamiento: "",
+        servicio: "",
+        fecha: "",
+        hora: "",
+        informacion: "",
+        formattedDate: "",
+      });
+      setPrecio(0);
+      setPagoEnLocal(false);
+      setReset(true);
     }
   };
 
-  function handleCancel(e: React.MouseEvent<HTMLButtonElement>){
-    e.preventDefault(); 
-    closePopUp(),
+  function handleCancel(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    closePopUp();
 
     setFormData({
       tipoTratamiento: "",
@@ -179,100 +210,119 @@ export function TurnPopUp() {
       informacion: "",
       formattedDate: "",
     });
-    setPrecio(0)
-    setReset(true);
 
+    setPrecio(0);
+    setPagoEnLocal(false);
+    setReset(true);
   }
 
   return (
     <div className="turno-component">
       <div className="popup-overlay">
         <div className="turno-component-content">
-        {!reservaCompleta ? (
-          <form onSubmit={handleSubmit}>
-            <div className="icon">
-              <img src="/assets/calendario.png" />
-              <h1>AGENDÁ TU TURNO</h1>
-            </div>
-            <p>Completa el siguiente formulario para reservar tu turno.</p>
-            <hr />
-            <div className="Contenedor-dropdowns">
-              <div className="par">
-                <Box
-                  titulo="Tipo de Tratamiento"
-                  label="Seleccione"
-                  options={Object.keys(servicios)} // Muestra los tipos de tratamiento (Masajes, Belleza, etc.)
-                  reset={reset}
-                  onChange={(selectedOption) =>
-                    handleChange("tipoTratamiento", selectedOption)
-                  }
-                />
-                <Box
-                  titulo="Servicio"
-                  label={"Seleccione"}
-                  options={
-                    servicios[formData.tipoTratamiento]?.map(
-                      (servicio) => servicio.nombre
-                    ) || []
-                  } // Muestra los servicios del tipo de tratamiento seleccionado
-                  reset={reset}
-                  onChange={(selectedOption) =>
-                    handleChange("servicio", selectedOption)
-                  }
-                />
+          {!reservaCompleta ? (
+            <form onSubmit={handleSubmit}>
+              <div className="icon">
+                <img src="/assets/calendario.png" />
+                <h1>AGENDÁ TU TURNO</h1>
               </div>
-              <div className="par">
-                <div className="box">
-                  <h4>
-                    Fecha <span className="required"></span>
-                  </h4>
-                  <input
-                    type="date"
-                    name="fecha"
-                    id="fecha"
-                    placeholder="Ingresar Fecha"
-                    min={formatDate(today)}
-                    max={formatDate(oneMonthLater)}
-                    onChange={(e) => handleChange("fecha", e.target.value)}
-                    required
+              <p>Completa el siguiente formulario para reservar tu turno.</p>
+              <hr />
+              <div className="Contenedor-dropdowns">
+                <div className="par">
+                  <Box
+                    titulo="Tipo de Tratamiento"
+                    label="Seleccione"
+                    options={Object.keys(servicios)} // Muestra los tipos de tratamiento (Masajes, Belleza, etc.)
+                    reset={reset}
+                    onChange={(selectedOption) =>
+                      handleChange("tipoTratamiento", selectedOption)
+                    }
+                  />
+                  <Box
+                    titulo="Servicio"
+                    label={"Seleccione"}
+                    options={
+                      servicios[formData.tipoTratamiento]?.map(
+                        (servicio) => servicio.nombre
+                      ) || []
+                    } // Muestra los servicios del tipo de tratamiento seleccionado
+                    reset={reset}
+                    onChange={(selectedOption) =>
+                      handleChange("servicio", selectedOption)
+                    }
                   />
                 </div>
-                <Box
-                  titulo="Hora"
-                  label="Seleccione"
-                  options={horas}
-                  reset={reset}
-                  onChange={(selectedOption) =>
-                    handleChange("hora", selectedOption)
-                  }
+                <div className="par">
+                  <div className="box">
+                    <h4>
+                      Fecha <span className="required"></span>
+                    </h4>
+                    <input
+                      type="date"
+                      name="fecha"
+                      id="fecha"
+                      placeholder="Ingresar Fecha"
+                      min={formatDate(today)}
+                      max={formatDate(oneMonthLater)}
+                      onChange={(e) => handleChange("fecha", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Box
+                    titulo="Hora"
+                    label="Seleccione"
+                    options={horas}
+                    reset={reset}
+                    onChange={(selectedOption) =>
+                      handleChange("hora", selectedOption)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="detalles">
+                <h4>Información importante</h4>
+                <textarea
+                  className="textbox"
+                  name="informacion"
+                  id="informacion"
+                  placeholder="Escriba brevemente información que deberá ser considerada por los empleados"
+                  onChange={(e) => handleChange("informacion", e.target.value)}
                 />
               </div>
-            </div>
-            <div className="detalles">
-              <h4>Información importante</h4>
-              <textarea
-                className="textbox"
-                name="informacion"
-                id="informacion"
-                placeholder="Escriba brevemente información que deberá ser considerada por los empleados"
-                onChange={(e) => handleChange("informacion", e.target.value)}
-              />
-            </div>
-            <h2>Precio: ${precio}</h2>
-            <div className="buttons">
-              <button type="submit" className="MainButton">
-                Agendar
-              </button>
-              <button className="SecondButton"  onClick={handleCancel}>
-                Cancelar
-              </button>
-            </div>
-            <p className="pagos">
-              Aceptamos métodos de pago: débito y credito.
-            </p>
-          </form>
-        ) : (
-              <FormPago DatosTurno={formData} setReservaCompleta={setReservaCompleta} />
+              <h2>Precio: ${precio}</h2>
+
+              <div>
+                <input
+                  type="checkbox"
+                  id="pago"
+                  name="pago"
+                  value="Pago en local"
+                  onChange={handlePagoEnLocalChange}
+                />
+                <label htmlFor="pago">Pago en local</label>
+              </div>
+
+              <p className="pagos">
+                <br />
+                Aceptamos métodos de pago: efectivo, transferencia, débito y
+                credito.
+              </p>
+
+              <div className="buttons">
+                <button type="submit" className="MainButton">
+                  Agendar
+                </button>
+                <button className="SecondButton" onClick={handleCancel}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          ) : (
+            <FormPago
+              DatosTurno={formData}
+              setReservaCompleta={setReservaCompleta}
+            />
           )}
         </div>
       </div>
