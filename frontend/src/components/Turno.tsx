@@ -3,31 +3,11 @@ import { usePopUp } from "../components/PopUpContext";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import swal from "sweetalert";
+import axios from "../api/axios";
 
 type Servicio = {
   nombre: string;
   precio: number;
-};
-
-type Servicios = {
-  [key: string]: Servicio[];
-};
-
-const servicios: Servicios = {
-  Masajes: [
-    { nombre: "Antiestres", precio: 5000 },
-    { nombre: "Descontracturantes", precio: 6000 },
-    { nombre: "Con piedras calientes", precio: 7000 },
-    { nombre: "Circulatorios", precio: 5500 },
-  ],
-  Belleza: [
-    { nombre: "Corte de cabello", precio: 2000 },
-    { nombre: "Manicura", precio: 1500 },
-  ],
-  Faciales: [
-    { nombre: "Limpieza facial", precio: 3000 },
-    { nombre: "Tratamiento antiarrugas", precio: 4500 },
-  ],
 };
 
 const horas: string[] = [
@@ -40,6 +20,11 @@ const horas: string[] = [
   "19:00",
   "20:00",
 ];
+
+
+type Servicios = {
+  [key: string]: Servicio[];
+};
 
 type Data = {
   tipoTratamiento: string;
@@ -54,7 +39,9 @@ type Data = {
 export function TurnPopUp() {
   const { activePopUp, closePopUp } = usePopUp();
   const [precio, setPrecio] = useState<number>(0);
+  const [servicios, setServicios] = useState<Servicios>({});
   const [, setPagoEnLocal] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -75,10 +62,44 @@ export function TurnPopUp() {
     });
     setPagoEnLocal(false);
     setPrecio(0);
+
+    // Cargar los servicios desde el backend
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get("/service"); // Asegúrate de que esta ruta sea la correcta
+        const servicesData = response.data;
+
+        // Transformar la respuesta en el formato que necesitas
+        const transformedServices: Servicios = servicesData.reduce(
+          (acc: Servicios, curr: any) => {
+            const { service_name, service_type, service_price } = curr;
+
+            if (!acc[service_name]) {
+              acc[service_name] = [];
+            }
+
+            acc[service_name].push({
+              nombre: service_type,
+              precio: service_price,
+            });
+
+            return acc;
+          },
+          {}
+        );
+
+        setServicios(transformedServices);
+      } catch (error) {
+        console.error("Error al cargar los servicios", error);
+      }
+    };
+
+    fetchServices();
   }, [reset]);
 
   const tipoTratamiento = watch("tipoTratamiento");
   const servicio = watch("servicio");
+
   // Actualiza el precio si cambia el servicio
   useEffect(() => {
     if (tipoTratamiento && servicio) {
@@ -87,7 +108,7 @@ export function TurnPopUp() {
       );
       setPrecio(selectedService ? selectedService.precio : 0);
     }
-  }, [tipoTratamiento, servicio]);
+  }, [tipoTratamiento, servicio, servicios]);
 
   if (activePopUp !== "turn") return null;
 
@@ -98,9 +119,9 @@ export function TurnPopUp() {
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0"); // Asegúrate de que el día tenga 2 dígitos
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses son 0-indexados
-    return `${day}/${month}`; // Formato dd/mm
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${day}/${month}`;
   };
 
   const onSubmit = (data: Data) => {
@@ -110,8 +131,8 @@ export function TurnPopUp() {
       fecha: data.fecha,
       hora: data.hora,
       informacion: data.informacion,
-      costo: precio, // Incluye el costo
-      pagoLocal: data.pagoLocal, // Incluye si es pago en local
+      costo: precio,
+      pagoLocal: data.pagoLocal,
     };
 
     console.log("Formulario enviado:", reservaTurno);
@@ -133,7 +154,6 @@ export function TurnPopUp() {
         icon: "success",
       });
 
-      // Resetear el formulario
       reset();
       setPrecio(0);
       setPagoEnLocal(false);
@@ -143,10 +163,10 @@ export function TurnPopUp() {
 
   // Funciones para limitar la fecha
   const today = new Date();
-  const minDate = today.toISOString().split("T")[0]; // Fecha de hoy
+  const minDate = today.toISOString().split("T")[0];
   const maxDate = new Date(today);
   maxDate.setDate(today.getDate() + 30);
-  const maxDateString = maxDate.toISOString().split("T")[0]; // Fecha + 30 días
+  const maxDateString = maxDate.toISOString().split("T")[0];
 
   return (
     <div className="turno-component">
