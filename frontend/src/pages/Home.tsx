@@ -89,9 +89,9 @@ function Home() {
               completamente de la rutina y disfrute de un momento de bienestar,
               en total armonía con la naturaleza.
             </p>
-            <a className="SecondButton" href="#contact">
-              Contáctanos
-            </a>
+            <div className="SecondButton">
+              <a href="#contact">Contáctanos</a>
+            </div>
           </div>
         </section>
         <section className="top">
