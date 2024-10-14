@@ -2,9 +2,9 @@ import Payment from "../models/payment_model.js";
 
 export const createPayment = async (req, res) =>{
     try {
-        const { cardtype, cardNumber, cardName, expirationDate, cvv } = req.body;
+        const { cardType, cardNumber, cardName, expirationDate, cvv } = req.body;
 
-        if (!cardtype || ! cardNumber || !cardName || !expirationDate || !cvv) {
+        if (!cardType || ! cardNumber || !cardName || !expirationDate || !cvv) {
             return res.status(400).json({message: "Faltan campos requeridos para completar la solicitud."})
         };
 

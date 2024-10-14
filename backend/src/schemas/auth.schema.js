@@ -30,8 +30,6 @@ export const registerSchema = z.object({
     }),
 });
 
-import { z } from 'zod';
-
 export const loginSchema = z.object({
   identifier: z.string({
     required_error: "Debe ingresar un correo electrónico o nombre de usuario."
