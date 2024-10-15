@@ -3,6 +3,7 @@ import { registerRequest, loginRequest, verificarToken } from "../api/auth";
 import Cookies from 'js-cookie';
 import IUser from '../types/IUser.ts';
 
+
 // Definir la interfaz para el usuario
 
 
@@ -15,6 +16,7 @@ interface AuthContextType {
   signup: (user: IUser) => Promise<void>;
   signin: (user: IUser) => Promise<void>;
   logout: () => Promise<void>
+  getUsername: () => string | null; // Nueva función para obtener el nombre de usuario
 }
 
 // Crear contexto con el tipo definido
@@ -41,12 +43,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Nueva función para devolver el nombre de usuario
+  const getUsername = (): string | null => {
+    if (isAuthenticated && user) {
+      return user.username;
+    }
+    return null;
+  };
+
   const signup = async (user: IUser) => {
     try {
       const res = await registerRequest(user);
       console.log(res.data);
       setUser(res.data.user);
       setIsAuthenticated(true);
+      
     } catch (error: any) {
       console.log(error.response);
   
@@ -70,6 +81,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log(res);
       setUser(res.data.user);
       setIsAuthenticated(true);
+    
+
     } catch (error: any) {
       console.log(error.response);
   
@@ -144,6 +157,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       user,
       isAuthenticated,
       errors,
+      getUsername,
     }}>
       {children}
     </AuthContext.Provider>
