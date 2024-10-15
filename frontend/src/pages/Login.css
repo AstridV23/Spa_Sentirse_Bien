@@ -87,8 +87,7 @@
   text-align: center;
 }
 
-.ingreso .contenedor form .text,
-.ingreso .contenedorRegistro form p {
+.ingreso form .text {
   text-align: left;
   margin: 0 3px 3px;
   color: var(--rosa);
@@ -101,11 +100,15 @@
 .ingreso .MensajeError {
   margin: 0px;
   color: var(--rojo);
+  text-align: left;
 }
 
 .ingreso form .MainButton {
   width: 40%;
   margin: auto;
+}
+.ingreso .contenedor form .br {
+  height: 5px;
 }
 
 @media screen and (max-width: 550px) {

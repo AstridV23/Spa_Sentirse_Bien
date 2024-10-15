@@ -1,11 +1,16 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { registerRequest, loginRequest, verificarToken } from "../api/auth";
 import Cookies from 'js-cookie';
 import IUser from '../types/IUser.ts';
 
 
 // Definir la interfaz para el usuario
-
 
 // Definir la interfaz del contexto de autenticación
 interface AuthContextType {
@@ -20,11 +25,13 @@ interface AuthContextType {
 }
 
 // Crear contexto con el tipo definido
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  
+
   if (!context) {
     throw new Error("useAuth debe estar dentro de un AuthProvider");
   }
@@ -60,13 +67,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
     } catch (error: any) {
       console.log(error.response);
-  
+
       // Asegúrate de que `error.response.data` sea un array
       if (Array.isArray(error.response?.data)) {
         setErrors(error.response.data);
       } else if (typeof error.response?.data === "object") {
         // Si es un objeto, convierte los mensajes de error en un array
-        const errorMessages = Object.values(error.response.data).filter((msg: unknown) => typeof msg === "string") as string[];;
+        const errorMessages = Object.values(error.response.data).filter(
+          (msg: unknown) => typeof msg === "string"
+        ) as string[];
         setErrors(errorMessages);
       } else {
         // Si no es ni array ni objeto, establece un error genérico
@@ -74,7 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     }
   };
-  
+
   const signin = async (user: IUser) => {
     try {
       const res = await loginRequest(user);
@@ -85,13 +94,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     } catch (error: any) {
       console.log(error.response);
-  
+
       // Asegúrate de que `error.response.data` sea un array
       if (Array.isArray(error.response?.data)) {
         setErrors(error.response.data);
       } else if (typeof error.response?.data === "object") {
         // Si es un objeto, convierte los mensajes de error en un array
-        const errorMessages = Object.values(error.response.data).filter((msg: unknown) => typeof msg === "string") as string[];;
+        const errorMessages = Object.values(error.response.data).filter(
+          (msg: unknown) => typeof msg === "string"
+        ) as string[];
         setErrors(errorMessages);
       } else {
         // Si no es ni array ni objeto, establece un error genérico
@@ -101,20 +112,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const logout = () => {
-    Cookies.remove("token")
-    setIsAuthenticated(false)
-    setUser(null)
-    return Promise.resolve()
-  }
-
+    Cookies.remove("token");
+    setIsAuthenticated(false);
+    setUser(null);
+    return Promise.resolve();
+  };
+  /*
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
         setErrors([]);
-      }, 5000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
-  }, [errors]);
+  }, [errors]);*/
 
   useEffect(() => {
     async function checkLogin() {

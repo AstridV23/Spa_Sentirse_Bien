@@ -36,8 +36,6 @@ export function Register() {
     <div className="ingreso">
       <div className="background-image" />
       <div className="contenedorRegistro">
-        {Array.isArray(registerErrors) &&
-          registerErrors.map((error, i) => <div key={i}>{error}</div>)}
         <div className="titulo">
           <h1>Bienvenido!</h1>
           <img src="/assets/registro.png" alt="" />
@@ -50,7 +48,7 @@ export function Register() {
         <form onSubmit={onSubmit}>
           <div>
             <label htmlFor="username">
-              <p>Nombre de Usuario</p>
+              <p className="text">Nombre de Usuario</p>
               <input
                 className="textbox"
                 type="text"
@@ -59,13 +57,13 @@ export function Register() {
               />
             </label>
             {errors.username && (
-              <span className="MensajeError">Este campo es obligatorio</span>
+              <span className="MensajeError">* Este campo es obligatorio</span>
             )}
           </div>
           <div>
             <div className="par">
               <label htmlFor="firstname">
-                <p>Nombres</p>
+                <p className="text">Nombres</p>
                 <input
                   className="textbox"
                   type="text"
@@ -74,7 +72,7 @@ export function Register() {
                 />
               </label>
               <label htmlFor="lastname">
-                <p>Apellidos</p>
+                <p className="text">Apellidos</p>
                 <input
                   className="textbox"
                   type="text"
@@ -85,14 +83,14 @@ export function Register() {
             </div>
             {errors.firstname && (
               <span className="MensajeError">
-                Estos campos son obligatorios
+                * Estos campos son obligatorios
               </span>
             )}
           </div>
 
           <div>
             <label htmlFor="email">
-              <p>Correo Electrónico</p>
+              <p className="text">Correo Electrónico</p>
               <input
                 className="textbox"
                 type="email"
@@ -101,14 +99,14 @@ export function Register() {
               />
             </label>
             {errors.email && (
-              <span className="MensajeError">Este campo es obligatorio</span>
+              <span className="MensajeError">* Este campo es obligatorio</span>
             )}
           </div>
 
           <div>
             <div className="par">
               <label htmlFor="phone">
-                <p>Teléfono</p>
+                <p className="text">Teléfono</p>
                 <input
                   className="textbox"
                   type="text"
@@ -117,7 +115,7 @@ export function Register() {
                 />
               </label>
               <label htmlFor="sex">
-                <p>Sexo</p>
+                <p className="text">Sexo</p>
                 <select
                   id="sex"
                   className="textbox"
@@ -132,7 +130,7 @@ export function Register() {
             </div>
             {errors.phone && (
               <span className="MensajeError">
-                Estos campos son obligatorios
+                * Estos campos son obligatorios
               </span>
             )}
           </div>
@@ -140,7 +138,7 @@ export function Register() {
           <div>
             <div className="par">
               <label htmlFor="password">
-                <p>Contraseña</p>
+                <p className="text">Contraseña</p>
                 <input
                   className="textbox"
                   type="password"
@@ -149,7 +147,7 @@ export function Register() {
                 />
               </label>
               <label htmlFor="password2">
-                <p>Confirmar contraseña</p>
+                <p className="text">Confirmar contraseña</p>
                 <input
                   className="textbox"
                   type="password"
@@ -160,10 +158,16 @@ export function Register() {
             </div>
             {errors.password && (
               <span className="MensajeError">
-                Estos campos son obligatorios
+                * Estos campos son obligatorios
               </span>
             )}
           </div>
+          {Array.isArray(registerErrors) &&
+            registerErrors.map((error, i) => (
+              <p className="MensajeError" key={i}>
+                * {error}
+              </p>
+            ))}
           <button type="submit" className="MainButton">
             Registrarse
           </button>

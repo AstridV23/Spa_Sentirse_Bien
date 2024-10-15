@@ -14,17 +14,18 @@ export const createBooking = async (req, res) =>{
             treatment,
             date,
             info,
-            user: req.user.id
+            //user: req.user.id
         });
 
         const savedBooking = await newBooking.save();
-        res.satus(201).json(savedBooking);
+        res.status(201).json(savedBooking);
 
     } catch (error) {
         res.status(500).json({ message: 'Error al reservar turno.', error });
     }
 }
 
+// Método para eliminar un turno
 export const deleteBooking = async (req, res) => {
     try {
         const { id } = req.params;
@@ -37,6 +38,20 @@ export const deleteBooking = async (req, res) => {
         res.status(204).send(); // Enviar una respuesta vacía
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar la reserva.', error });
+    }
+};
+
+// Método para obtener todas las reservas
+export const getAllBookings = async (req, res) => {
+    try {
+        // Consultar todas las reservas en la base de datos
+        const bookings = await Booking.find().populate('user'); 
+
+        // Enviar las reservas en la respuesta
+        res.status(200).json(bookings);
+    } catch (error) {
+        // Manejo de errores
+        res.status(500).json({ message: 'Error al obtener todas las reservas.', error });
     }
 };
 
@@ -91,7 +106,7 @@ export const getBookingsByDate = async(req, res) => {
     }
 }
 
-//Cabiar estado de la reserva
+//Cambiar estado de la reserva
 export const changeStatus = async (req, res) => {
     try {
         const { id } = req.params;
