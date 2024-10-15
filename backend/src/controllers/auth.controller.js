@@ -17,13 +17,13 @@ export const register = async (req, res) => {
         const userFoundByEmail = await User.findOne({ email });
         
         if (userFoundByEmail)
-          return res.status(400).json(["Ya existe un ususario registrado con este email."]);
+            return res.status(400).json(["Ya existe un ususario registrado con este email."]);
     
         console.log("Verificando si el nombre de usuario ya está registrado...");
         const userFoundByUsername = await User.findOne({ username });
     
         if (userFoundByUsername)
-          return res.status(400).json(["Ya existe un usuario registrado con este nombre de usuario."]);
+            return res.status(400).json(["Ya existe un usuario registrado con este nombre de usuario."]);
     
         console.log("Hashing la contraseña...");
         const passwordHash = await bcrypt.hash(password, 10);
@@ -128,4 +128,15 @@ export const verifyToken = async (req, res) => {
             email:userFound.email,
         });
     });
+}
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const user = await User.find(); 
+
+        res.status(200).json(user);
+    } catch (error) {
+        // Manejo de errores
+        res.status(500).json({ message: 'Error al obtener todos los usuarios.', error });
+    }
 }
