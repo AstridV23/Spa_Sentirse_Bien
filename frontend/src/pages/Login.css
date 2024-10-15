@@ -87,8 +87,7 @@
   text-align: center;
 }
 
-.ingreso .contenedor form .text,
-.ingreso .contenedorRegistro form p {
+.ingreso form .text {
   text-align: left;
   margin: 0 3px 3px;
   color: var(--rosa);
