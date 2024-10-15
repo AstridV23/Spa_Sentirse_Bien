@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Nav_Bar.css";
-import { useEffect } from "react";
+//import { useEffect } from "react";
 
 type Props = {
   IsOpen: boolean;
@@ -15,9 +15,9 @@ export default function NavBar({ IsOpen }: Props) {
   const AdminType = 1; // Cambia esto a 1 para doctora, 2 para profesional, 3 secretario
 
   // useEffect para corroborar el estado de IsOpen cada vez que cambie
-  useEffect(() => {
-    console.log(`El menú está ${IsOpen ? "abierto" : "cerrado"}`);
-  }, [IsOpen]); // Se ejecuta cada vez que IsOpen cambia
+  //useEffect(() => {
+    //console.log(`El menú está ${IsOpen ? "abierto" : "cerrado"}`);
+  //}, [IsOpen]); // Se ejecuta cada vez que IsOpen cambia
 
   return (
     <>

@@ -2,9 +2,10 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 // Simulamos un usuario logueado o no logueado con una constante
-const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
+//const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
 
 // Simulando que el usuario es admin
 const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
@@ -21,6 +22,7 @@ type Comment = {
 };
 
 export default function Comments() {
+  const { user } = useAuth(); // Obtener el usuario desde el contexto
   const [comments, setComments] = useState<Array<Comment>>([]);
   const [text, setText] = useState("");
   const [replyText, setReplyText] = useState(""); 
@@ -48,7 +50,7 @@ export default function Comments() {
   
     if (text.trim() !== "") {
       const newComment: Comment = {
-        author: loggedInUser ?? "Anónimo",
+        author: user?.username || "Anónimo", // Usar el nombre de usuario del contexto
         content: text,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
@@ -91,7 +93,7 @@ export default function Comments() {
     if (replyText.trim() !== "") {
       const updatedComments = [...comments];
       const newReply = {
-        name: loggedInUser ?? "Anónimo",
+        name: user?.username || "Anónimo", // Usar el nombre de usuario del contexto
         text: replyText,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
