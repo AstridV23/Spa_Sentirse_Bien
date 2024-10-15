@@ -2,7 +2,7 @@ import Comment from '../models/comment_model.js'
 
 export const createComment = async (req, res) => {
     try{
-        const {author, content } = req.body
+        const { content, author } = req.body
 
         const newComment = new Comment({
             author,
