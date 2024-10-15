@@ -14,7 +14,6 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 import ProtectedRoute from "./ProtectedRoutes.tsx";
 import NavBar from "./components/Nav_Bar.tsx";
 import { useState } from "react";
-import Clientes from "./pages/Clientes.tsx";
 import Informe from "./pages/Informes.tsx";
 
 function App() {
@@ -36,8 +35,7 @@ function App() {
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/admin" element={<Admin />} />
 
-            <Route path="/clientes" element={<Clientes />} />
-            <Route path="/informeVacio" element={<Informe />} />
+            <Route path="/informe/:tipo" element={<Informe />} />
 
             <Route element={<ProtectedRoute />}></Route>
           </Routes>

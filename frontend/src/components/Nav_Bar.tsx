@@ -28,15 +28,15 @@ export default function NavBar({ IsOpen }: Props) {
             <div className="contenedor">
               {/* Este bloque se renderiza solo si AdminType === 1 */}
               {AdminType === 1 && (
-                <Link className="item" to="/clientes">
-                  Registro de Clientes
+                <Link className="item" to="/informe/clientes">
+                  Listado de Clientes
                 </Link>
               )}
               {/* Si es Doctora (AdminType === 1), renderiza todos los botones */}
               {(AdminType === 1 || AdminType === 2) && (
                 <>
-                  <Link className="item" to="/informeVacio">
-                    Botón para Profesional
+                  <Link className="item" to="/informe/turnos">
+                    Listado de Turnos
                   </Link>
                   <Link className="item" to="/informeVacio">
                     Botón para Profesional
