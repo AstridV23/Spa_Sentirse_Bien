@@ -140,3 +140,24 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener todos los usuarios.', error });
     }
 }
+
+export const getUsersByRole = async (req, res) => {
+    const { role } = req.params;  // Capturamos el rol de los parámetros de la solicitud
+
+    try {
+        // Busca los usuarios que coincidan con el role
+        const users = await User.find({ role });
+
+        // Si no hay usuarios con ese role, devolver un mensaje adecuado
+        if (users.length === 0) {
+            return res.status(404).json({ message: `No se encontraron usuarios con el rol: ${role}` });
+        }
+
+        // Si se encuentran usuarios, devolverlos en la respuesta
+        return res.status(200).json(users);
+    } catch (error) {
+        // Manejo de errores si ocurre un problema en la consulta
+        return res.status(500).json({ message: 'Error al obtener usuarios por rol.', error });
+    }
+};
+
