@@ -3,7 +3,7 @@ import IUser from "../types/IUser";
 
 export function convertFieldValuesToUser(fields: FieldValues): IUser {
     return {
-      id: fields.id || "",
+      _id: fields.id || "",
       email: fields.email || "",
       username: fields.username || "",
       password: fields.password || "",

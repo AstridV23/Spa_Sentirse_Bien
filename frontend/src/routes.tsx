@@ -7,7 +7,7 @@ import Gallery from "./pages/Gallery";
 import Turn from "./pages/Turns";
 import Perfil from "./pages/Perfil";
 import Admin from "./pages/Admin/Admin.tsx";
-import Clientes from "./pages/Clientes.tsx";
+//import Clientes from "./pages/Clientes.tsx";
 import Informe from "./pages/Informes.tsx";
 
 const AppRoutes = () => {
@@ -23,7 +23,8 @@ const AppRoutes = () => {
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/admin" element={<Admin />} />
 
-        <Route path="/clientes" element={<Clientes />} />
+        {/* <Route path="/clientes" element={<Clientes />} /> */}
+
         <Route path="/informe/:tipo" element={<Informe />} />
       </Routes>
     </Router>

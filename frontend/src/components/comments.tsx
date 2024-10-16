@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
