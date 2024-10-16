@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Informes.css";
 
-type Cliente = {
+type Usuario = {
   id: number;
   status: string;
   username: string;
@@ -14,7 +14,7 @@ type Cliente = {
   fechaCreacion: string;
   reservas: number;
 };
-const clientesFalsos: Cliente[] = [
+const clientesFalsos: Usuario[] = [
   {
     id: 1,
     status: "usuario",
@@ -329,7 +329,7 @@ const turnosFalsos: Turno[] = [
 
 export default function Informe() {
   const { tipo } = useParams<{ tipo: string }>();
-  const [datos, setDatos] = useState<(Cliente | Turno)[]>([]);
+  const [datos, setDatos] = useState<(Usuario | Turno)[]>([]);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -338,7 +338,7 @@ export default function Informe() {
   useEffect(() => {
     const fetchData = () => {
       switch (tipo) {
-        case "clientes":
+        case "usuarios":
           setDatos(clientesFalsos);
           break;
         case "turnos":
@@ -349,107 +349,149 @@ export default function Informe() {
           break;
       }
     };
-
     fetchData();
   }, [tipo]);
 
-  const isCliente = (dato: Cliente | Turno): dato is Cliente => {
+  function handleDelete(id: number) {
+    swal({
+      title: "¿Estás seguro?",
+      text: "Si borras, se perderá el turno.",
+      icon: "warning",
+      buttons: {
+        cancel: {
+          text: "Cancelar",
+          value: null,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        confirm: {
+          text: "Confirmar",
+          value: true,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+      },
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        // Lógica para borrar el turno
+        console.log(`Turno ${id} borrado`);
+      }
+    });
+  }
+
+  const isCliente = (dato: Usuario | Turno): dato is Usuario => {
     return "correo" in dato; // Verifica si la propiedad "correo" pertenece a dato
   };
-  const isTurno = (dato: Cliente | Turno): dato is Turno => {
+  const isTurno = (dato: Usuario | Turno): dato is Turno => {
     return "id" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
 
   const renderTable = () => {
-    if (tipo === "clientes") {
+    if (tipo === "usuarios") {
       return (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Status</th>
-              <th>Usuario</th>
-              <th>Nombres</th>
-              <th>Apellidos</th>
-              <th>Correo</th>
-              <th>Género</th>
-              <th>Teléfono</th>
-              <th>Created</th>
-              <th>Reserv.</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datos.map((dato) => {
-              if (isCliente(dato)) {
-                return (
-                  <tr key={dato.id}>
-                    <td data-label="ID">{dato.id}</td>
-                    <td data-label="Status">{dato.status}</td>
-                    <td data-label="Usuario">{dato.username}</td>
-                    <td data-label="Nombres">{dato.nombres}</td>
-                    <td data-label="Apellidos">{dato.apellidos}</td>
-                    <td data-label="Correo">{dato.correo}</td>
-                    <td data-label="Género">{dato.genero}</td>
-                    <td data-label="Teléfono">{dato.telefono}</td>
-                    <td data-label="Created">{dato.fechaCreacion}</td>
-                    <td data-label="Reserv.">{dato.reservas}</td>
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
+        <div className="table-container">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Usuario</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Correo</th>
+                <th>Género</th>
+                <th>Teléfono</th>
+                <th>Created</th>
+                <th>Reserv.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {datos.map((dato) => {
+                if (isCliente(dato)) {
+                  return (
+                    <tr key={dato.id}>
+                      <td data-label="ID">{dato.id}</td>
+                      <td data-label="Status">{dato.status}</td>
+                      <td data-label="Usuario">{dato.username}</td>
+                      <td data-label="Nombres">{dato.nombres}</td>
+                      <td data-label="Apellidos">{dato.apellidos}</td>
+                      <td data-label="Correo">{dato.correo}</td>
+                      <td data-label="Género">{dato.genero}</td>
+                      <td data-label="Teléfono">{dato.telefono}</td>
+                      <td data-label="Created">{dato.fechaCreacion}</td>
+                      <td data-label="Reserv.">{dato.reservas}</td>
+                    </tr>
+                  );
+                }
+                return null;
+              })}
+            </tbody>
+          </table>
+        </div>
       );
     } else if (tipo === "turnos") {
       return (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Turno ID</th>
-              <th>C.ID</th>
-              <th>Cliente</th>
-              <th>P.ID</th>
-              <th>Profesional</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Tratamiento</th>
-              <th>Servicio</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datos.map((dato) => {
-              if (isTurno(dato)) {
-                const cliente = dato.cliente;
-                const profesional = dato.profesional;
-                return (
-                  <tr key={dato.id}>
-                    <td data-label="Turno ID">{dato.id}</td>
-                    <td data-label="C.ID">{cliente ? cliente.id : "N/A"}</td>
-                    <td data-label="Cliente">
-                      {cliente
-                        ? `${cliente.nombre} ${cliente.apellido}`
-                        : "N/A"}
-                    </td>
-                    <td data-label="P.ID">
-                      {profesional ? profesional.id : "N/A"}
-                    </td>
-                    <td data-label="Profesional">
-                      {profesional
-                        ? `${profesional.nombre} ${profesional.apellido}`
-                        : "N/A"}
-                    </td>
-                    <td data-label="Fecha">{dato.fecha}</td>
-                    <td data-label="Hora">{dato.hora}</td>
-                    <td data-label="Tratamiento">{dato.tipoTratamiento}</td>
-                    <td data-label="Servicio">{dato.servicio}</td>
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
+        <div className="table-container">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>C.ID</th>
+                <th>Cliente</th>
+                <th>P.ID</th>
+                <th>Profesional</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Tratamiento</th>
+                <th>Servicio</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {datos.map((dato) => {
+                if (isTurno(dato)) {
+                  const cliente = dato.cliente;
+                  const profesional = dato.profesional;
+                  return (
+                    <tr key={dato.id}>
+                      <td data-label="ID">{dato.id}</td>
+                      <td data-label="C.ID">{cliente ? cliente.id : "N/A"}</td>
+                      <td data-label="Cliente">
+                        {cliente
+                          ? `${cliente.nombre} ${cliente.apellido}`
+                          : "N/A"}
+                      </td>
+                      <td data-label="P.ID">
+                        {profesional ? profesional.id : "N/A"}
+                      </td>
+                      <td data-label="Profesional">
+                        {profesional
+                          ? `${profesional.nombre} ${profesional.apellido}`
+                          : "N/A"}
+                      </td>
+                      <td data-label="Fecha">{dato.fecha}</td>
+                      <td data-label="Hora">{dato.hora}</td>
+                      <td data-label="Tratamiento">{dato.tipoTratamiento}</td>
+                      <td data-label="Servicio">{dato.servicio}</td>
+                      <td data-label="">
+                        <button
+                          className="delete"
+                          onClick={() => handleDelete(dato.id)}
+                        >
+                          Borrar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                }
+                return null;
+              })}
+            </tbody>
+          </table>
+        </div>
       );
     }
 
@@ -457,17 +499,35 @@ export default function Informe() {
   };
 
   const titulo =
-    tipo === "clientes" ? "CLIENTES" : tipo === "turnos" ? "TURNOS" : "GENERAL";
+    tipo === "usuarios" ? "USUARIOS" : tipo === "turnos" ? "TURNOS" : "GENERAL";
 
   return (
     <div className="informe-page">
-      <div className="background-image" />
-      <div className="informe-container">
-        <div className="titulo">
-          <h1>INFORME {titulo}</h1>
-        </div>
-        {renderTable()}
+      <div className="titulo">
+        <h1>INFORME {titulo}</h1>
       </div>
+      <div className="buttons">
+        <div className="par">
+          <input type="search" name="search" placeholder="Buscar aqui" />
+          <img src="/assets/descargar.png" alt="pdf" />
+        </div>
+        <div className="filtros">
+          <h3>Filtros</h3>
+          <select>
+            <option value="">Rol</option>
+            <option value="clientes">Clientes</option>
+            <option value="empleados">Empleados</option>
+          </select>
+          <select>
+            <option value="">Tratamiento</option>
+            <option value="masajes">Masajes</option>
+            <option value="belleza">Belleza</option>
+            <option value="faciales">Faciales</option>
+            <option value="corporales">Corporales</option>
+          </select>
+        </div>
+      </div>
+      {renderTable()}
     </div>
   );
 }
