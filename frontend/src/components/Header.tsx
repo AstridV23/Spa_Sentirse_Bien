@@ -11,7 +11,8 @@ type Props = {
 
 function Header({ SetIsOpen, IsOpen }: Props) {
   const location = useLocation();
-  const isOnSpecificPage = location.pathname === "/admin";
+  const isOnSpecificPage =
+    location.pathname === "/admin" || location.pathname.startsWith("/informe/");
 
   const navigate = useNavigate();
 
