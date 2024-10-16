@@ -143,7 +143,7 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminType = 1;
+  const AdminType = 2;
   const AdminName = "JuanPablos";
   const AdminRole = "Profesional";
 
@@ -161,7 +161,7 @@ export default function Admin() {
             <HorasSection horas={horas} setHoras={setHoras} />
           </div>
         ) : (
-          <div className="par">
+          <div className="sinPermisos">
             <h2>
               Bienvenido {AdminRole} {AdminName}
             </h2>

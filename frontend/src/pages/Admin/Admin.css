@@ -17,6 +17,20 @@
   font-size: 24px;
   color: var(--negro);
 }
+.admin-container .sinPermisos {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+.admin-container .sinPermisos h2 {
+  font-weight: normal;
+}
+.admin-container .sinPermisos img {
+  height: 60px;
+  width: auto;
+  margin-left: 40px;
+}
 
 .admin-types {
   display: flex;
