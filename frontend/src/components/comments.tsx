@@ -45,40 +45,36 @@ export default function Comments() {
     }, []);
 
   // Maneja el envío de un nuevo comentario
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-  
-    if (text.trim() !== "") {
-      const newComment: Comment = {
-        author: user?.username || "Anónimo", // Usar el nombre de usuario del contexto
+async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+
+  if (text.trim() !== "") {
+    try {
+      // Enviar solo el contenido del comentario al backend
+      const response = await axios.post("/comment", {
         content: text,
-        date: new Date().toLocaleDateString("es-ES", {
+      });
+
+      // Recibir el comentario con fecha y nombre de usuario desde el backend
+      const formattedComment = {
+        author: response.data.author, // Nombre del usuario
+        content: response.data.content, // Contenido del comentario
+        date: new Date(response.data.date).toLocaleDateString("es-ES", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
         }),
       };
-  
-      try {
-        // Enviar el nuevo comentario al backend
-        const response = await axios.post("/comment", newComment);
-        // Formatear la fecha al obtener el comentario desde el backend
-        const formattedComment = {
-          ...response.data,
-          date: new Date(response.data.date).toLocaleDateString("es-ES", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          }),
-        };
-        setComments([formattedComment, ...comments]); // Agregar el comentario al inicio
-        setText(""); // Limpiar el campo de texto
-  
-      } catch (error) {
-        console.error("Error al enviar el comentario:", error);
-      }
+
+      setComments([formattedComment, ...comments]); // Agregar el comentario al inicio
+      setText(""); // Limpiar el campo de texto
+
+    } catch (error) {
+      console.error("Error al enviar el comentario:", error);
     }
   }
+}
+
   
 
   // Maneja el cambio en el campo de texto del comentario

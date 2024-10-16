@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Informes.css";
 
@@ -329,23 +329,29 @@ const turnosFalsos: Turno[] = [
 
 export default function Informe() {
   const { tipo } = useParams<{ tipo: string }>();
+  const [datos, setDatos] = useState<(Cliente | Turno)[]>([]);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const getDatos = () => {
-    switch (tipo) {
-      case "clientes":
-        return clientesFalsos;
-      case "turnos":
-        return turnosFalsos;
-      default:
-        return [];
-    }
-  };
+  useEffect(() => {
+    const fetchData = () => {
+      switch (tipo) {
+        case "clientes":
+          setDatos(clientesFalsos);
+          break;
+        case "turnos":
+          setDatos(turnosFalsos);
+          break;
+        default:
+          setDatos([]);
+          break;
+      }
+    };
 
-  const datos = getDatos();
+    fetchData();
+  }, [tipo]);
 
   const isCliente = (dato: Cliente | Turno): dato is Cliente => {
     return "correo" in dato; // Verifica si la propiedad "correo" pertenece a dato
@@ -376,7 +382,7 @@ export default function Informe() {
             {datos.map((dato) => {
               if (isCliente(dato)) {
                 return (
-                  <tr key={dato.correo}>
+                  <tr key={dato.id}>
                     <td data-label="ID">{dato.id}</td>
                     <td data-label="Status">{dato.status}</td>
                     <td data-label="Usuario">{dato.username}</td>
@@ -414,16 +420,24 @@ export default function Informe() {
           <tbody>
             {datos.map((dato) => {
               if (isTurno(dato)) {
+                const cliente = dato.cliente;
+                const profesional = dato.profesional;
                 return (
                   <tr key={dato.id}>
                     <td data-label="Turno ID">{dato.id}</td>
-                    <td data-label="C.ID">{dato.cliente.id}</td>
+                    <td data-label="C.ID">{cliente ? cliente.id : "N/A"}</td>
                     <td data-label="Cliente">
-                      {dato.cliente.nombre} {dato.cliente.apellido}
+                      {cliente
+                        ? `${cliente.nombre} ${cliente.apellido}`
+                        : "N/A"}
                     </td>
-                    <td data-label="P.ID">{dato.profesional.id}</td>
+                    <td data-label="P.ID">
+                      {profesional ? profesional.id : "N/A"}
+                    </td>
                     <td data-label="Profesional">
-                      {dato.profesional.nombre} {dato.profesional.apellido}
+                      {profesional
+                        ? `${profesional.nombre} ${profesional.apellido}`
+                        : "N/A"}
                     </td>
                     <td data-label="Fecha">{dato.fecha}</td>
                     <td data-label="Hora">{dato.hora}</td>
