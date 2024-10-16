@@ -113,9 +113,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const getCurrentUser = () => {
     if (isAuthenticated && user) {
+      console.log(user)
       return { id: user._id, name: user.username };
     }
-    return { id: null, name: 'Anónimo' };
+    else {
+      return { id: null, name: 'Anónimo' };
+    }
   };
 
   const logout = () => {
@@ -141,7 +144,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!cookies.token) {
         setIsAuthenticated(false);
         setLoading(false);
-        return setUser(null);
+        return 
       }
 
       try {
@@ -156,6 +159,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAuthenticated(true);
         setUser(res.data.user);
         setLoading(false);
+
       } catch (error) {
         setIsAuthenticated(false);
         setUser(null);

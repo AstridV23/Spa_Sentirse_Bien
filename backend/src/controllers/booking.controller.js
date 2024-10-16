@@ -14,7 +14,7 @@ export const createBooking = async (req, res) =>{
             treatment,
             date,
             info,
-            //user: req.user.id
+            user: req.user.id
         });
 
         const savedBooking = await newBooking.save();

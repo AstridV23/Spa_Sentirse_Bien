@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
@@ -10,29 +10,36 @@ import { useAuth } from "../context/AuthContext";
 // Simulando que el usuario es admin
 const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
 
+type Author = {
+  name: string,
+  user?: string | null,
+}
+
 type Comment = {
-  author: string;
+  author: Author,
   content: string;
   date: string;
   reply?: {
-    name: string;
+    author: Author,
     text: string;
     date: string;
   };
 };
 
 export default function Comments() {
-  const { user } = useAuth(); // Obtener el usuario desde el contexto
+  const { getCurrentUser } = useAuth(); // Obtener el usuario desde el contexto
   const [comments, setComments] = useState<Array<Comment>>([]);
   const [text, setText] = useState("");
   const [replyText, setReplyText] = useState(""); 
   const [replyIndex, setReplyIndex] = useState<number | null>(null); 
 
+  const currentUser = getCurrentUser();
 
   // Función para obtener los comentarios del backend
-  /*async function fetchComments() {
+  async function fetchComments() {
     try {
       const response = await axios.get("/comment");
+      
       setComments(response.data);
     } catch (error) {
       console.error("Error al obtener los comentarios:", error);
@@ -42,7 +49,7 @@ export default function Comments() {
     // Llamar a la función fetchComments cuando el componente se monte
     useEffect(() => {
       fetchComments();
-    }, []);*/
+    }, []);
 
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -50,7 +57,10 @@ export default function Comments() {
   
     if (text.trim() !== "") {
       const newComment: Comment = {
-        author: "", // Usar el nombre de usuario del contexto
+        author: {
+          name: currentUser?.name || "Anónimo",
+          user: currentUser?.id || null
+        }, 
         content: text,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
@@ -58,20 +68,14 @@ export default function Comments() {
           year: "numeric",
         }),
       };
+      console.log(currentUser)
+      console.log(newComment)
   
       try {
         // Enviar el nuevo comentario al backend
-        const response = await axios.post("/comment", newComment);
-        // Formatear la fecha al obtener el comentario desde el backend
-        const formattedComment = {
-          ...response.data,
-          date: new Date(response.data.date).toLocaleDateString("es-ES", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          }),
-        };
-        setComments([formattedComment, ...comments]); // Agregar el comentario al inicio
+        const response = await axios.post("/comment", newComment, {withCredentials: true});
+        
+        setComments([response.data, ...comments]); // Agregar el comentario al inicio
         setText(""); // Limpiar el campo de texto
   
       } catch (error) {
@@ -93,7 +97,9 @@ export default function Comments() {
     if (replyText.trim() !== "") {
       const updatedComments = [...comments];
       const newReply = {
-        name: user?.username || "Anónimo", // Usar el nombre de usuario del contexto
+        author: {
+          name: currentUser?.name || "Anónimo",
+        }, // Usar el nombre de usuario del contexto
         text: replyText,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
@@ -152,12 +158,12 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.author}</strong> ({comment.date}): <br/> {comment.content}
+            <strong>{comment.author.name}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
             {comment.reply && (
               <ul>
                 <li className="respuesta">
-                  <strong>{comment.reply.name}</strong> ({comment.reply.date}):{" "}
+                  <strong>{comment.reply.author.name}</strong> ({comment.reply.date}):{" "}
                   {comment.reply.text}
                 </li>
               </ul>
