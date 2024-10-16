@@ -499,12 +499,18 @@ export default function Informe() {
   };
 
   const titulo =
-    tipo === "usuarios" ? "USUARIOS" : tipo === "turnos" ? "TURNOS" : "GENERAL";
+    tipo === "usuarios"
+      ? "USUARIOS"
+      : tipo === "turnos"
+      ? "TURNOS"
+      : tipo === "pagos"
+      ? "PAGOS"
+      : "GENERAL";
 
   return (
     <div className="informe-page">
       <div className="titulo">
-        <h1>INFORME {titulo}</h1>
+        <h1>INFORME DE {titulo}</h1>
       </div>
       <div className="buttons">
         <div className="par">

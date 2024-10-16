@@ -240,7 +240,6 @@ export function ServicesSection({
       >
         <div className="par">
           <input
-            className="textbox"
             name="titulo"
             type="text"
             value={titulo}
@@ -248,7 +247,6 @@ export function ServicesSection({
             placeholder="Título"
           />
           <textarea
-            className="textbox"
             name="text"
             value={text}
             onChange={handleTextAreaChangeServicio}
@@ -257,14 +255,13 @@ export function ServicesSection({
           <input
             id="precio"
             type="number"
-            className="textbox"
             value={precioNuevo}
             onChange={handleChangePrecio}
             placeholder="Precio"
           />
         </div>
         <div className="par">
-          <div className="SecondButton">
+          <div className="boton">
             <label htmlFor="file-upload-servicio">Subir imagen</label>
             <input
               id="file-upload-servicio"
@@ -274,9 +271,9 @@ export function ServicesSection({
               style={{ display: "none" }}
             />
           </div>
-          <input className="MainButton" type="submit" value="Guardar" />
+          <input className="MainBoton" type="submit" value="Guardar" />
           <input
-            className="SecondButton"
+            className="borrar"
             type="button"
             value="Borrar"
             onClick={() => handleDeleteService()}

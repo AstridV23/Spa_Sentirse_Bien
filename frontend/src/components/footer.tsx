@@ -3,10 +3,12 @@ import GoogleMap from "./googleMap";
 import GoogleMapsWrapper from "./GoogleMapsWrapper";
 import { usePopUp } from "./PopUpContext";
 import { FormPopUp } from "./FormPopUp";
+import { useLocation } from "react-router-dom";
 
 export default function Footer() {
   const { openPopUp } = usePopUp();
 
+  const location = useLocation();
   const isOnSpecificPage =
     location.pathname === "/admin" || location.pathname.startsWith("/informe/");
 

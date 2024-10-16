@@ -116,10 +116,8 @@ const PhotosSection: React.FC<PhotosSectionProps> = ({ photos, setPhotos }) => {
           handleSubmitPhoto();
         }}
       >
-        <div className="file">
-          <label htmlFor="file-upload-photo" className="SecondButton">
-            Subir imagen
-          </label>
+        <div className="boton">
+          <label htmlFor="file-upload-photo">Subir imagen</label>
           <input
             id="file-upload-photo"
             type="file"
@@ -128,7 +126,7 @@ const PhotosSection: React.FC<PhotosSectionProps> = ({ photos, setPhotos }) => {
             style={{ display: "none" }}
           />
         </div>
-        <input className="MainButton" type="submit" value="Guardar" />
+        <input className="MainBoton" type="submit" value="Guardar" />
       </form>
       {imagePreviewPhoto && (
         <div className="image-preview">

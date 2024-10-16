@@ -12,7 +12,6 @@ aside {
   box-sizing: border-box; /* Incluye el padding en el ancho total */
   align-items: center;
   box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.05);
-  background-color: var(--header);
   transition: left 0.3s ease; /* Transición suave */
 }
 
@@ -33,14 +32,16 @@ aside nav .contenedor {
 
 aside .item {
   padding: 10px;
-  border: 2px solid var(--rosa-fuerte);
+  border: 2px solid #49635f;
   background-color: var(--blanco);
   border-radius: 10px;
   box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.02);
+  color: #49635f;
 }
 
 aside .item:hover {
-  background-color: var(--rosa-claro);
+  background-color: #49635f2c;
+  color: #2b3a38;
 }
 
 @media screen and (max-width: 530px) {
