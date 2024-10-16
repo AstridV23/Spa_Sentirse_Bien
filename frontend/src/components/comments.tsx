@@ -50,7 +50,7 @@ export default function Comments() {
   
     if (text.trim() !== "") {
       const newComment: Comment = {
-        author: user?.username || "Anónimo", // Usar el nombre de usuario del contexto
+        author: "", // Usar el nombre de usuario del contexto
         content: text,
         date: new Date().toLocaleDateString("es-ES", {
           day: "2-digit",
