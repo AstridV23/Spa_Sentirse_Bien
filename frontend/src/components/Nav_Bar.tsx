@@ -8,21 +8,21 @@ type Props = {
 
 export default function NavBar({ IsOpen }: Props) {
   const location = useLocation();
-  const isOnSpecificPage = location.pathname === "/admin";
+  const isOnSpecificPage =
+    location.pathname === "/admin" || location.pathname.startsWith("/informe/");
 
   // Simulando el estado de admin
-  const isAdmin = true; // Cambia esto a true para simular que el usuario está logueado
   const AdminType = 1; // Cambia esto a 1 para doctora, 2 para profesional, 3 secretario
 
   // useEffect para corroborar el estado de IsOpen cada vez que cambie
   //useEffect(() => {
-    //console.log(`El menú está ${IsOpen ? "abierto" : "cerrado"}`);
+  //console.log(`El menú está ${IsOpen ? "abierto" : "cerrado"}`);
   //}, [IsOpen]); // Se ejecuta cada vez que IsOpen cambia
 
   return (
     <>
       {/* Renderizado condicional */}
-      {isAdmin && isOnSpecificPage && (
+      {isOnSpecificPage && (
         <aside className={IsOpen ? "open" : ""}>
           <nav>
             <div className="contenedor">

@@ -65,7 +65,7 @@ export default function Gallery() {
         <div className="gallery-types">
           <div className="gallery-section">
             <h3>Noticias</h3>
-            <div className="element-container">
+            <div id="noticias" className="element-container">
               {news.map((element, index) => (
                 <div className="element" key={index}>
                   <img src={element.img} />
