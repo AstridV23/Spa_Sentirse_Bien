@@ -30,7 +30,7 @@ export default function Comments() {
 
 
   // Función para obtener los comentarios del backend
-  async function fetchComments() {
+  /*async function fetchComments() {
     try {
       const response = await axios.get("/comment");
       setComments(response.data);
@@ -42,7 +42,7 @@ export default function Comments() {
     // Llamar a la función fetchComments cuando el componente se monte
     useEffect(() => {
       fetchComments();
-    }, []);
+    }, []);*/
 
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

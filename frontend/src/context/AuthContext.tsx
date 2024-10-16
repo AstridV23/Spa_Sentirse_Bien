@@ -21,6 +21,7 @@ interface AuthContextType {
   signup: (user: IUser) => Promise<void>;
   signin: (user: IUser) => Promise<void>;
   logout: () => Promise<void>
+  getCurrentUser: () => { id: string | null, name: string };
 }
 
 // Crear contexto con el tipo definido
@@ -110,6 +111,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const getCurrentUser = () => {
+    if (isAuthenticated && user) {
+      return { id: user._id, name: user.username };
+    }
+    return { id: null, name: 'Anónimo' };
+  };
+
   const logout = () => {
     Cookies.remove("token");
     setIsAuthenticated(false);
@@ -162,6 +170,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <AuthContext.Provider value={{
       signup,
       signin,
+      getCurrentUser,
       logout,
       loading,
       user,
