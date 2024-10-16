@@ -28,7 +28,7 @@ export default function NavBar({ IsOpen }: Props) {
             <div className="contenedor">
               {/* Este bloque se renderiza solo si AdminType === 1 */}
               {AdminType === 1 && (
-                <Link className="item" to="/informe/clientes">
+                <Link className="item" to="/informe/usuarios">
                   Listado de Clientes
                 </Link>
               )}
