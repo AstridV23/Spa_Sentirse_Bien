@@ -130,13 +130,23 @@ export const verifyToken = async (req, res) => {
     });
 }
 
-export const getAllUsers = async (req, res) => {
-    try {
-        const user = await User.find(); 
+export const getUsers = async (req, res) => {
+    const { role } = req.params;  // Capturamos el rol de los parámetros de la solicitud (si existe)
 
-        res.status(200).json(user);
+    try {
+        // busca los usuarios con ese rol; de lo contrario, trae todos los usuarios
+        const users = role ? await User.find({ role }) : await User.find();
+
+        // Si no hay usuarios encontrados
+        if (users.length === 0) {
+            return res.status(404).json({ message: role ? `No se encontraron usuarios con el rol: ${role}` : 'No se encontraron usuarios.' });
+        }
+
+        return res.status(200).json(users);
+        
     } catch (error) {
-        // Manejo de errores
-        res.status(500).json({ message: 'Error al obtener todos los usuarios.', error });
+
+        return res.status(500).json({ message: 'Error al obtener usuarios.', error });
     }
-}
+};
+
