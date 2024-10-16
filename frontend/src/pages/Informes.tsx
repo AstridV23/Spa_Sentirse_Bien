@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Informes.css";
 
@@ -327,13 +327,77 @@ const turnosFalsos: Turno[] = [
   },
 ];
 
+type Pago = {
+  id: number;
+  cliente: {
+    id: number;
+    nombre: string;
+    apellido: string;
+  };
+  fecha: string;
+  tipoTratamiento: string;
+  servicio: string;
+  valor: number;
+};
+
+const pagosFalsos: Pago[] = [
+  {
+    id: 1,
+    cliente: {
+      id: 101,
+      nombre: "Juan",
+      apellido: "Pérez",
+    },
+    fecha: "2024-10-22",
+    tipoTratamiento: "Masaje",
+    servicio: "Masaje relajante de espalda",
+    valor: 6000,
+  },
+  {
+    id: 2,
+    cliente: {
+      id: 101,
+      nombre: "Juan",
+      apellido: "Pérez",
+    },
+    fecha: "2024-10-22",
+    tipoTratamiento: "Masaje",
+    servicio: "Masaje relajante de espalda",
+    valor: 4000,
+  },
+  {
+    id: 3,
+    cliente: {
+      id: 101,
+      nombre: "Juan",
+      apellido: "Pérez",
+    },
+    fecha: "2024-10-22",
+    tipoTratamiento: "Masaje",
+    servicio: "Masaje relajante de espalda",
+    valor: 5000,
+  },
+  {
+    id: 4,
+    cliente: {
+      id: 101,
+      nombre: "Juan",
+      apellido: "Pérez",
+    },
+    fecha: "2024-10-22",
+    tipoTratamiento: "Masaje",
+    servicio: "Masaje relajante de espalda",
+    valor: 8000,
+  },
+];
+
 export default function Informe() {
   const { tipo } = useParams<{ tipo: string }>();
-  const [datos, setDatos] = useState<(Usuario | Turno)[]>([]);
+  const [datos, setDatos] = useState<(Usuario | Turno | Pago)[]>([]);
 
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState<string>("");
+  const [totalIngresos, setTotalIngresos] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = () => {
@@ -344,6 +408,9 @@ export default function Informe() {
         case "turnos":
           setDatos(turnosFalsos);
           break;
+        case "pagos":
+          setDatos(pagosFalsos);
+          break;
         default:
           setDatos([]);
           break;
@@ -351,6 +418,39 @@ export default function Informe() {
     };
     fetchData();
   }, [tipo]);
+
+  useEffect(() => {
+    if (tipo === "pagos") {
+      // Filtrar los pagos por mes y año seleccionados
+      const pagosFiltrados = (datos as Pago[]).filter((pago) => {
+        if (!pago.fecha) return false; // Asegura que haya una fecha válida
+        const [year, month] = pago.fecha.split("-"); // Suponiendo que `pago.fecha` tiene formato 'yyyy-mm-dd'
+        return (
+          (selectedMonth ? month === selectedMonth : true) &&
+          (selectedYear ? year === selectedYear : true)
+        );
+      });
+
+      // Calcular el total de ingresos
+      const total = pagosFiltrados.reduce((acc, pago) => acc + pago.valor, 0);
+      setTotalIngresos(total);
+    }
+  }, [datos, selectedMonth, selectedYear, tipo]);
+
+  const handleTratamientoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(`Se cambio el tipo de tratamiento a ${e.target.value}`);
+  };
+  const handleRolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(`Se cambio el rol a ${e.target.value}`);
+  };
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMonth(e.target.value);
+    console.log(`Se cambio el mes a ${e.target.value}`);
+  };
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(e.target.value);
+    console.log(`Se cambio el año a ${e.target.value}`);
+  };
 
   function handleDelete(id: number) {
     swal({
@@ -382,11 +482,14 @@ export default function Informe() {
     });
   }
 
-  const isCliente = (dato: Usuario | Turno): dato is Usuario => {
+  const isCliente = (dato: Usuario | Turno | Pago): dato is Usuario => {
     return "correo" in dato; // Verifica si la propiedad "correo" pertenece a dato
   };
-  const isTurno = (dato: Usuario | Turno): dato is Turno => {
+  const isTurno = (dato: Usuario | Turno | Pago): dato is Turno => {
     return "id" in dato; // Verifica si la propiedad "id" pertenece a dato
+  };
+  const isPago = (dato: Usuario | Turno | Pago): dato is Pago => {
+    return "valor" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
 
   const renderTable = () => {
@@ -493,8 +596,45 @@ export default function Informe() {
           </table>
         </div>
       );
+    } else if (tipo === "pagos") {
+      return (
+        <div className="table-container">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>C. ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Tratamiento</th>
+                <th>Servicio</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {datos.map((dato) => {
+                if (isPago(dato)) {
+                  return (
+                    <tr key={dato.id}>
+                      <td data-label="ID">{dato.id}</td>
+                      <td data-label="C. ID">{dato.cliente.id}</td>
+                      <td data-label="Cliente">
+                        {dato.cliente.nombre} {dato.cliente.apellido}
+                      </td>
+                      <td data-label="Fecha">{dato.fecha}</td>
+                      <td data-label="Tratamiento">{dato.tipoTratamiento}</td>
+                      <td data-label="Servicio">{dato.servicio}</td>
+                      <td data-label="Valor">{dato.valor}</td>
+                    </tr>
+                  );
+                }
+                return null;
+              })}
+            </tbody>
+          </table>
+        </div>
+      );
     }
-
     return <p>No hay datos disponibles para este tipo de informe.</p>;
   };
 
@@ -519,20 +659,57 @@ export default function Informe() {
         </div>
         <div className="filtros">
           <h3>Filtros</h3>
-          <select>
-            <option value="">Rol</option>
-            <option value="clientes">Clientes</option>
-            <option value="empleados">Empleados</option>
-          </select>
-          <select>
-            <option value="">Tratamiento</option>
-            <option value="masajes">Masajes</option>
-            <option value="belleza">Belleza</option>
-            <option value="faciales">Faciales</option>
-            <option value="corporales">Corporales</option>
-          </select>
+          {tipo === "usuarios" && (
+            <>
+              <select onChange={handleRolChange}>
+                <option value="">Rol</option>
+                <option value="clientes">Clientes</option>
+                <option value="empleados">Empleados</option>
+              </select>
+            </>
+          )}
+          {(tipo === "pagos" || tipo === "turnos") && (
+            <>
+              <select onChange={handleTratamientoChange}>
+                <option value="">Tratamiento</option>
+                <option value="masajes">Masajes</option>
+                <option value="belleza">Belleza</option>
+                <option value="faciales">Faciales</option>
+                <option value="corporales">Corporales</option>
+              </select>
+              <select onChange={handleMonthChange}>
+                <option value="">Mes</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+
+              <select onChange={handleYearChange}>
+                <option value="">Año</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+              </select>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Mostrar el total de ingresos cuando se esté en la página de pagos */}
+      {tipo === "pagos" && (
+        <div className="total-ingresos">
+          <h4>Total Ingresos:</h4> <p>${totalIngresos}</p>
+        </div>
+      )}
+
       {renderTable()}
     </div>
   );
