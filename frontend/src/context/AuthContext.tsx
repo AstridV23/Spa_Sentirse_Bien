@@ -21,7 +21,6 @@ interface AuthContextType {
   signup: (user: IUser) => Promise<void>;
   signin: (user: IUser) => Promise<void>;
   logout: () => Promise<void>
-  getUsername: () => string | null; // Nueva función para obtener el nombre de usuario
 }
 
 // Crear contexto con el tipo definido
@@ -50,13 +49,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Nueva función para devolver el nombre de usuario
+  /* Nueva función para devolver el nombre de usuario
   const getUsername = (): string | null => {
     if (isAuthenticated && user) {
       return user.username;
     }
     return null;
-  };
+  };*/
 
   const signup = async (user: IUser) => {
     try {
@@ -168,7 +167,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       user,
       isAuthenticated,
       errors,
-      getUsername,
     }}>
       {children}
     </AuthContext.Provider>

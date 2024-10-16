@@ -1,22 +1,28 @@
 import Comment from '../models/comment_model.js'
 
 export const createComment = async (req, res) => {
-    try{
-        const {author, content } = req.body
-
+    try {
+        const { content } = req.body;
+        const author = {};
+  
+        if (req.user) {
+            // Si hay un usuario autenticado
+            author.user = req.user._id;
+            author.name = req.user.username;
+        }
+  
         const newComment = new Comment({
             author,
-            content,
-            date: Date.now()
-        })
+            content
+        });
+  
+        const savedComment = await newComment.save();
+        res.status(201).json(savedComment);
     
-        const savedComment = await newComment.save()
-        res.status(201).json(savedComment)
-    }
-    catch(error) {
+    } catch (error) {
         res.status(500).json({ message: 'Error al crear el comentario.', error });
     }
-}
+};
 
 export const deleteComment = async (req, res) => {
     try{
@@ -33,7 +39,7 @@ export const deleteComment = async (req, res) => {
 
 export const getComments = async (req, res) => {
     try {
-        const comments = await Comment.find().sort({ date: -1 });
+        const comments = await Comment.find().sort({ date: -1 }).populate('author.user', 'username');
 
         const formattedComments = comments.map(comment => ({
             ...comment.toObject(),

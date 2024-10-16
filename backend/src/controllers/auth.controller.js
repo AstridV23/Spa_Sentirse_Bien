@@ -138,10 +138,10 @@ export const getUsers = async (req, res) => {
         const users = role ? await User.find({ role }) : await User.find();
 
         // Si no hay usuarios encontrados
-        if (users.length === 0) {
-            return res.status(404).json({ message: role ? `No se encontraron usuarios con el rol: ${role}` : 'No se encontraron usuarios.' });
-        }
-
+        if (users.length === 0) return res.status(404).json({ 
+            message: role ? `No se encontraron usuarios con el rol: ${role}` : 'No se encontraron usuarios.' 
+        });
+        
         return res.status(200).json(users);
         
     } catch (error) {
