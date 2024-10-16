@@ -99,6 +99,7 @@
   display: block;
   padding: 30px 30px 40px;
   background-color: var(--header);
+  backdrop-filter: blur(10px);
   box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   height: auto;

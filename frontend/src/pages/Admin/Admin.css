@@ -1,60 +1,46 @@
-.admin-page .background-image {
-  background-image: url("../assets/Fondo2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  filter: blur(4px);
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
+.admin-page {
+  width: 80vw;
+  padding: 20px 20px 80px;
+  margin: 80px auto 150px;
+  background-color: var(--blanco);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 .admin-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: left;
-  width: 80vw;
-  padding: 50px 40px 90px;
-  margin: 130px 0 100px;
-  background-color: var(--contenedor);
-  border-radius: 30px;
+  width: 100%;
+}
+.admin-container .titulo {
+  text-align: center;
+  margin-bottom: 10px;
 }
 .admin-container .titulo h1 {
-  letter-spacing: 5px;
-}
-
-.admin-container hr {
-  color: var(--rosa);
-  border-style: solid;
-  margin: 20px 0 0;
-  margin-bottom: 23px;
+  font-size: 24px;
+  color: var(--negro);
 }
 
 .admin-types {
   display: flex;
   flex-direction: column;
   gap: 30px;
+  box-sizing: border-box;
 }
 
 .admin-types h3 {
-  font-size: 23px;
+  font-size: 20px;
   color: var(--gris);
   letter-spacing: 1px;
-  margin-top: 1em;
+  margin: 10px 0;
 }
 
 .admin-page .element-container {
   display: flex;
   gap: 10px;
-  padding: 10px 10px 15px;
-  margin-bottom: -25px;
+  padding: 10px 10px 5px;
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   height: auto;
+  box-sizing: border-box;
 }
 
 .admin-page .element {
@@ -92,7 +78,7 @@
 }
 .admin-page .element h4 {
   margin: 20px 0 0;
-  color: var(--rosa);
+  color: #49635f;
   padding: 0px 13px 5px;
   font-size: 13px;
 }
@@ -112,6 +98,9 @@
   object-fit: cover;
   cursor: pointer;
 }
+.admin-page .element-container .delete {
+  margin-top: 10px;
+}
 .admin-page .news-section .buttons,
 .admin-page .services-section .buttons {
   align-items: start;
@@ -120,71 +109,100 @@
 .admin-page .services-section .buttons .par {
   align-items: start;
 }
-.admin-page .news-section .par label {
+.admin-page label {
   cursor: pointer;
+  font-size: 15px;
 }
 .admin-page .buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 .admin-page .image-preview {
   margin: 10px 10px;
-  color: var(--rosa);
+  color: #49635f;
 }
 .admin-page .image-preview img {
   max-height: 200px;
   max-width: 300px;
-  border: 1px solid var(--rosa);
+  border: 1px solid #49635f6c;
+  border-radius: 5px;
 }
 
-.admin-page textarea {
+.admin-page textarea,
+.admin-page input[type="text"],
+.admin-page input[type="number"],
+.admin-page input[type="time"],
+.admin-page .dropdown .SecondButton {
   min-height: 39px;
   min-width: 215px;
   max-height: 150px;
   max-width: 300px;
   height: 39px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 260px;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  background-color: var(--blanco);
+}
+.admin-page input[type="number"],
+.admin-page input[type="time"] {
+  min-width: 0;
+  width: 100px;
+}
+.admin-page .dropdown .SecondButton {
+  min-width: 0;
+  width: 200px;
+  color: var(--negro);
 }
 
-.admin-page .services-section #precio,
-.admin-page .hours-section .buttons input[type="text"] {
-  width: 80px;
-  text-align: left;
+.admin-page .buttons .boton,
+.admin-page .buttons .MainBoton {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform 0.5s ease, box-shadow 0.3s ease; /* Transición suave */
+  opacity: 0.9;
+}
+
+.admin-page .buttons .boton:hover,
+.admin-page .buttons .MainBoton:hover,
+.admin-page .buttons .borrar:hover {
+  transform: scale(1.03);
+  opacity: 1;
+}
+.admin-page .buttons .boton {
+  padding: 9px;
+  background-color: #e2e2e2;
+}
+.admin-page .buttons .MainBoton {
+  background-color: #49635f;
+  color: var(--blanco);
+  font-weight: bold;
+}
+.admin-page .borrar {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform 0.5s ease, box-shadow 0.3s ease; /* Transición suave */
+  opacity: 0.8;
+  color: var(--blanco);
+  background-color: rgba(255, 0, 0, 0.87);
 }
 .admin-page .buttons .par {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-}
-
-.Turnos-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2%;
-  width: 95%;
-  margin: 5px auto 30px;
-  padding: 5px 0px 15px;
-}
-.Turnos-container .turno {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--blanco);
-  align-items: center;
-  border-radius: 15px;
-  box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.07);
-  padding: 15px 15px;
-  margin: 20px 0 0px;
-  justify-content: space-between;
-  gap: 10px;
-}
-.Turnos-container .turno h4 {
-  margin: 5px 0;
-  color: var(--rosa);
-  font-size: 20px;
-  text-align: center;
 }
 
 /* Estilos del modal */

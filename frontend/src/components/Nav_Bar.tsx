@@ -26,33 +26,26 @@ export default function NavBar({ IsOpen }: Props) {
         <aside className={IsOpen ? "open" : ""}>
           <nav>
             <div className="contenedor">
+              <Link className="item" to="/admin">
+                Pagina de Admin
+              </Link>
               {/* Este bloque se renderiza solo si AdminType === 1 */}
               {AdminType === 1 && (
-                <Link className="item" to="/informe/clientes">
+                <Link className="item" to="/informe/usuarios">
                   Listado de Clientes
                 </Link>
               )}
               {/* Si es Doctora (AdminType === 1), renderiza todos los botones */}
               {(AdminType === 1 || AdminType === 2) && (
-                <>
-                  <Link className="item" to="/informe/turnos">
-                    Listado de Turnos
-                  </Link>
-                  <Link className="item" to="/informeVacio">
-                    Botón para Profesional
-                  </Link>
-                </>
+                <Link className="item" to="/informe/turnos">
+                  Listado de Turnos
+                </Link>
               )}
 
               {(AdminType === 1 || AdminType === 3) && (
-                <>
-                  <Link className="item" to="/informeVacio">
-                    Botón para Secretario
-                  </Link>
-                  <Link className="item" to="/informeVacio">
-                    Botón para Secretario
-                  </Link>
-                </>
+                <Link className="item" to="/informe/pagos">
+                  Registro de pagos
+                </Link>
               )}
             </div>
           </nav>

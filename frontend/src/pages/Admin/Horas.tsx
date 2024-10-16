@@ -95,7 +95,6 @@ const HorasSection: React.FC<Props> = ({ horas, setHoras }) => {
           />
           <input
             type="time"
-            className="textbox"
             placeholder="Agregar"
             value={newHora}
             onChange={handleChangeHora}
@@ -104,13 +103,13 @@ const HorasSection: React.FC<Props> = ({ horas, setHoras }) => {
         <div className="par">
           <input
             type="submit"
-            className="MainButton"
+            className="MainBoton"
             value="Guardar"
             onClick={handleSubmitHora}
           />
           <input
             type="submit"
-            className="SecondButton"
+            className="borrar"
             value="Borrar"
             onClick={handleDeleteHora}
           />

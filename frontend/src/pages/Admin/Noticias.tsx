@@ -126,7 +126,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news, setNews }) => {
       >
         <div className="par">
           <input
-            className="textbox"
             name="titulo"
             type="text"
             value={titulo}
@@ -134,7 +133,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news, setNews }) => {
             placeholder="Título"
           />
           <textarea
-            className="textbox"
             name="text"
             value={text}
             onChange={handleTextAreaChangeNew}
@@ -142,7 +140,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news, setNews }) => {
           />
         </div>
         <div className="par">
-          <div className="SecondButton">
+          <div className="boton">
             <label htmlFor="file-upload-news">Subir imagen</label>
             <input
               id="file-upload-news"
@@ -152,7 +150,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news, setNews }) => {
               style={{ display: "none" }}
             />
           </div>
-          <input className="MainButton" type="submit" value="Guardar" />
+          <input className="MainBoton" type="submit" value="Guardar" />
         </div>
       </form>
       {imagePreviewNew && (

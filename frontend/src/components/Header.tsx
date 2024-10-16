@@ -41,6 +41,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
         {isOnSpecificPage && (
           <>
             <img
+              id="barraLateral"
               onClick={() => SetIsOpen(!IsOpen)}
               className="options"
               src="../assets/barra-lateral.png"
@@ -48,47 +49,57 @@ function Header({ SetIsOpen, IsOpen }: Props) {
             />
           </>
         )}
-        <Link to="/">
-          <img className="logo" src="../assets/logo.png" alt="Logo" />
-        </Link>
-        <Link to="/">
-          <p className="MarcaName">Sentirse bien</p>
-        </Link>
+        {!isOnSpecificPage && (
+          <>
+            <Link to="/">
+              <img className="logo" src="../assets/logo.png" alt="Logo" />
+            </Link>
+            <Link to="/">
+              <p className="MarcaName">Sentirse bien</p>
+            </Link>
+          </>
+        )}
       </div>
       <div className="enlaces">
-        <Link to="/">Inicio</Link>
-        <Link to="/galeria">Galería</Link>
-        <Link to="/servicios">Servicios</Link>
-
-        {/* Rendnerizado condicional */}
-        {isAuthenticated ? (
+        {!isOnSpecificPage ? (
           <>
-            {!isAdmin ? (
+            <Link to="/">Inicio</Link>
+            <Link to="/galeria">Galería</Link>
+            <Link to="/servicios">Servicios</Link>
+
+            {/* Rendnerizado condicional */}
+            {isAuthenticated ? (
               <>
-                <Link to="/turnos">Turnos</Link>
+                {!isAdmin ? (
+                  <>
+                    <Link to="/turnos">Turnos</Link>
+                  </>
+                ) : (
+                  <Link to="/admin">Admin</Link>
+                )}
+                <Link to="/perfil" className="SecondButton">
+                  Perfil
+                </Link>
+                <img
+                  className="logout"
+                  src="/assets/logout.png"
+                  alt="Cerrar Sesion"
+                  onClick={handleLogOut}
+                />
               </>
             ) : (
-              <Link to="/admin">Admin</Link>
+              <>
+                <Link to="/login" className="MainButton">
+                  Ingresar
+                </Link>
+                <Link to="/registro" className="SecondButton">
+                  Registrar
+                </Link>
+              </>
             )}
-            <Link to="/perfil" className="SecondButton">
-              Perfil
-            </Link>
-            <img
-              className="logout"
-              src="/assets/logout.png"
-              alt="Cerrar Sesion"
-              onClick={handleLogOut}
-            />
           </>
         ) : (
-          <>
-            <Link to="/login" className="MainButton">
-              Ingresar
-            </Link>
-            <Link to="/registro" className="SecondButton">
-              Registrar
-            </Link>
-          </>
+          <Link to="/">Volver a la Pagina</Link>
         )}
       </div>
     </header>

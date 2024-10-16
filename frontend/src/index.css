@@ -22,7 +22,7 @@ body {
   margin: 0px;
   display: flex;
   justify-content: center;
-  background-color: var(--rosa-claro);
+  background-color: #49635f;
 }
 a {
   color: var(--rosa);
@@ -107,7 +107,8 @@ input[type="date"] {
   cursor: pointer;
   border-radius: 10px;
   width: 50px;
-  margin: 10px auto 0px;
+  margin: 0px auto 0px;
+  transition: transform 0.3s ease;
 }
 
 .MainButton:hover {
@@ -120,7 +121,7 @@ input[type="date"] {
 }
 .delete:hover {
   transform: scale(1.05);
-  background-color: rgba(255, 0, 0, 1);
+  background-color: rgba(255, 0, 0, 0.829);
 }
 
 .MensajeError {

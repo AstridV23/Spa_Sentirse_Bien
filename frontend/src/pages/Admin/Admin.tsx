@@ -11,11 +11,9 @@ type Servicio = {
   descripcion: string;
   precio: number;
 };
-
 type Servicios = {
   [key: string]: Servicio[];
 };
-
 const servicios: Servicios = {
   Masajes: [
     {
@@ -126,51 +124,6 @@ const photosArray: Media[] = [
     img: "../assets/Dermohealth.jpg",
   },
 ];
-/*
-type Turno = {
-  usuario: string;
-  servicio: string;
-  tipo: string;
-  hora: string;
-};
-const turnos: Turno[] = [
-  {
-    usuario: "JuanPerez",
-    servicio: "Antiestres",
-    tipo: "Masaje",
-    hora: "13:00",
-  },
-  {
-    usuario: "TomasMassa",
-    servicio: "Descontracturante",
-    tipo: "Masaje",
-    hora: "13:00",
-  },
-  {
-    usuario: "LuisAlCuadrado",
-    servicio: "Circulatorios",
-    tipo: "Masaje",
-    hora: "13:00",
-  },
-  {
-    usuario: "PaulaLondra",
-    servicio: "Lifting de pestaña",
-    tipo: "Belleza",
-    hora: "13:00",
-  },
-  {
-    usuario: "LucasGerbert",
-    servicio: "Limpieza Profunda + Hidratación",
-    tipo: "Tratamientos Faciales",
-    hora: "13:00",
-  },
-  {
-    usuario: "PabloDias",
-    servicio: "DermoHealth",
-    tipo: "Tratamientos Corporales",
-    hora: "13:00",
-  },
-];*/
 
 export default function Admin() {
   useLayoutEffect(() => {
@@ -179,9 +132,7 @@ export default function Admin() {
 
   const [news, setNews] = useState<Array<Media>>([]);
   const [photos, setPhotos] = useState<Array<Media>>([]);
-
   const [services, setServices] = useState<Servicios>({});
-
   const [horas, setHoras] = useState<string[]>([]);
 
   // Cargar comentarios simulados al montar el componente
@@ -192,54 +143,31 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
+  const AdminType = 1;
+  const AdminName = "JuanPablos";
+  const AdminRole = "Profesional";
+
   return (
     <div className="admin-page">
-      <div className="background-image" />
       <div className="admin-container">
         <div className="titulo">
           <h1>ADMINISTRADOR</h1>
-          <hr />
         </div>
-        <div className="admin-types">
-          <NewsSection news={news} setNews={setNews} />
-          <PhotosSection photos={photos} setPhotos={setPhotos} />
-          <ServicesSection services={services} setServices={setServices} />
-          <HorasSection horas={horas} setHoras={setHoras} />
-
-          {/*
-          <div className="turns-section">
-            <h3>Turnos</h3>
-            <div className="buttons">
-              <div className="par">
-                <input type="date" />
-                <Dropdown
-                  label="Tipo"
-                  options={
-                    servicios[Data.tipoTratamiento]?.map(
-                      (servicio) => servicio.nombre
-                    ) || []
-                  } // Muestra los servicios del tipo de tratamiento seleccionado
-                />
-              </div>
-            </div>
-            <div className="Turnos-container">
-              {turnos.map((turn, index) => (
-                <div className="turno" key={index}>
-                  <h4>{turn.servicio}</h4>
-                  <p>{turn.tipo}</p>
-                  <p>{turn.hora}</p>
-                  <strong>{turn.usuario}</strong>
-                  <input
-                    type="submit"
-                    className="SecondButton"
-                    value="Eliminar"
-                  />
-                </div>
-              ))}
-            </div>
+        {AdminType === 1 ? (
+          <div className="admin-types">
+            <NewsSection news={news} setNews={setNews} />
+            <PhotosSection photos={photos} setPhotos={setPhotos} />
+            <ServicesSection services={services} setServices={setServices} />
+            <HorasSection horas={horas} setHoras={setHoras} />
           </div>
-          */}
-        </div>
+        ) : (
+          <div className="par">
+            <h2>
+              Bienvenido {AdminRole} {AdminName}
+            </h2>
+            <img src="/assets/login.png" alt="Hola!" />
+          </div>
+        )}
       </div>
     </div>
   );

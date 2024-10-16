@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
@@ -152,7 +152,7 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.author}</strong> ({comment.date}): <br/>{comment.content}
+            <strong>{comment.author}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
             {comment.reply && (
               <ul>
