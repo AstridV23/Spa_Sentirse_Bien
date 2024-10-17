@@ -101,7 +101,6 @@ const NewsSection: React.FC<NewsSectionProps> = ({ news, setNews }) => {
 
   return (
     <div className="news-section">
-      <h3>Noticias</h3>
       <div className="element-container">
         {news.map((element, index) => (
           <div className="element" key={index}>

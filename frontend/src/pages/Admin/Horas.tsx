@@ -84,9 +84,8 @@ const HorasSection: React.FC<Props> = ({ horas, setHoras }) => {
 
   return (
     <div className="hours-section">
-      <h3>Horarios</h3>
       <div className="buttons">
-        <div className="par">
+        <div id="horas" className="par">
           <Dropdown
             label="Horarios"
             options={horas}

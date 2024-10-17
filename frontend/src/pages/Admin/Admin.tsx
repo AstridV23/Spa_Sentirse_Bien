@@ -134,6 +134,13 @@ export default function Admin() {
   const [photos, setPhotos] = useState<Array<Media>>([]);
   const [services, setServices] = useState<Servicios>({});
   const [horas, setHoras] = useState<string[]>([]);
+  const [desplegableNoticias, setDesplegableNoticias] =
+    useState<boolean>(false);
+  const [desplegableFotos, setDesplegableFotos] = useState<boolean>(false);
+  const [desplegableServicios, setDesplegableServicios] =
+    useState<boolean>(false);
+  const [desplegableHorarios, setDesplegableHorarios] =
+    useState<boolean>(false);
 
   // Cargar comentarios simulados al montar el componente
   useEffect(() => {
@@ -143,22 +150,90 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminType: number = 1;
+  const AdminType: number = 2;
   const AdminName = "JuanPablos";
   const AdminRole = "Profesional";
 
   return (
     <div className="admin-page">
+      <div className="background" />
       <div className="admin-container">
         <div className="titulo">
           <h1>ADMINISTRADOR</h1>
         </div>
         {AdminType === 1 ? (
           <div className="admin-types">
-            <NewsSection news={news} setNews={setNews} />
-            <PhotosSection photos={photos} setPhotos={setPhotos} />
-            <ServicesSection services={services} setServices={setServices} />
-            <HorasSection horas={horas} setHoras={setHoras} />
+            <div className="Desplegable">
+              <button
+                className="DesplButton"
+                onClick={() => setDesplegableNoticias(!desplegableNoticias)}
+              >
+                <img
+                  className="img"
+                  src="/assets/down-arrow.png"
+                  alt="Desplegar Noticias"
+                />
+                <h3>Noticias</h3>
+              </button>
+
+              {desplegableNoticias && (
+                <NewsSection news={news} setNews={setNews} />
+              )}
+              <hr />
+            </div>
+            <div className="Desplegable">
+              <button
+                className="DesplButton"
+                onClick={() => setDesplegableFotos(!desplegableFotos)}
+              >
+                <img
+                  className="img"
+                  src="/assets/down-arrow.png"
+                  alt="Desplegar Fotos"
+                />
+                <h3>Fotos</h3>
+              </button>
+              {desplegableFotos && (
+                <PhotosSection photos={photos} setPhotos={setPhotos} />
+              )}
+              <hr />
+            </div>
+            <div className="Desplegable">
+              <button
+                className="DesplButton"
+                onClick={() => setDesplegableServicios(!desplegableServicios)}
+              >
+                <img
+                  className="img"
+                  src="/assets/down-arrow.png"
+                  alt="Desplegar Servicios"
+                />
+                <h3>Servicios</h3>
+              </button>
+              {desplegableServicios && (
+                <ServicesSection
+                  services={services}
+                  setServices={setServices}
+                />
+              )}
+              <hr />
+            </div>
+            <div className="Desplegable">
+              <button
+                className="DesplButton"
+                onClick={() => setDesplegableHorarios(!desplegableHorarios)}
+              >
+                <img
+                  className="img"
+                  src="/assets/down-arrow.png"
+                  alt="Desplegar Horarios"
+                />
+                <h3>Horarios</h3>
+              </button>
+              {desplegableHorarios && (
+                <HorasSection horas={horas} setHoras={setHoras} />
+              )}
+            </div>
           </div>
         ) : (
           <div className="sinPermisos">

@@ -206,7 +206,6 @@ export function ServicesSection({
 
   return (
     <div className="services-section">
-      <h3>Servicios</h3>
       <div className="buttons">
         <div className="par">
           <Dropdown

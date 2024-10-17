@@ -22,7 +22,6 @@ body {
   margin: 0px;
   display: flex;
   justify-content: center;
-  background-color: #49635f;
 }
 a {
   color: var(--rosa);
