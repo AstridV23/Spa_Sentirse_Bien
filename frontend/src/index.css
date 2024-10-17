@@ -72,7 +72,7 @@ input[type="date"] {
   padding: 10px;
   border: none;
   background-color: var(--rosa);
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   color: white;
@@ -86,7 +86,7 @@ input[type="date"] {
   padding: 10px;
   border: none;
   background-color: var(--rosa-fuerte);
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   color: var(--rosa);
