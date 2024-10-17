@@ -68,8 +68,6 @@ export default function Comments() {
           year: "numeric",
         }),
       };
-      console.log(currentUser)
-      console.log(newComment)
   
       try {
         // Enviar el nuevo comentario al backend

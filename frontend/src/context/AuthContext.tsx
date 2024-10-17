@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log(res);
       setUser(res.data.user);
       setIsAuthenticated(true);
-    
+      console.log(user)
 
     } catch (error: any) {
       console.log(error.response);
@@ -112,6 +112,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const getCurrentUser = () => {
+    const isAuthenticated = true;
+    const user = { _id: '123', username: 'ejemplo' };
+    
     if (isAuthenticated && user) {
       console.log(user)
       return { id: user._id, name: user.username };
