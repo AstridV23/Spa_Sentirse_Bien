@@ -2,11 +2,13 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { convertFieldValuesToUser } from "../libs/convertirValuesAUSer.ts";
 
 // Componente Login
 export function Login() {
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -21,8 +23,13 @@ export function Login() {
   const navigate = useNavigate();
 
   // Función onSubmit que maneja el envío del formulario
-  const onSubmit = handleSubmit((data) => {
-    signin(convertFieldValuesToUser(data));
+  const onSubmit = handleSubmit(async (data) => {
+    setIsLoading(true);
+    try {
+      await signin(convertFieldValuesToUser(data));
+    } finally {
+      setIsLoading(false);
+    }
   });
 
   useEffect(() => {
@@ -80,10 +87,15 @@ export function Login() {
                 </span>
               ))}
           </label>
-          <button className="MainButton" type="submit">
-            Ingresar
+          <button className="MainButton" type="submit" disabled={isLoading}>
+            {isLoading ? "Cargando..." : "Ingresar"}
           </button>
         </form>
+        {isLoading && (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+          </div>
+        )}
       </div>
     </div>
   );

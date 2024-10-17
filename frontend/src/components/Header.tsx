@@ -18,7 +18,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
 
   // Simulando el estado de inicio de sesión
   const { logout, isAuthenticated } = useAuth();
-  const isAdmin = true;
+  const isAdmin = false;
 
   async function handleLogOut() {
     swal({
