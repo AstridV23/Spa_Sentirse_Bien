@@ -3,25 +3,32 @@ import Booking from '../models/booking_model.js'
 // Método para guardar un turno en BD
 export const createBooking = async (req, res) =>{
     try {
-        const { service, treatment, date, info } = req.body;
+        const { service, treatment, date, info,status, user } = req.body;
 
         if (!service || ! treatment || !date) {
             return res.status(400).json({message: "Faltan campos requeridos para completar la solicitud."})
         };
 
+        const bookingDate = new Date(date);
+        if (isNaN(bookingDate.getTime())) {
+            return res.status(400).json({message: "La fecha proporcionada no es válida."});
+        }
+
         const newBooking = new Booking({
             service,
             treatment,
-            date,
+            date: bookingDate,
             info,
-            user: req.user._id
+            user,
+            status: status || "reservado",
         });
 
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
 
     } catch (error) {
-        res.status(500).json({ message: 'Error al reservar turno.', error });
+        console.error('Error al crear la reserva:', error);
+        res.status(500).json({ message: 'Error al reservar turno.', error: error.message });
     }
 }
 

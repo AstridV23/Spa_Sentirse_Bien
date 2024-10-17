@@ -18,4 +18,5 @@ export const createBookingSchema = z.object({
     }),
     status: z.enum(["reservado", "pagado", "cancelado", "finalizado"])
         .default("reservado")
+        .optional()
 })
