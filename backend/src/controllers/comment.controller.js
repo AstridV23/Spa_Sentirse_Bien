@@ -11,7 +11,7 @@ export const createComment = async (req, res) => {
         const newComment = new Comment({
             author,
             content,
-            reply: reply || null,
+            reply: reply || null,      
         });
   
         const savedComment = await newComment.save();
