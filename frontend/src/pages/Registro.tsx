@@ -15,6 +15,7 @@ export function Register() {
   const { signup, isAuthenticated, errors: registerErrors } = useAuth();
 
   const [, /*passwordMatch*/ setPasswordMatch] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,9 +27,13 @@ export function Register() {
   const onSubmit = handleSubmit(async (values) => {
     if (values.password === values.password2) {
       setPasswordMatch(true);
-      signup(convertFieldValuesToUser(values));
-    } else {
-      setPasswordMatch(false);
+
+      setIsLoading(true);
+      try {
+        await signup(convertFieldValuesToUser(values));
+      } finally {
+        setIsLoading(false);
+      }
     }
   });
 
@@ -168,10 +173,15 @@ export function Register() {
                 * {error}
               </p>
             ))}
-          <button type="submit" className="MainButton">
-            Registrarse
+          <button className="MainButton" type="submit" disabled={isLoading}>
+            {isLoading ? "Cargando..." : "Registrarse"}
           </button>
         </form>
+        {isLoading && (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+          </div>
+        )}
       </div>
     </div>
   );
