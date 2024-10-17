@@ -649,68 +649,71 @@ export default function Informe() {
 
   return (
     <div className="informe-page">
-      <div className="titulo">
-        <h1>INFORME DE {titulo}</h1>
+      <div className="background" />
+      <div className="informe-container">
+        <div className="titulo">
+          <h1>INFORME DE {titulo}</h1>
+        </div>
+        <div className="buttons">
+          <div className="par">
+            <input type="search" name="search" placeholder="Buscar aqui" />
+            <img src="/assets/descargar.png" alt="pdf" />
+          </div>
+          <div className="filtros">
+            <h3>Filtros</h3>
+            {tipo === "usuarios" && (
+              <>
+                <select onChange={handleRolChange}>
+                  <option value="">Rol</option>
+                  <option value="clientes">Clientes</option>
+                  <option value="empleados">Empleados</option>
+                </select>
+              </>
+            )}
+            {(tipo === "pagos" || tipo === "turnos") && (
+              <>
+                <select onChange={handleTratamientoChange}>
+                  <option value="">Tratamiento</option>
+                  <option value="masajes">Masajes</option>
+                  <option value="belleza">Belleza</option>
+                  <option value="faciales">Faciales</option>
+                  <option value="corporales">Corporales</option>
+                </select>
+                <select onChange={handleMonthChange}>
+                  <option value="">Mes</option>
+                  <option value="01">01</option>
+                  <option value="02">02</option>
+                  <option value="03">03</option>
+                  <option value="04">04</option>
+                  <option value="05">05</option>
+                  <option value="06">06</option>
+                  <option value="07">07</option>
+                  <option value="08">08</option>
+                  <option value="09">09</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                </select>
+
+                <select onChange={handleYearChange}>
+                  <option value="">Año</option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                </select>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Mostrar el total de ingresos cuando se esté en la página de pagos */}
+        {tipo === "pagos" && (
+          <div className="total-ingresos">
+            <h4>Total Ingresos:</h4> <p>${totalIngresos}</p>
+          </div>
+        )}
+
+        {renderTable()}
       </div>
-      <div className="buttons">
-        <div className="par">
-          <input type="search" name="search" placeholder="Buscar aqui" />
-          <img src="/assets/descargar.png" alt="pdf" />
-        </div>
-        <div className="filtros">
-          <h3>Filtros</h3>
-          {tipo === "usuarios" && (
-            <>
-              <select onChange={handleRolChange}>
-                <option value="">Rol</option>
-                <option value="clientes">Clientes</option>
-                <option value="empleados">Empleados</option>
-              </select>
-            </>
-          )}
-          {(tipo === "pagos" || tipo === "turnos") && (
-            <>
-              <select onChange={handleTratamientoChange}>
-                <option value="">Tratamiento</option>
-                <option value="masajes">Masajes</option>
-                <option value="belleza">Belleza</option>
-                <option value="faciales">Faciales</option>
-                <option value="corporales">Corporales</option>
-              </select>
-              <select onChange={handleMonthChange}>
-                <option value="">Mes</option>
-                <option value="01">01</option>
-                <option value="02">02</option>
-                <option value="03">03</option>
-                <option value="04">04</option>
-                <option value="05">05</option>
-                <option value="06">06</option>
-                <option value="07">07</option>
-                <option value="08">08</option>
-                <option value="09">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-              </select>
-
-              <select onChange={handleYearChange}>
-                <option value="">Año</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-              </select>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Mostrar el total de ingresos cuando se esté en la página de pagos */}
-      {tipo === "pagos" && (
-        <div className="total-ingresos">
-          <h4>Total Ingresos:</h4> <p>${totalIngresos}</p>
-        </div>
-      )}
-
-      {renderTable()}
     </div>
   );
 }
