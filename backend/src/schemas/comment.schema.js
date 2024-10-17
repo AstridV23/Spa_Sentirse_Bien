@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const authorSchema = z.object({
-    user: z.string().optional(),
+    user: z.string().nullable(),
     name: z.string().default('Anónimo')
 })
 

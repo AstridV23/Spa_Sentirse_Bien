@@ -1,4 +1,18 @@
 .informe-page {
+  position: relative;
+}
+
+.informe-page .background {
+  background-color: #49635f;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.informe-container {
   max-width: 1200px;
   margin: 80px auto 0;
   padding: 20px;
@@ -6,15 +20,15 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
-.informe-page .titulo {
+.informe-container .titulo {
   text-align: center;
   margin-bottom: 20px;
 }
-.informe-page .titulo h1 {
+.informe-container .titulo h1 {
   font-size: 24px;
   color: var(--negro);
 }
-.informe-page .buttons {
+.informe-container .buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -22,31 +36,31 @@
   margin-bottom: 20px;
   gap: 15px 25px;
 }
-.informe-page .buttons .par {
+.informe-container .buttons .par {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
 }
-.informe-page .buttons input[type="search"] {
+.informe-container .buttons input[type="search"] {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 260px;
   outline: none;
 }
-.informe-page .buttons .filtros {
+.informe-container .buttons .filtros {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
   gap: 20px;
   align-items: center;
 }
-.informe-page .buttons h3 {
+.informe-container .buttons h3 {
   margin: 0;
   color: var(--gris);
   opacity: 0.8;
 }
-.informe-page .buttons select {
+.informe-container .buttons select {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -54,7 +68,7 @@
   height: 40px;
   outline: none;
 }
-.informe-page .buttons img {
+.informe-container .buttons img {
   margin: 0 10px;
   height: 33px;
   width: auto;
@@ -62,7 +76,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
   opacity: 0.8;
 }
-.informe-page .buttons img:hover {
+.informe-container .buttons img:hover {
   transform: scale(1.03);
   opacity: 1;
 }
@@ -106,6 +120,9 @@
 .informe-page .total-ingresos p {
   color: green;
   font-size: 18px;
+}
+.informe-page .table .delete {
+  margin: -5px 0;
 }
 
 @media screen and (max-width: 975px) {

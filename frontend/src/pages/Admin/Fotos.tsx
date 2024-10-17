@@ -93,7 +93,6 @@ const PhotosSection: React.FC<PhotosSectionProps> = ({ photos, setPhotos }) => {
 
   return (
     <div className="gallery-section">
-      <h3>Fotos</h3>
       <div className="element-container">
         {photos.map((element, index) => (
           <div className="element-photo" key={index}>

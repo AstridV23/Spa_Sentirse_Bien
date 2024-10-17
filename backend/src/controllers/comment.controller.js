@@ -2,18 +2,16 @@ import Comment from '../models/comment_model.js'
 
 export const createComment = async (req, res) => {
     try {
-        const { content } = req.body;
-        const author = {};
-  
-        if (req.user) {
-            // Si hay un usuario autenticado
-            author.user = req.user._id;
-            author.name = req.user.username;
-        }
+        const { content, reply } = req.body;
+        const author = {
+            user: req.user ? req.user._id: null,
+            name: req.user ? req.user.username : 'Anónimo',
+        };
   
         const newComment = new Comment({
             author,
-            content
+            content,
+            reply: reply || null,
         });
   
         const savedComment = await newComment.save();
