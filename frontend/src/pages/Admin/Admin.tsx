@@ -143,7 +143,7 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminType: number = 2;
+  const AdminType: number = 1;
   const AdminName = "JuanPablos";
   const AdminRole = "Profesional";
 
