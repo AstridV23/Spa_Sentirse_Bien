@@ -112,8 +112,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const getCurrentUser = () => {
-    const isAuthenticated = true;
-    const user = { _id: '123', username: 'ejemplo' };
     
     if (isAuthenticated && user) {
       console.log(user)

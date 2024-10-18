@@ -151,7 +151,7 @@ export default function Admin() {
   }, []);
 
   const AdminType: number = 2;
-  const AdminName = "JuanPablos";
+  const AdminName = "Doc Ana Felicidad";
   const AdminRole = "Profesional";
 
   return (
