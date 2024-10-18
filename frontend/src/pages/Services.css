@@ -17,8 +17,8 @@
   flex-direction: column;
   justify-content: left;
   width: 80vw;
-  padding: 50px 40px;
-  margin: 130px 0 100px;
+  padding: 30px 40px 40px;
+  margin: 90px 0 100px;
   background-color: var(--contenedor);
   border-radius: 30px;
 }

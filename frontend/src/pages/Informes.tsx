@@ -138,7 +138,7 @@ const clientesFalsos: Usuario[] = [
 ];
 
 type Turno = {
-  id: number;
+  TurnoId: number;
   cliente: {
     id: number;
     nombre: string;
@@ -153,10 +153,11 @@ type Turno = {
   hora: string;
   tipoTratamiento: string;
   servicio: string;
+  informacion?: string;
 };
 const turnosFalsos: Turno[] = [
   {
-    id: 1,
+    TurnoId: 1,
     cliente: {
       id: 101,
       nombre: "Juan",
@@ -168,12 +169,12 @@ const turnosFalsos: Turno[] = [
       apellido: "Martínez",
     },
     fecha: "2024-10-22",
-    hora: "10:00 AM",
+    hora: "10:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
   },
   {
-    id: 2,
+    TurnoId: 2,
     cliente: {
       id: 102,
       nombre: "Ana",
@@ -185,12 +186,13 @@ const turnosFalsos: Turno[] = [
       apellido: "Fernández",
     },
     fecha: "2024-10-24",
-    hora: "12:30 PM",
+    hora: "12:30",
     tipoTratamiento: "Belleza",
     servicio: "Manicura y pedicura",
+    informacion: "Informacion Importante",
   },
   {
-    id: 3,
+    TurnoId: 3,
     cliente: {
       id: 101,
       nombre: "Juan",
@@ -202,12 +204,12 @@ const turnosFalsos: Turno[] = [
       apellido: "Martínez",
     },
     fecha: "2024-10-19",
-    hora: "10:00 AM",
+    hora: "10:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
   },
   {
-    id: 4,
+    TurnoId: 4,
     cliente: {
       id: 102,
       nombre: "Ana",
@@ -219,12 +221,13 @@ const turnosFalsos: Turno[] = [
       apellido: "Fernández",
     },
     fecha: "2024-10-21",
-    hora: "12:30 PM",
+    hora: "12:30",
     tipoTratamiento: "Belleza",
     servicio: "Manicura y pedicura",
+    informacion: "Informacion Importante",
   },
   {
-    id: 5,
+    TurnoId: 5,
     cliente: {
       id: 101,
       nombre: "Juan",
@@ -236,12 +239,12 @@ const turnosFalsos: Turno[] = [
       apellido: "Martínez",
     },
     fecha: "2024-10-20",
-    hora: "10:00 AM",
+    hora: "10:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
   },
   {
-    id: 6,
+    TurnoId: 6,
     cliente: {
       id: 102,
       nombre: "Ana",
@@ -253,12 +256,12 @@ const turnosFalsos: Turno[] = [
       apellido: "Fernández",
     },
     fecha: "2024-10-21",
-    hora: "12:30 PM",
+    hora: "12:30",
     tipoTratamiento: "Belleza",
     servicio: "Manicura y pedicura",
   },
   {
-    id: 7,
+    TurnoId: 7,
     cliente: {
       id: 101,
       nombre: "Juan",
@@ -270,12 +273,13 @@ const turnosFalsos: Turno[] = [
       apellido: "Martínez",
     },
     fecha: "2024-10-25",
-    hora: "10:00 AM",
+    hora: "10:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
+    informacion: "Informacion Importante",
   },
   {
-    id: 8,
+    TurnoId: 8,
     cliente: {
       id: 102,
       nombre: "Ana",
@@ -287,12 +291,13 @@ const turnosFalsos: Turno[] = [
       apellido: "Fernández",
     },
     fecha: "2024-10-23",
-    hora: "12:30 PM",
+    hora: "12:30",
     tipoTratamiento: "Belleza",
     servicio: "Manicura y pedicura",
+    informacion: "Informacion Importante",
   },
   {
-    id: 9,
+    TurnoId: 9,
     cliente: {
       id: 101,
       nombre: "Juan",
@@ -304,12 +309,12 @@ const turnosFalsos: Turno[] = [
       apellido: "Martínez",
     },
     fecha: "2024-10-21",
-    hora: "10:00 AM",
+    hora: "10:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
   },
   {
-    id: 10,
+    TurnoId: 10,
     cliente: {
       id: 102,
       nombre: "Ana",
@@ -321,7 +326,7 @@ const turnosFalsos: Turno[] = [
       apellido: "Fernández",
     },
     fecha: "2024-10-22",
-    hora: "12:30 PM",
+    hora: "12:30",
     tipoTratamiento: "Belleza",
     servicio: "Manicura y pedicura",
   },
@@ -334,12 +339,13 @@ type Pago = {
     nombre: string;
     apellido: string;
   };
+  cuil: string;
   fecha: string;
   tipoTratamiento: string;
   servicio: string;
   valor: number;
+  local: boolean;
 };
-
 const pagosFalsos: Pago[] = [
   {
     id: 1,
@@ -348,10 +354,12 @@ const pagosFalsos: Pago[] = [
       nombre: "Juan",
       apellido: "Pérez",
     },
+    cuil: "20-12345678-9",
     fecha: "2024-10-22",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 6000,
+    local: true,
   },
   {
     id: 2,
@@ -360,10 +368,12 @@ const pagosFalsos: Pago[] = [
       nombre: "Juan",
       apellido: "Pérez",
     },
+    cuil: "20-12345678-9",
     fecha: "2024-10-22",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 4000,
+    local: false,
   },
   {
     id: 3,
@@ -372,10 +382,12 @@ const pagosFalsos: Pago[] = [
       nombre: "Juan",
       apellido: "Pérez",
     },
+    cuil: "20-12345678-9",
     fecha: "2024-10-22",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 5000,
+    local: true,
   },
   {
     id: 4,
@@ -384,10 +396,12 @@ const pagosFalsos: Pago[] = [
       nombre: "Juan",
       apellido: "Pérez",
     },
+    cuil: "20-12345678-9",
     fecha: "2024-10-22",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 8000,
+    local: false,
   },
 ];
 
@@ -437,6 +451,9 @@ export default function Informe() {
     }
   }, [datos, selectedMonth, selectedYear, tipo]);
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(`Se cambio el tipo de tratamiento a ${e.target.value}`);
+  };
   const handleTratamientoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(`Se cambio el tipo de tratamiento a ${e.target.value}`);
   };
@@ -452,7 +469,7 @@ export default function Informe() {
     console.log(`Se cambio el año a ${e.target.value}`);
   };
 
-  function handleDelete(id: number) {
+  function handleDeleteTurno(id: number) {
     swal({
       title: "¿Estás seguro?",
       text: "Si borras, se perderá el turno.",
@@ -482,14 +499,44 @@ export default function Informe() {
     });
   }
 
+  function handleDeletePago(id: number) {
+    swal({
+      title: "¿Estás seguro?",
+      text: "Si borras, se perderá el pago.",
+      icon: "warning",
+      buttons: {
+        cancel: {
+          text: "Cancelar",
+          value: null,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        confirm: {
+          text: "Confirmar",
+          value: true,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+      },
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        // Lógica para borrar el pago
+        console.log(`Pago ${id} borrado`);
+      }
+    });
+  }
+
   const isCliente = (dato: Usuario | Turno | Pago): dato is Usuario => {
-    return "correo" in dato; // Verifica si la propiedad "correo" pertenece a dato
+    return "status" in dato; // Verifica si la propiedad "correo" pertenece a dato
   };
   const isTurno = (dato: Usuario | Turno | Pago): dato is Turno => {
-    return "id" in dato; // Verifica si la propiedad "id" pertenece a dato
+    return "TurnoId" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
   const isPago = (dato: Usuario | Turno | Pago): dato is Pago => {
-    return "valor" in dato; // Verifica si la propiedad "id" pertenece a dato
+    return "cuil" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
 
   const renderTable = () => {
@@ -550,6 +597,7 @@ export default function Informe() {
                 <th>Hora</th>
                 <th>Tratamiento</th>
                 <th>Servicio</th>
+                <th>Info.</th>
                 <th></th>
               </tr>
             </thead>
@@ -559,30 +607,39 @@ export default function Informe() {
                   const cliente = dato.cliente;
                   const profesional = dato.profesional;
                   return (
-                    <tr key={dato.id}>
-                      <td data-label="ID">{dato.id}</td>
-                      <td data-label="C.ID">{cliente ? cliente.id : "N/A"}</td>
+                    <tr key={dato.TurnoId}>
+                      <td data-label="ID">{dato.TurnoId}</td>
+                      <td data-label="C.ID">{dato.cliente.id}</td>
                       <td data-label="Cliente">
-                        {cliente
-                          ? `${cliente.nombre} ${cliente.apellido}`
-                          : "N/A"}
+                        {cliente.nombre} {cliente.apellido}
                       </td>
-                      <td data-label="P.ID">
-                        {profesional ? profesional.id : "N/A"}
-                      </td>
+                      <td data-label="P.ID">{dato.profesional.id}</td>
                       <td data-label="Profesional">
-                        {profesional
-                          ? `${profesional.nombre} ${profesional.apellido}`
-                          : "N/A"}
+                        {profesional.nombre} {profesional.apellido}
                       </td>
                       <td data-label="Fecha">{dato.fecha}</td>
                       <td data-label="Hora">{dato.hora}</td>
                       <td data-label="Tratamiento">{dato.tipoTratamiento}</td>
                       <td data-label="Servicio">{dato.servicio}</td>
+                      <td
+                        data-label="Info."
+                        onClick={() =>
+                          swal("Información Importante", dato.informacion || "")
+                        }
+                        style={{
+                          margin: "0 auto",
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                          color: "#49635f",
+                          opacity: 0.7,
+                        }}
+                      >
+                        {dato.informacion ? "Info" : ""}
+                      </td>
                       <td data-label="">
                         <button
                           className="delete"
-                          onClick={() => handleDelete(dato.id)}
+                          onClick={() => handleDeleteTurno(dato.TurnoId)}
                         >
                           Borrar
                         </button>
@@ -605,10 +662,13 @@ export default function Informe() {
                 <th>ID</th>
                 <th>C. ID</th>
                 <th>Cliente</th>
+                <th>CUIL</th>
                 <th>Fecha</th>
                 <th>Tratamiento</th>
                 <th>Servicio</th>
-                <th>Valor</th>
+                <th>Valor $</th>
+                <th>Metodo</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -621,10 +681,24 @@ export default function Informe() {
                       <td data-label="Cliente">
                         {dato.cliente.nombre} {dato.cliente.apellido}
                       </td>
+                      <td data-label="CUIL">{dato.cuil}</td>
                       <td data-label="Fecha">{dato.fecha}</td>
                       <td data-label="Tratamiento">{dato.tipoTratamiento}</td>
                       <td data-label="Servicio">{dato.servicio}</td>
                       <td data-label="Valor">{dato.valor}</td>
+                      <td data-label="Local">
+                        {dato.local ? "Efectivo" : "Tarjeta"}
+                      </td>
+                      {dato.local && (
+                        <td data-label="">
+                          <button
+                            className="delete"
+                            onClick={() => handleDeletePago(dato.id)}
+                          >
+                            Borrar
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   );
                 }
@@ -656,7 +730,12 @@ export default function Informe() {
         </div>
         <div className="buttons">
           <div className="par">
-            <input type="search" name="search" placeholder="Buscar aqui" />
+            <input
+              type="search"
+              name="search"
+              placeholder="Buscar aqui"
+              onChange={handleSearch}
+            />
             <img src="/assets/descargar.png" alt="pdf" />
           </div>
           <div className="filtros">

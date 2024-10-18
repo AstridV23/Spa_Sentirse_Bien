@@ -151,7 +151,7 @@ export default function Admin() {
   }, []);
 
   const AdminType: number = 2;
-  const AdminName = "Doc Ana Felicidad";
+  const AdminName = "JuanPablos";
   const AdminRole = "Profesional";
 
   return (
@@ -161,7 +161,7 @@ export default function Admin() {
         <div className="titulo">
           <h1>ADMINISTRADOR</h1>
         </div>
-        {AdminType === 1 ? (
+        {AdminType === "admin" ? (
           <div className="admin-types">
             <div className="Desplegable">
               <button
