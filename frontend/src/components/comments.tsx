@@ -1,8 +1,8 @@
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState /*useEffect*/ } from "react";
 import "./comments.css";
 import swal from "sweetalert";
-import axios from "../api/axios";
-import { FaStar } from "react-icons/fa"; // Asegúrate de instalar react-icons
+// import axios from "../api/axios";
+import { FaStar } from "react-icons/fa";
 
 type User = {
   _id: string;
@@ -13,10 +13,10 @@ type User = {
 
 type Comment = {
   _id: string;
-  author?: User; // Hacemos author opcional
+  author?: User;
   content: string;
   date: string;
-  rating: number; // Nueva propiedad para la puntuación
+  rating: number;
 };
 
 const commentFalsos: Comment[] = [
@@ -94,6 +94,7 @@ export default function Comments({ mode }: CommentsProps) {
     reservas: 3,
   };
 
+  /*
   // Función para obtener los comentarios del backend
   async function fetchComments() {
     try {
@@ -109,6 +110,7 @@ export default function Comments({ mode }: CommentsProps) {
   useEffect(() => {
     fetchComments();
   }, []);
+  */
 
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -138,7 +140,13 @@ export default function Comments({ mode }: CommentsProps) {
         console.error("Error al enviar el comentario:", error);
       }
         */
+      swal("Comentario enviado con éxito", {
+        icon: "success",
+        timer: 1000,
+      });
       console.log(`comentario: ${text}, rating: ${rating}`);
+      setText("");
+      setRating(0);
     }
   }
 
@@ -153,38 +161,6 @@ export default function Comments({ mode }: CommentsProps) {
       });
     }
   }
-
-  // Maneja el envío de una respuesta a un comentario
-  /*async function handleReplySubmit(
-    event: FormEvent<HTMLFormElement>,
-    index: number
-  ) {
-    event.preventDefault();
-
-    if (replyText.trim() !== "") {
-      try {
-        const commentToReply = comments[index];
-        // Enviar la respuesta al backend
-        const response = await axios.post(
-          `/comment/${commentToReply._id}/reply`,
-          { content: replyText },
-          { withCredentials: true }
-        );
-
-        // El backend debería devolver el comentario actualizado con la nueva respuesta
-        const updatedComment: Comment = response.data;
-
-        const updatedComments = [...comments];
-        updatedComments[index] = updatedComment;
-
-        setComments(updatedComments);
-        setReplyText(""); // Limpiar el campo de respuesta
-        setReplyIndex(null); // Cerrar el campo de respuesta
-      } catch (error) {
-        console.error("Error al enviar la respuesta:", error);
-      }
-    }
-  }*/
 
   // Maneja la eliminación de un comentario
   function handleDeleteComment(index: number) {
@@ -300,71 +276,73 @@ export default function Comments({ mode }: CommentsProps) {
           </>
         )}
         <h3>Últimos realizados</h3>
-        <ul>
-          {comments.map((commentFalsos, index) => (
-            <li key={index}>
-              <div id="comentario" className="par">
-                <div id="encabezado" className="par">
-                  <div className="comment">
-                    <div id="user" className="par">
-                      {commentFalsos.author ? (
-                        <>
-                          <img
-                            className="avatar"
-                            src={commentFalsos.author.avatar}
-                            alt="avatar"
-                          />
-                          <div>
-                            <h4>{commentFalsos.author.username}</h4>
-                            <p>{commentFalsos.author.reservas} reservas</p>
-                            <p>{commentFalsos.date}</p>
-                            <div className="star-rating">
-                              <StarRating
-                                rating={commentFalsos.rating}
-                                onRating={() => {}}
-                              />
+        {comments.length === 0 ? (
+          <p style={{ color: "var(--gris)" }}>No hay comentarios todavía</p>
+        ) : (
+          <ul>
+            {comments.map((comment, index) => (
+              <li key={index}>
+                <div id="comentario" className="par">
+                  <div id="encabezado" className="par">
+                    <div className="comment">
+                      <div id="user" className="par">
+                        {comment.author ? (
+                          <>
+                            <img
+                              className="avatar"
+                              src={comment.author.avatar}
+                              alt="avatar"
+                            />
+                            <div>
+                              <h4>{comment.author.username}</h4>
+                              <p>{comment.author.reservas} reservas</p>
+                              <p>{comment.date}</p>
+                              <div className="star-rating">
+                                <StarRating
+                                  rating={comment.rating}
+                                  onRating={() => {}}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <img
-                            className="avatar"
-                            src="/assets/perfil.jpg"
-                            alt="avatar"
-                          />
-                          <div>
-                            <h4>Usuario</h4>
-                            <p>Anónimo</p>
-                            {/*Fecha de hoy porq no me quise romper la cabeza en algo que iban a borrar despues*/}
-                            <p>{new Date().toLocaleDateString()}</p>
-                            <div className="star-rating">
-                              <StarRating
-                                rating={commentFalsos.rating}
-                                onRating={() => {}}
-                              />
+                          </>
+                        ) : (
+                          <>
+                            <img
+                              className="avatar"
+                              src="/assets/perfil.jpg"
+                              alt="avatar"
+                            />
+                            <div>
+                              <h4>Usuario</h4>
+                              <p>Anónimo</p>
+                              <p>{comment.date}</p>
+                              <div className="star-rating">
+                                <StarRating
+                                  rating={comment.rating}
+                                  onRating={() => {}}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </>
+                          </>
+                        )}
+                      </div>
+                      {mode === "admin" && (
+                        <button
+                          className="delete"
+                          onClick={() => handleDeleteComment(index)}
+                        >
+                          Borrar
+                        </button>
                       )}
                     </div>
-                    {mode === "admin" && (
-                      <button
-                        className="delete"
-                        onClick={() => handleDeleteComment(index)}
-                      >
-                        Borrar
-                      </button>
-                    )}
+                  </div>
+                  <div id="content">
+                    <p>{comment.content}</p>
                   </div>
                 </div>
-                <div id="content">
-                  <p>{commentFalsos.content}</p>
-                </div>
-              </div>
-            </li>
-          ))}
-          {/*comments.map((comment, index) => (
+              </li>
+            ))}
+            {/*comments.map((comment, index) => (
           <li key={index}>
             <strong>{comment.author?.username || "Anónimo"}</strong> (
             {comment.date}): <br />
@@ -380,7 +358,8 @@ export default function Comments({ mode }: CommentsProps) {
             )}
           </li>
         ))*/}
-        </ul>
+          </ul>
+        )}
       </div>
     </div>
   );
