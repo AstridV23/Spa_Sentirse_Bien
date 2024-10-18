@@ -2,102 +2,181 @@ import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
-
-// Simulamos un usuario logueado o no logueado con una constante
-//const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
-
-// Simulando que el usuario es admin
-const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
+import { FaStar } from "react-icons/fa"; // Asegúrate de instalar react-icons
 
 type User = {
   _id: string;
   username: string;
-  email: string;
+  avatar: string;
+  reservas: number;
 };
 
 type Comment = {
   _id: string;
-  author?: User;  // Hacemos author opcional
+  author?: User; // Hacemos author opcional
   content: string;
   date: string;
-  reply?: {
-    author?: User;  // También hacemos author opcional aquí
-    content: string;
-    date: string;
-  };
+  rating: number; // Nueva propiedad para la puntuación
 };
 
-export default function Comments() {
-  const [comments, setComments] = useState<Array<Comment>>([]);
+const commentFalsos: Comment[] = [
+  {
+    _id: "1",
+    author: {
+      _id: "user1",
+      username: "PedritoSanchez",
+      avatar: "/assets/whatsapp.png",
+      reservas: 1,
+    },
+    content:
+      "¡Increíble experiencia! El servicio fue excepcional, la comida deliciosa y el ambiente acogedor. Me encantó la atención personalizada y los detalles cuidadosamente pensados. Sin duda, volveré pronto y lo recomendaré a todos mis amigos. Una joya culinaria que no se puede perder. ¡5 estrellas!",
+    date: "2024-02-14",
+    rating: 4,
+  },
+  {
+    _id: "2",
+    content: "LO ODIO, NO ME GUSTA, NO VUELVO",
+    date: "2024-02-15",
+    rating: 2,
+  },
+  {
+    _id: "3",
+    author: {
+      _id: "user4",
+      username: "PatriciaFerrana",
+      avatar: "/assets/Velaslim.jpg",
+      reservas: 5,
+    },
+    content: "Este es un comentario de prueba",
+    date: "2024-02-14",
+    rating: 4,
+  },
+  {
+    _id: "4",
+    author: {
+      _id: "user5",
+      username: "PatriciaBulrrich",
+      avatar: "/assets/Velaslim.jpg",
+      reservas: 5,
+    },
+    content: "Este es un comentario de prueba",
+    date: "2024-02-14",
+    rating: 4,
+  },
+  {
+    _id: "5",
+    author: {
+      _id: "user6",
+      username: "OstiasTio",
+      avatar: "/assets/Fondo1.jpg",
+      reservas: 2,
+    },
+    content: "Este es un comentario de prueba",
+    date: "2024-02-14",
+    rating: 3,
+  },
+];
+
+type CommentsProps = {
+  mode: "home" | "admin";
+};
+
+export default function Comments({ mode }: CommentsProps) {
+  const [comments, setComments] = useState<Comment[]>(commentFalsos);
   const [text, setText] = useState("");
-  const [replyText, setReplyText] = useState(""); 
-  const [replyIndex, setReplyIndex] = useState<number | null>(null); 
+  const [rating, setRating] = useState<number>(0);
+
+  const isLoggedIn = false;
+  const user: User = {
+    _id: "23",
+    username: "JuanCarlos",
+    avatar: "/assets/Ultracavitacion.jpg",
+    reservas: 3,
+  };
 
   // Función para obtener los comentarios del backend
   async function fetchComments() {
     try {
       const response = await axios.get("/comment");
-      
+
       setComments(response.data);
     } catch (error) {
       console.error("Error al obtener los comentarios:", error);
     }
   }
 
-    // Llamar a la función fetchComments cuando el componente se monte
-    useEffect(() => {
-      fetchComments();
-    }, []);
+  // Llamar a la función fetchComments cuando el componente se monte
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-  
-    if (text.trim() !== "") {
-  
+
+    if (text.trim() !== "" && rating > 0) {
+      /*
       try {
-        // Enviar el nuevo comentario al backend
-        const response = await axios.post("/comment", {content: text}, {withCredentials: true});
-        
+        const response = await axios.post(
+          "/comment",
+          { content: text, rating },
+          { withCredentials: true }
+        );
+
         const newComment: Comment = {
           _id: response.data._id,
           author: response.data.author,
           content: response.data.content,
           date: response.data.date,
+          rating: response.data.rating,
         };
 
-        setComments([newComment, ...comments]); // Agregar el comentario al inicio
-        setText(""); // Limpiar el campo de texto
-  
+        setComments([newComment, ...comments]);
+        setText("");
+        setRating(0);
       } catch (error) {
         console.error("Error al enviar el comentario:", error);
       }
+        */
+      console.log(`comentario: ${text}, rating: ${rating}`);
     }
   }
-  
 
   // Maneja el cambio en el campo de texto del comentario
-  function handleTextChange(event: ChangeEvent<HTMLInputElement>) {
-    setText(event.target.value);
+  function handleTextChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    const text = event.target.value.slice(0, 250);
+    setText(text);
+    if (event.target.value.length > 250) {
+      swal("El comentario no puede tener más de 250 caracteres", {
+        icon: "error",
+        timer: 2500,
+      });
+    }
   }
 
   // Maneja el envío de una respuesta a un comentario
-  async function handleReplySubmit(event: FormEvent<HTMLFormElement>, index: number) {
+  /*async function handleReplySubmit(
+    event: FormEvent<HTMLFormElement>,
+    index: number
+  ) {
     event.preventDefault();
 
     if (replyText.trim() !== "") {
       try {
-
         const commentToReply = comments[index];
         // Enviar la respuesta al backend
-        const response = await axios.post(`/comment/${commentToReply._id}/reply`, { content: replyText }, { withCredentials: true });
-        
+        const response = await axios.post(
+          `/comment/${commentToReply._id}/reply`,
+          { content: replyText },
+          { withCredentials: true }
+        );
+
         // El backend debería devolver el comentario actualizado con la nueva respuesta
         const updatedComment: Comment = response.data;
-        
+
         const updatedComments = [...comments];
         updatedComments[index] = updatedComment;
-        
+
         setComments(updatedComments);
         setReplyText(""); // Limpiar el campo de respuesta
         setReplyIndex(null); // Cerrar el campo de respuesta
@@ -105,7 +184,7 @@ export default function Comments() {
         console.error("Error al enviar la respuesta:", error);
       }
     }
-  }
+  }*/
 
   // Maneja la eliminación de un comentario
   function handleDeleteComment(index: number) {
@@ -127,67 +206,171 @@ export default function Comments() {
     });
   }
 
-  return (
-    <div className="comments">
-      <h1>Comentarios</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="text">
-          <input
-            className="textbox"
-            id="text"
-            type="text"
-            value={text}
-            onChange={handleTextChange}
-            placeholder="Escribe tu comentario"
-          />
-        </label>
-        <button className="MainButton" type="submit">
-          Comentar
-        </button>
-      </form>
+  // Nuevo componente para las estrellas
+  const StarRating = ({
+    rating,
+    onRating,
+  }: {
+    rating: number;
+    onRating: (index: number) => void;
+  }) => {
+    return (
+      <div>
+        {[...Array(5)].map((_star, index) => {
+          index += 1;
+          return (
+            <button
+              type="button"
+              key={index}
+              className={index <= rating ? "on" : "off"}
+              onClick={() => onRating(index)}
+            >
+              <FaStar />
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
 
-      <h3>Últimos realizados</h3>
-      <ul>
-        {comments.map((comment, index) => (
-          <li key={index}>
-            <strong>{comment.author?.username||"Anónimo"}</strong> ({comment.date}): <br/> {comment.content}
-            {/* Mostrar la respuesta si existe */}
-            {comment.reply && (
-              <ul>
-                <li className="respuesta">
-                  <strong>{comment.reply.author?.username||"Anónimo"}</strong> ({comment.reply.date}):{" "}
-                  {comment.reply.content}
-                </li>
-              </ul>
-            )}
-            {/* Mostrar el campo de respuesta si aún no hay respuesta */}
-            {!comment.reply && isAdmin && (
-              <>
-                {replyIndex === index ? (
-                  <form onSubmit={(e) => handleReplySubmit(e, index)}>
-                    <input
-                      className="textbox"
-                      type="text"
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      placeholder="Escribe una respuesta"
+  return (
+    <div className={mode === "home" ? "comments-home" : "comments-admin"}>
+      <div className="comments">
+        {mode === "home" && (
+          <>
+            <h1>Opiniones</h1>
+            <form onSubmit={handleSubmit}>
+              <div id="encabezado" className="par">
+                <div id="user" className="par">
+                  {isLoggedIn ? (
+                    <>
+                      <img className="avatar" src={user.avatar} alt="avatar" />
+                      <div>
+                        <h4>{user.username}</h4>
+                        <p>{user.reservas} reservas</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        className="avatar"
+                        src="/assets/perfil.jpg"
+                        alt="avatar"
+                      />
+                      <div>
+                        <h4>Usuario</h4>
+                        <p>Anonimo</p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div id="inputs">
+                <label htmlFor="text">
+                  <textarea
+                    className="textbox"
+                    id="text"
+                    value={text}
+                    onChange={handleTextChange}
+                    placeholder="Escribe tu comentario"
+                    maxLength={250}
+                  />
+                </label>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: text.length === 250 ? "var(--rojo)" : "var(--gris)",
+                  }}
+                >
+                  {text.length}/250 caracteres
+                </p>
+                <div id="buttons" className="par">
+                  <div className="star-rating">
+                    <StarRating
+                      rating={rating}
+                      onRating={(index) => setRating(index)}
                     />
-                    <button className="replyButton" type="submit">
-                      Responder
-                    </button>
-                  </form>
-                ) : (
-                  <button
-                    className="replyButton"
-                    onClick={() => setReplyIndex(index)}
-                  >
-                    Responder
+                  </div>
+                  <button className="MainButton" type="submit">
+                    Comentar
                   </button>
-                )}
-              </>
-            )}
-            {/* Botón de borrar siempre visible */}
-            {isAdmin && (
+                </div>
+              </div>
+            </form>
+          </>
+        )}
+        <h3>Últimos realizados</h3>
+        <ul>
+          {comments.map((commentFalsos, index) => (
+            <li key={index}>
+              <div id="comentario" className="par">
+                <div id="encabezado" className="par">
+                  <div className="comment">
+                    <div id="user" className="par">
+                      {commentFalsos.author ? (
+                        <>
+                          <img
+                            className="avatar"
+                            src={commentFalsos.author.avatar}
+                            alt="avatar"
+                          />
+                          <div>
+                            <h4>{commentFalsos.author.username}</h4>
+                            <p>{commentFalsos.author.reservas} reservas</p>
+                            <p>{commentFalsos.date}</p>
+                            <div className="star-rating">
+                              <StarRating
+                                rating={commentFalsos.rating}
+                                onRating={() => {}}
+                              />
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            className="avatar"
+                            src="/assets/perfil.jpg"
+                            alt="avatar"
+                          />
+                          <div>
+                            <h4>Usuario</h4>
+                            <p>Anónimo</p>
+                            {/*Fecha de hoy porq no me quise romper la cabeza en algo que iban a borrar despues*/}
+                            <p>{new Date().toLocaleDateString()}</p>
+                            <div className="star-rating">
+                              <StarRating
+                                rating={commentFalsos.rating}
+                                onRating={() => {}}
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {mode === "admin" && (
+                      <button
+                        className="delete"
+                        onClick={() => handleDeleteComment(index)}
+                      >
+                        Borrar
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div id="content">
+                  <p>{commentFalsos.content}</p>
+                </div>
+              </div>
+            </li>
+          ))}
+          {/*comments.map((comment, index) => (
+          <li key={index}>
+            <strong>{comment.author?.username || "Anónimo"}</strong> (
+            {comment.date}): <br />
+            <StarRating rating={comment.rating} onRating={() => {}} />
+            {comment.content}
+            {mode === "admin" && (
               <button
                 className="delete"
                 onClick={() => handleDeleteComment(index)}
@@ -196,8 +379,9 @@ export default function Comments() {
               </button>
             )}
           </li>
-        ))}
-      </ul>
+        ))*/}
+        </ul>
+      </div>
     </div>
   );
 }

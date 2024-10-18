@@ -4,6 +4,7 @@ import NewsSection from "./Noticias";
 import PhotosSection from "./Fotos";
 import ServicesSection from "./Servicios";
 import HorasSection from "./Horas";
+import Comments from "../../components/comments";
 
 type Servicio = {
   img: string;
@@ -141,6 +142,8 @@ export default function Admin() {
     useState<boolean>(false);
   const [desplegableHorarios, setDesplegableHorarios] =
     useState<boolean>(false);
+  const [desplegableComentarios, setDesplegableComentarios] =
+    useState<boolean>(false);
 
   // Cargar comentarios simulados al montar el componente
   useEffect(() => {
@@ -150,9 +153,8 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminType: number = 2;
-  const AdminName = "JuanPablos";
-  const AdminRole = "Profesional";
+  const AdminName: string = "Doctora Ana Felicidad";
+  const AdminRole: string = "admin";
 
   return (
     <div className="admin-page">
@@ -161,7 +163,13 @@ export default function Admin() {
         <div className="titulo">
           <h1>ADMINISTRADOR</h1>
         </div>
-        {AdminType === "admin" ? (
+        <div className="sinPermisos">
+          <h2 style={{ color: "var(--gris)" }}>
+            Bienvenido {AdminRole} {AdminName}
+          </h2>
+          <img src="/assets/login.png" alt="Hola!" />
+        </div>
+        {AdminRole === "admin" && (
           <div className="admin-types">
             <div className="Desplegable">
               <button
@@ -233,14 +241,24 @@ export default function Admin() {
               {desplegableHorarios && (
                 <HorasSection horas={horas} setHoras={setHoras} />
               )}
+              <hr />
             </div>
-          </div>
-        ) : (
-          <div className="sinPermisos">
-            <h2>
-              Bienvenido {AdminRole} {AdminName}
-            </h2>
-            <img src="/assets/login.png" alt="Hola!" />
+            <div className="Desplegable">
+              <button
+                className="DesplButton"
+                onClick={() =>
+                  setDesplegableComentarios(!desplegableComentarios)
+                }
+              >
+                <img
+                  className="img"
+                  src="/assets/down-arrow.png"
+                  alt="Desplegar Horarios"
+                />
+                <h3>Comentarios</h3>
+              </button>
+              {desplegableComentarios && <Comments mode="admin" />}
+            </div>
           </div>
         )}
       </div>

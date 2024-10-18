@@ -115,9 +115,7 @@ function Home() {
           </div>
         </section>
         <section className="comments-section" id="comments">
-          <div className="comments-container">
-            <Comments />
-          </div>
+          <Comments mode="home" />
         </section>
       </main>
     </div>
