@@ -341,7 +341,6 @@ type Pago = {
   };
   cuil: string;
   fecha: string;
-  hora: string;
   tipoTratamiento: string;
   servicio: string;
   valor: number;
@@ -357,7 +356,6 @@ const pagosFalsos: Pago[] = [
     },
     cuil: "20-12345678-9",
     fecha: "2024-10-22",
-    hora: "09:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 6000,
@@ -372,7 +370,6 @@ const pagosFalsos: Pago[] = [
     },
     cuil: "20-12345678-9",
     fecha: "2024-10-22",
-    hora: "11:30",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 4000,
@@ -387,7 +384,6 @@ const pagosFalsos: Pago[] = [
     },
     cuil: "20-12345678-9",
     fecha: "2024-10-22",
-    hora: "14:00",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 5000,
@@ -402,7 +398,6 @@ const pagosFalsos: Pago[] = [
     },
     cuil: "20-12345678-9",
     fecha: "2024-10-22",
-    hora: "16:30",
     tipoTratamiento: "Masaje",
     servicio: "Masaje relajante de espalda",
     valor: 8000,
@@ -474,7 +469,7 @@ export default function Informe() {
     console.log(`Se cambio el año a ${e.target.value}`);
   };
 
-  function handleDelete(id: number) {
+  function handleDeleteTurno(id: number) {
     swal({
       title: "¿Estás seguro?",
       text: "Si borras, se perderá el turno.",
@@ -500,6 +495,36 @@ export default function Informe() {
       if (willDelete) {
         // Lógica para borrar el turno
         console.log(`Turno ${id} borrado`);
+      }
+    });
+  }
+
+  function handleDeletePago(id: number) {
+    swal({
+      title: "¿Estás seguro?",
+      text: "Si borras, se perderá el pago.",
+      icon: "warning",
+      buttons: {
+        cancel: {
+          text: "Cancelar",
+          value: null,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        confirm: {
+          text: "Confirmar",
+          value: true,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+      },
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        // Lógica para borrar el pago
+        console.log(`Pago ${id} borrado`);
       }
     });
   }
@@ -614,7 +639,7 @@ export default function Informe() {
                       <td data-label="">
                         <button
                           className="delete"
-                          onClick={() => handleDelete(dato.TurnoId)}
+                          onClick={() => handleDeleteTurno(dato.TurnoId)}
                         >
                           Borrar
                         </button>
@@ -639,11 +664,11 @@ export default function Informe() {
                 <th>Cliente</th>
                 <th>CUIL</th>
                 <th>Fecha</th>
-                <th>Hora</th>
                 <th>Tratamiento</th>
                 <th>Servicio</th>
-                <th>Valor</th>
-                <th>Local</th>
+                <th>Valor $</th>
+                <th>Metodo</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -658,11 +683,22 @@ export default function Informe() {
                       </td>
                       <td data-label="CUIL">{dato.cuil}</td>
                       <td data-label="Fecha">{dato.fecha}</td>
-                      <td data-label="Hora">{dato.hora}</td>
                       <td data-label="Tratamiento">{dato.tipoTratamiento}</td>
                       <td data-label="Servicio">{dato.servicio}</td>
                       <td data-label="Valor">{dato.valor}</td>
-                      <td data-label="Local">{dato.local ? "Si" : "No"}</td>
+                      <td data-label="Local">
+                        {dato.local ? "Efectivo" : "Tarjeta"}
+                      </td>
+                      {dato.local && (
+                        <td data-label="">
+                          <button
+                            className="delete"
+                            onClick={() => handleDeletePago(dato.id)}
+                          >
+                            Borrar
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   );
                 }
