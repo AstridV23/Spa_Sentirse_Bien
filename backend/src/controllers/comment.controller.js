@@ -1,19 +1,20 @@
 import Comment from '../models/comment_model.js'
 
 export const createComment = async (req, res) => {
+    debugger;
     try {
-        const { content, reply } = req.body;
+        const { content, reply, user } = req.body;
         const author = {
-            user: req.user ? req.user._id: null,
-            name: req.user ? req.user.username : 'Anónimo',
+            user: req.user,
+            name: req.user,
         };
-  
+
         const newComment = new Comment({
-            author,
+            author: user.name,
             content,
             reply: reply || null,      
         });
-  
+
         const savedComment = await newComment.save();
         res.status(201).json(savedComment);
     
@@ -36,6 +37,8 @@ export const deleteComment = async (req, res) => {
 }
 
 export const getComments = async (req, res) => {
+    debugger;
+
     try {
         const comments = await Comment.find().sort({ date: -1 }).populate('author.user', 'username');
 
