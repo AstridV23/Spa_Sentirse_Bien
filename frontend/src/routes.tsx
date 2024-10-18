@@ -4,7 +4,7 @@ import Register from "./pages/Registro";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Gallery from "./pages/Gallery";
-import Turn from "./pages/Turns";
+import Turn from "./pages/TurnsPage.tsx";
 import Perfil from "./pages/Perfil";
 import Admin from "./pages/Admin/Admin.tsx";
 import Informe from "./pages/Informes.tsx";

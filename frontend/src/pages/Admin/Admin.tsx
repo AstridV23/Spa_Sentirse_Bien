@@ -150,7 +150,7 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminType: number = 2;
+  const AdminType: string = "admin";
   const AdminName = "JuanPablos";
   const AdminRole = "Profesional";
 
@@ -161,7 +161,7 @@ export default function Admin() {
         <div className="titulo">
           <h1>ADMINISTRADOR</h1>
         </div>
-        {AdminType === 1 ? (
+        {AdminType === "admin" ? (
           <div className="admin-types">
             <div className="Desplegable">
               <button

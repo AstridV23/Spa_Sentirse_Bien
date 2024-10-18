@@ -5,7 +5,7 @@ import Registro from "./pages/Registro.tsx";
 import Header from "./components/Header.tsx";
 import Services from "./pages/Services";
 import Gallery from "./pages/Gallery";
-import Turn from "./pages/Turns";
+import Turn from "./pages/TurnsPage.tsx";
 import Perfil from "./pages/Perfil";
 import { PopUpProvider } from "./components/PopUpContext";
 import Admin from "./pages/Admin/Admin.tsx";

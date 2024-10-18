@@ -21,7 +21,6 @@ const horas: string[] = [
   "20:00",
 ];
 
-
 type Servicios = {
   [key: string]: Servicio[];
 };
@@ -130,55 +129,54 @@ export function TurnPopUp() {
 
     // Crea el objeto de reserva
     const reservaTurno = {
-        service: data.servicio,
-        treatment: data.tipoTratamiento,
-        date: formattedDate, 
-        info: data.informacion,
-        cost: precio, 
-        paymentLocal: data.pagoLocal, 
+      service: data.servicio,
+      treatment: data.tipoTratamiento,
+      date: formattedDate,
+      info: data.informacion,
+      cost: precio,
+      paymentLocal: data.pagoLocal,
     };
 
     console.log("Formulario enviado:", reservaTurno);
 
     if (!data.tipoTratamiento || !data.servicio || !data.fecha || !data.hora) {
-        swal({
-            title: "Campos vacios",
-            text: "Ingrese toda la información solicitada",
-            icon: "warning",
-            timer: 2500,
-        });
-        return;
+      swal({
+        title: "Campos vacios",
+        text: "Ingrese toda la información solicitada",
+        icon: "warning",
+        timer: 2500,
+      });
+      return;
     } else {
-        try {
-            // Enviar los datos al backend
-            const response = await axios.post("/bookings", reservaTurno);
+      try {
+        // Enviar los datos al backend
+        const response = await axios.post("/bookings", reservaTurno);
 
-            // Manejar la respuesta del backend
-            if (response.status === 201) {
-                const formattedDate = formatDate(data.fecha);
-                const alertaString = `Te esperamos el ${formattedDate} a las ${data.hora}hs`;
-                swal({
-                    title: "¡Reserva confirmada!",
-                    text: alertaString,
-                    icon: "success",
-                });
-            }
-        } catch (error) {
-            console.error("Error al enviar la reserva:", error);
-            swal({
-                title: "Error",
-                text: "Ocurrió un problema al reservar. Inténtalo de nuevo.",
-                icon: "error",
-            });
-        } finally {
-            reset();
-            setPrecio(0);
-            setPagoEnLocal(false);
-            closePopUp();
+        // Manejar la respuesta del backend
+        if (response.status === 201) {
+          const formattedDate = formatDate(data.fecha);
+          const alertaString = `Te esperamos el ${formattedDate} a las ${data.hora}hs`;
+          swal({
+            title: "¡Reserva confirmada!",
+            text: alertaString,
+            icon: "success",
+          });
         }
+      } catch (error) {
+        console.error("Error al enviar la reserva:", error);
+        swal({
+          title: "Error",
+          text: "Ocurrió un problema al reservar. Inténtalo de nuevo.",
+          icon: "error",
+        });
+      } finally {
+        reset();
+        setPrecio(0);
+        setPagoEnLocal(false);
+        closePopUp();
+      }
     }
   };
-
 
   // Funciones para limitar la fecha
   const today = new Date();
@@ -190,7 +188,7 @@ export function TurnPopUp() {
   return (
     <div className="turno-component">
       <div className="popup-overlay">
-        <div className="turno-component-content">
+        <div className="turno-content">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="icon">
               <img src="/assets/calendario.png" alt="Calendario" />
@@ -202,7 +200,7 @@ export function TurnPopUp() {
               <div className="par">
                 <div className="box">
                   <label htmlFor="tipoTratamiento">
-                    <h4>Tipo de Tratamiento</h4>
+                    <h4>Tratamiento</h4>
                     <select
                       className="textbox"
                       id="tipoTratamiento"

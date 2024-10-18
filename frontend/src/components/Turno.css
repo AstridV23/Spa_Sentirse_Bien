@@ -12,7 +12,7 @@
   z-index: 10; /* Asegura que el overlay esté encima de otros elementos */
 }
 
-.turno-component-content {
+.turno-component .turno-content {
   background-color: #ffffff;
   border-radius: 10px;
   padding: 20px 40px;
@@ -69,20 +69,32 @@
   justify-content: space-between;
   width: 100%;
 }
-.turno-component .box {
+.turno-component .box,
+.turno-component .boxTarjeta {
   display: flex;
   flex-direction: column;
-  width: 45%;
   justify-content: flex-end;
 }
-
-.turno-component .box h4 {
+.turno-component .box {
+  width: 45%;
+}
+.turno-component .boxLargo {
+  width: 100%;
+}
+.turno-component .box input,
+.turno-component .boxLargo input {
+  box-sizing: border-box;
+  width: 100%;
+}
+.turno-component .box h4,
+.turno-component .boxLargo h4 {
   font-size: 16px;
   margin-bottom: 5px;
   color: var(--gris);
 }
 
-.turno-component .detalles h4 {
+.turno-component .detalles h4,
+.turno-component .boxLargo h4 {
   font-size: 16px;
   margin-bottom: 5px;
   color: var(--gris);
@@ -120,13 +132,14 @@
   width: 110px;
 }
 
-.turno-component-content form p,
-.turno-component-content .info p {
+.turno-content form p {
   font-size: 13px;
   opacity: 0.6;
   margin: 0 0 0px 10px;
 }
-
+.turno-component #hr {
+  margin: 20px 0 20px;
+}
 @media screen and (max-width: 560px) {
   .turno-component-content .dropdown .SecondButton {
     width: 130px;
