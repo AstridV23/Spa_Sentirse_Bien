@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
-import { useAuth } from "../context/AuthContext";
 
 // Simulamos un usuario logueado o no logueado con una constante
 //const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
@@ -10,30 +9,29 @@ import { useAuth } from "../context/AuthContext";
 // Simulando que el usuario es admin
 const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
 
-type Author = {
-  name: string,
-  user?: string | null,
-}
+type User = {
+  _id: string;
+  username: string;
+  email: string;
+};
 
 type Comment = {
-  author: Author,
+  _id: string;
+  author?: User;  // Hacemos author opcional
   content: string;
   date: string;
   reply?: {
-    author: Author,
-    text: string;
+    author?: User;  // También hacemos author opcional aquí
+    content: string;
     date: string;
   };
 };
 
 export default function Comments() {
-  const { getCurrentUser } = useAuth(); // Obtener el usuario desde el contexto
   const [comments, setComments] = useState<Array<Comment>>([]);
   const [text, setText] = useState("");
   const [replyText, setReplyText] = useState(""); 
   const [replyIndex, setReplyIndex] = useState<number | null>(null); 
-
-  const currentUser = getCurrentUser();
 
   // Función para obtener los comentarios del backend
   async function fetchComments() {
@@ -56,24 +54,19 @@ export default function Comments() {
     event.preventDefault();
   
     if (text.trim() !== "") {
-      const newComment: Comment = {
-        author: {
-          name: currentUser?.name || "Anónimo",
-          user: currentUser?.id || null
-        }, 
-        content: text,
-        date: new Date().toLocaleDateString("es-ES", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }),
-      };
   
       try {
         // Enviar el nuevo comentario al backend
-        const response = await axios.post("/comment", newComment, {withCredentials: true});
+        const response = await axios.post("/comment", {content: text}, {withCredentials: true});
         
-        setComments([response.data, ...comments]); // Agregar el comentario al inicio
+        const newComment: Comment = {
+          _id: response.data._id,
+          author: response.data.author,
+          content: response.data.content,
+          date: response.data.date,
+        };
+
+        setComments([newComment, ...comments]); // Agregar el comentario al inicio
         setText(""); // Limpiar el campo de texto
   
       } catch (error) {
@@ -89,27 +82,28 @@ export default function Comments() {
   }
 
   // Maneja el envío de una respuesta a un comentario
-  function handleReplySubmit(event: FormEvent<HTMLFormElement>, index: number) {
+  async function handleReplySubmit(event: FormEvent<HTMLFormElement>, index: number) {
     event.preventDefault();
 
     if (replyText.trim() !== "") {
-      const updatedComments = [...comments];
-      const newReply = {
-        author: {
-          name: currentUser?.name || "Anónimo",
-        }, // Usar el nombre de usuario del contexto
-        text: replyText,
-        date: new Date().toLocaleDateString("es-ES", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }),
-      };
+      try {
 
-      updatedComments[index].reply = newReply; // Solo se permite una respuesta
-      setComments(updatedComments);
-      setReplyText(""); // Limpiar el campo de respuesta
-      setReplyIndex(null); // Cerrar el campo de respuesta
+        const commentToReply = comments[index];
+        // Enviar la respuesta al backend
+        const response = await axios.post(`/comment/${commentToReply._id}/reply`, { content: replyText }, { withCredentials: true });
+        
+        // El backend debería devolver el comentario actualizado con la nueva respuesta
+        const updatedComment: Comment = response.data;
+        
+        const updatedComments = [...comments];
+        updatedComments[index] = updatedComment;
+        
+        setComments(updatedComments);
+        setReplyText(""); // Limpiar el campo de respuesta
+        setReplyIndex(null); // Cerrar el campo de respuesta
+      } catch (error) {
+        console.error("Error al enviar la respuesta:", error);
+      }
     }
   }
 
@@ -156,13 +150,13 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.author.name}</strong> ({comment.date}): <br/> {comment.content}
+            <strong>{comment.author?.username||"Anónimo"}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
             {comment.reply && (
               <ul>
                 <li className="respuesta">
-                  <strong>{comment.reply.author.name}</strong> ({comment.reply.date}):{" "}
-                  {comment.reply.text}
+                  <strong>{comment.reply.author?.username||"Anónimo"}</strong> ({comment.reply.date}):{" "}
+                  {comment.reply.content}
                 </li>
               </ul>
             )}
