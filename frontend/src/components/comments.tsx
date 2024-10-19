@@ -1,7 +1,7 @@
-import { ChangeEvent, FormEvent, useEffect  } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "./comments.css";
-//import swal from "sweetalert";
-//import axios from "../api/axios";
+import swal from "sweetalert";
+import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext"
 
 const isAdmin = true;
@@ -29,7 +29,7 @@ export default function Comments() {
   const { user } = useAuth();
 
 
-  /* Función para obtener los comentarios del backend
+  // Función para obtener los comentarios del backend
   async function fetchComments() {
     try {
       const response = await axios.get("/comment");
@@ -39,7 +39,6 @@ export default function Comments() {
       console.error("Error al obtener los comentarios:", error);
     }
   }
-    
 
   // Llamar a la función fetchComments cuando el componente se monte
   useEffect(() => {
@@ -106,7 +105,7 @@ export default function Comments() {
   }
 
   return (
-    <di className="comments">
+    <div className="comments">
       <h1>Comentarios</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="text">
@@ -125,9 +124,9 @@ export default function Comments() {
       </form>
 
       <h3>Últimos realizados</h3>
-      <u>
+      <ul>
         {comments.map((comment, index) => (
-          <l key={index}>
+          <li key={index}>
             <strong>{comment.author}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
             
@@ -140,4 +139,9 @@ export default function Comments() {
                 Borrar
               </button>
             )}
-
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
