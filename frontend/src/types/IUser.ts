@@ -6,8 +6,11 @@ interface IUser {
   lastname: string;
   sex: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+  password: string;
+  phone: string;
+
 }
 
 export default IUser

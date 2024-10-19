@@ -1,7 +1,7 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect  } from "react";
 import "./comments.css";
-import swal from "sweetalert";
-import axios from "../api/axios";
+//import swal from "sweetalert";
+//import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext"
 
 const isAdmin = true;
@@ -106,7 +106,7 @@ export default function Comments() {
   }
 
   return (
-    <div className="comments">
+    <di className="comments">
       <h1>Comentarios</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="text">
@@ -125,9 +125,9 @@ export default function Comments() {
       </form>
 
       <h3>Últimos realizados</h3>
-      <ul>
+      <u>
         {comments.map((comment, index) => (
-          <li key={index}>
+          <l key={index}>
             <strong>{comment.author}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
             
@@ -140,9 +140,4 @@ export default function Comments() {
                 Borrar
               </button>
             )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+
