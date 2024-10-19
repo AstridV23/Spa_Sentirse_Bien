@@ -1,13 +1,11 @@
-import { ChangeEvent, FormEvent, useState /*useEffect*/ } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 // import axios from "../api/axios";
-import { FaStar } from "react-icons/fa";
 
 type User = {
   _id: string;
   username: string;
-  avatar: string;
   reservas: number;
 };
 
@@ -16,7 +14,6 @@ type Comment = {
   author?: User;
   content: string;
   date: string;
-  rating: number;
 };
 
 const commentFalsos: Comment[] = [
@@ -25,55 +22,46 @@ const commentFalsos: Comment[] = [
     author: {
       _id: "user1",
       username: "PedritoSanchez",
-      avatar: "/assets/whatsapp.png",
       reservas: 1,
     },
     content:
       "¡Increíble experiencia! El servicio fue excepcional, la comida deliciosa y el ambiente acogedor. Me encantó la atención personalizada y los detalles cuidadosamente pensados. Sin duda, volveré pronto y lo recomendaré a todos mis amigos. Una joya culinaria que no se puede perder. ¡5 estrellas!",
     date: "2024-02-14",
-    rating: 4,
   },
   {
     _id: "2",
     content: "LO ODIO, NO ME GUSTA, NO VUELVO",
     date: "2024-02-15",
-    rating: 2,
   },
   {
     _id: "3",
     author: {
       _id: "user4",
       username: "PatriciaFerrana",
-      avatar: "/assets/Velaslim.jpg",
       reservas: 5,
     },
     content: "Este es un comentario de prueba",
     date: "2024-02-14",
-    rating: 4,
   },
   {
     _id: "4",
     author: {
       _id: "user5",
       username: "PatriciaBulrrich",
-      avatar: "/assets/Velaslim.jpg",
       reservas: 5,
     },
     content: "Este es un comentario de prueba",
     date: "2024-02-14",
-    rating: 4,
   },
   {
     _id: "5",
     author: {
       _id: "user6",
       username: "OstiasTio",
-      avatar: "/assets/Fondo1.jpg",
       reservas: 2,
     },
     content: "Este es un comentario de prueba",
     date: "2024-02-14",
-    rating: 3,
   },
 ];
 
@@ -84,13 +72,11 @@ type CommentsProps = {
 export default function Comments({ mode }: CommentsProps) {
   const [comments, setComments] = useState<Comment[]>(commentFalsos);
   const [text, setText] = useState("");
-  const [rating, setRating] = useState<number>(0);
 
   const isLoggedIn = false;
   const user: User = {
     _id: "23",
     username: "JuanCarlos",
-    avatar: "/assets/Ultracavitacion.jpg",
     reservas: 3,
   };
 
@@ -116,7 +102,7 @@ export default function Comments({ mode }: CommentsProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (text.trim() !== "" && rating > 0) {
+    if (text.trim() !== "") {
       /*
       try {
         const response = await axios.post(
@@ -144,9 +130,8 @@ export default function Comments({ mode }: CommentsProps) {
         icon: "success",
         timer: 1000,
       });
-      console.log(`comentario: ${text}, rating: ${rating}`);
+      console.log(`comentario: ${text}`);
       setText("");
-      setRating(0);
     }
   }
 
@@ -182,33 +167,6 @@ export default function Comments({ mode }: CommentsProps) {
     });
   }
 
-  // Nuevo componente para las estrellas
-  const StarRating = ({
-    rating,
-    onRating,
-  }: {
-    rating: number;
-    onRating: (index: number) => void;
-  }) => {
-    return (
-      <div>
-        {[...Array(5)].map((_star, index) => {
-          index += 1;
-          return (
-            <button
-              type="button"
-              key={index}
-              className={index <= rating ? "on" : "off"}
-              onClick={() => onRating(index)}
-            >
-              <FaStar />
-            </button>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
     <div className={mode === "home" ? "comments-home" : "comments-admin"}>
       <div className="comments">
@@ -218,26 +176,21 @@ export default function Comments({ mode }: CommentsProps) {
             <form onSubmit={handleSubmit}>
               <div id="encabezado" className="par">
                 <div id="user" className="par">
+                  <img
+                    className="avatar"
+                    src="/assets/perfil.jpg"
+                    alt="avatar"
+                  />
                   {isLoggedIn ? (
-                    <>
-                      <img className="avatar" src={user.avatar} alt="avatar" />
-                      <div>
-                        <h4>{user.username}</h4>
-                        <p>{user.reservas} reservas</p>
-                      </div>
-                    </>
+                    <div>
+                      <h4>{user.username}</h4>
+                      <p>{user.reservas} reservas</p>
+                    </div>
                   ) : (
-                    <>
-                      <img
-                        className="avatar"
-                        src="/assets/perfil.jpg"
-                        alt="avatar"
-                      />
-                      <div>
-                        <h4>Usuario</h4>
-                        <p>Anonimo</p>
-                      </div>
-                    </>
+                    <div>
+                      <h4>Usuario</h4>
+                      <p>Anónimo</p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -261,12 +214,6 @@ export default function Comments({ mode }: CommentsProps) {
                   {text.length}/250 caracteres
                 </p>
                 <div id="buttons" className="par">
-                  <div className="star-rating">
-                    <StarRating
-                      rating={rating}
-                      onRating={(index) => setRating(index)}
-                    />
-                  </div>
                   <button className="MainButton" type="submit">
                     Comentar
                   </button>
@@ -286,44 +233,23 @@ export default function Comments({ mode }: CommentsProps) {
                   <div id="encabezado" className="par">
                     <div className="comment">
                       <div id="user" className="par">
+                        <img
+                          className="avatar"
+                          src="/assets/perfil.jpg"
+                          alt="avatar"
+                        />
                         {comment.author ? (
-                          <>
-                            <img
-                              className="avatar"
-                              src={comment.author.avatar}
-                              alt="avatar"
-                            />
-                            <div>
-                              <h4>{comment.author.username}</h4>
-                              <p>{comment.author.reservas} reservas</p>
-                              <p>{comment.date}</p>
-                              <div className="star-rating">
-                                <StarRating
-                                  rating={comment.rating}
-                                  onRating={() => {}}
-                                />
-                              </div>
-                            </div>
-                          </>
+                          <div>
+                            <h4>{comment.author.username}</h4>
+                            <p>{comment.author.reservas} reservas</p>
+                            <p>{comment.date}</p>
+                          </div>
                         ) : (
-                          <>
-                            <img
-                              className="avatar"
-                              src="/assets/perfil.jpg"
-                              alt="avatar"
-                            />
-                            <div>
-                              <h4>Usuario</h4>
-                              <p>Anónimo</p>
-                              <p>{comment.date}</p>
-                              <div className="star-rating">
-                                <StarRating
-                                  rating={comment.rating}
-                                  onRating={() => {}}
-                                />
-                              </div>
-                            </div>
-                          </>
+                          <div>
+                            <h4>Usuario</h4>
+                            <p>Anónimo</p>
+                            <p>{comment.date}</p>
+                          </div>
                         )}
                       </div>
                       {mode === "admin" && (
