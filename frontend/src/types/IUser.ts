@@ -1,13 +1,13 @@
 interface IUser {
-  _id: string,
-  email: string;
+  _id: string;
   username: string;
-  password: string;
-  firstname: string,
-  lastname: string,
-  phone: string,
-  sex: string,
-  role: string,
+  email: string;
+  firstname: string;
+  lastname: string;
+  sex: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default IUser

@@ -47,11 +47,16 @@ export const register = async (req, res) => {
 
         res.cookie('token', token)
         res.json({
-            id: userSaved._id,
-            username: userSaved.username,
-            email: userSaved.email,
-            createdAt: userSaved.createdAt,
-            updatedAt: userSaved.updatedAt
+            id: userFound._id,
+            username: userFound.username,
+            role: userFound.role,
+            firstname: userFound.firstname,
+            lastname: userFound.lastname,
+            email: userFound.email,
+            phone: userFound.phone,
+            sex: userFound.sex,
+            createdAt: userFound.createdAt,
+            updatedAt: userFound.updatedAt
         })
     }
     catch (error) {
@@ -60,12 +65,10 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    const {email, username, password} = req.body;
+    const {username, password} = req.body;
     
     try {
-        const userFound = await User.findOne({
-            $or: [{email}, {username}]
-        });
+        const userFound = await User.findOne({username: username});
 
         if (!userFound) return res.status(400).json({message: "No se ha encontrado al usuario."});
 
@@ -77,9 +80,14 @@ export const login = async (req, res) => {
 
         res.cookie('token', token);
         res.json({
-            id: userFound._id,
+            _id: userFound._id,
             username: userFound.username,
+            role: userFound.role,
+            firstname: userFound.firstname,
+            lastname: userFound.lastname,
             email: userFound.email,
+            phone: userFound.phone,
+            sex: userFound.sex,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt
         });
@@ -126,7 +134,14 @@ export const verifyToken = async (req, res) => {
         return res.json({
             id: userFound._id,
             username: userFound.username,
-            email:userFound.email,
+            role: userFound.role,
+            firstname: userFound.firstname,
+            lastname: userFound.lastname,
+            email: userFound.email,
+            phone: userFound.phone,
+            sex: userFound.sex,
+            createdAt: userFound.createdAt,
+            updatedAt: userFound.updatedAt
         });
     });
 }
