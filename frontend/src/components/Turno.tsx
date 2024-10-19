@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import swal from "sweetalert";
 import axios from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 type Servicio = {
   nombre: string;
@@ -40,6 +41,7 @@ export function TurnPopUp() {
   const [precio, setPrecio] = useState<number>(0);
   const [servicios, setServicios] = useState<Servicios>({});
   const [, setPagoEnLocal] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   const {
     register,
@@ -125,9 +127,19 @@ export function TurnPopUp() {
 
   // método para mandar al backend
   const onSubmit = async (data: Data) => {
+    if (!user) {
+      swal({
+        title: "Usuario no autenticado",
+        text: "Por favor inicia sesión para reservar un turno.",
+        icon: "warning",
+        timer: 2500,
+      });
+      return;
+    }
+  
     const formattedDate = new Date(data.fecha);
-
-    // Crea el objeto de reserva
+  
+    // Crea el objeto de reserva incluyendo la información del usuario
     const reservaTurno = {
       service: data.servicio,
       treatment: data.tipoTratamiento,
@@ -135,13 +147,14 @@ export function TurnPopUp() {
       info: data.informacion,
       cost: precio,
       paymentLocal: data.pagoLocal,
+      user: user.id, // Incluye el ID o email del usuario
     };
-
+  
     console.log("Formulario enviado:", reservaTurno);
-
+  
     if (!data.tipoTratamiento || !data.servicio || !data.fecha || !data.hora) {
       swal({
-        title: "Campos vacios",
+        title: "Campos vacíos",
         text: "Ingrese toda la información solicitada",
         icon: "warning",
         timer: 2500,
@@ -151,7 +164,7 @@ export function TurnPopUp() {
       try {
         // Enviar los datos al backend
         const response = await axios.post("/bookings", reservaTurno);
-
+  
         // Manejar la respuesta del backend
         if (response.status === 201) {
           const formattedDate = formatDate(data.fecha);
@@ -177,6 +190,7 @@ export function TurnPopUp() {
       }
     }
   };
+  
 
   // Funciones para limitar la fecha
   const today = new Date();
@@ -255,7 +269,7 @@ export function TurnPopUp() {
                       id="fecha"
                       {...register("fecha", { required: true })}
                       min={minDate}
-                      max={maxDateString} // Limitar la fecha
+                      max={maxDateString}
                     />
                   </label>
                   {errors.fecha && (
