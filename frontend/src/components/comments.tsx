@@ -53,7 +53,7 @@ export default function Comments({ mode }: Props) {
       try {
         const response = await axios.post("/comment", {
           content: text.trim(),
-          author: user.username || "Anónimo", // Asumiendo que tienes acceso a 'user'
+          author: user?.username || "Anónimo", // Asumiendo que tienes acceso a 'user'
         });
 
         const newComment: Comment = {
