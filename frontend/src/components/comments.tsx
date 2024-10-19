@@ -1,40 +1,39 @@
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext"
 
-// Simulamos un usuario logueado o no logueado con una constante
-//const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
-
-// Simulando que el usuario es admin
-const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
+const isAdmin = true;
 
 type Comment = {
-  _id: string;
-  author?: string;  // Hacemos author opcional
+  author: string;
   content: string;
-  date: string;
-  reply?: {
-    author?: string;  // También hacemos author opcional aquí
-    content: string;
-    date: string;
-  };
 };
 
+type CommentResponse = {
+  _id: string;
+  author: string;
+  content: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+
 export default function Comments() {
-  const [comments, setComments] = useState<Array<Comment>>([]);
+  const [comment, setComment] = useState<Array<Comment>>([]);
+  const [comments, setComments] = useState<Array<CommentResponse>>([]);
   const [text, setText] = useState("");
-  const [replyText, setReplyText] = useState(""); 
-  const [replyIndex, setReplyIndex] = useState<number | null>(null); 
-  const {getCurrentUser} = useAuth();
-  const currentUser = getCurrentUser();
+  const { user } = useAuth();
+
 
   /* Función para obtener los comentarios del backend
   async function fetchComments() {
     try {
       const response = await axios.get("/comment");
-      
+
       setComments(response.data);
     } catch (error) {
       console.error("Error al obtener los comentarios:", error);
@@ -42,68 +41,48 @@ export default function Comments() {
   }
     
 
-    // Llamar a la función fetchComments cuando el componente se monte
-    useEffect(() => {
-      fetchComments();
-    }, []);
-    */
+  // Llamar a la función fetchComments cuando el componente se monte
+  useEffect(() => {
+    fetchComments();
+  }, []);
+  
 
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-  
+
+
     if (text.trim() !== "") {
-  
+      
       try {
-        // Enviar el nuevo comentario al backend
-        const response = await axios.post("/comment", {content: text}, {withCredentials: true});
-        
-        const newComment: Comment = {
-          _id: response.data._id,
-          author: currentUser.name,
+        const response = await axios.post("/comment", {
+          content: text.trim(),
+          author: user.username || "Anónimo"// Asumiendo que tienes acceso a 'user'
+        });
+
+        const newComment: Comment = {   
+          author: user.username,
           content: response.data.content,
-          date: response.data.date,
         };
 
-        setComments([newComment, ...comments]); // Agregar el comentario al inicio
-        setText(""); // Limpiar el campo de texto
-  
+        setComment([newComment, ...comment]);
+        setText("");
       } catch (error) {
         console.error("Error al enviar el comentario:", error);
       }
+        
+      swal("Comentario enviado con éxito", {
+        icon: "success",
+        timer: 1000,
+      });
+      console.log(`comentario: ${text}`);
+      setText("");
     }
   }
-  
 
   // Maneja el cambio en el campo de texto del comentario
   function handleTextChange(event: ChangeEvent<HTMLInputElement>) {
     setText(event.target.value);
-  }
-
-  // Maneja el envío de una respuesta a un comentario
-  async function handleReplySubmit(event: FormEvent<HTMLFormElement>, index: number) {
-    event.preventDefault();
-
-    if (replyText.trim() !== "") {
-      try {
-
-        const commentToReply = comments[index];
-        // Enviar la respuesta al backend
-        const response = await axios.post(`/comment/${commentToReply._id}/reply`, { content: replyText }, { withCredentials: true });
-        
-        // El backend debería devolver el comentario actualizado con la nueva respuesta
-        const updatedComment: Comment = response.data;
-        
-        const updatedComments = [...comments];
-        updatedComments[index] = updatedComment;
-        
-        setComments(updatedComments);
-        setReplyText(""); // Limpiar el campo de respuesta
-        setReplyIndex(null); // Cerrar el campo de respuesta
-      } catch (error) {
-        console.error("Error al enviar la respuesta:", error);
-      }
-    }
   }
 
   // Maneja la eliminación de un comentario
@@ -149,42 +128,9 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.author||"Anónimo"}</strong> ({comment.date}): <br/> {comment.content}
+            <strong>{comment.author}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
-            {comment.reply && (
-              <ul>
-                <li className="respuesta">
-                  <strong>{comment.reply.author||"Anónimo"}</strong> ({comment.reply.date}):{" "}
-                  {comment.reply.content}
-                </li>
-              </ul>
-            )}
-            {/* Mostrar el campo de respuesta si aún no hay respuesta */}
-            {!comment.reply && isAdmin && (
-              <>
-                {replyIndex === index ? (
-                  <form onSubmit={(e) => handleReplySubmit(e, index)}>
-                    <input
-                      className="textbox"
-                      type="text"
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      placeholder="Escribe una respuesta"
-                    />
-                    <button className="replyButton" type="submit">
-                      Responder
-                    </button>
-                  </form>
-                ) : (
-                  <button
-                    className="replyButton"
-                    onClick={() => setReplyIndex(index)}
-                  >
-                    Responder
-                  </button>
-                )}
-              </>
-            )}
+            
             {/* Botón de borrar siempre visible */}
             {isAdmin && (
               <button

@@ -1,25 +1,19 @@
 import Comment from '../models/comment_model.js'
 
 export const createComment = async (req, res) => {
-    debugger;
     try {
-        const { content, reply, user } = req.body;
-        const author = {
-            user: req.user,
-            name: req.user,
-        };
+        const { content, author } = req.body;
 
         const newComment = new Comment({
-            author: user.name,
             content,
-            reply: reply || null,      
+            author,
         });
 
         const savedComment = await newComment.save();
         res.status(201).json(savedComment);
     
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear el comentario.', error });
+        res.status(500).json({ message: 'Error al crear el comentario.', error: error.message });
     }
 };
 
@@ -40,11 +34,11 @@ export const getComments = async (req, res) => {
     debugger;
 
     try {
-        const comments = await Comment.find().sort({ date: -1 }).populate('author.user', 'username');
+        const comments = await Comment.find().sort({ createdAt: -1 });
 
         const formattedComments = comments.map(comment => ({
             ...comment.toObject(),
-            date: comment.date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) // Formato DD/MM/AAAA
+            date: new Date(comment.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }),
         }));
 
         res.json(formattedComments);

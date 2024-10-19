@@ -16,23 +16,26 @@ const billSchema = new Schema({
     required: true,
     min: 1
   },
-  clientName: {
-    type: String,
-    required: true,
-    trim: true
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    require: true
+  },
+  payment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Payment",
+    require: true
   },
   clientCUIT: {
     type: String,
     match: /^[0-9]{11}$/,
     trim: true
   },
-  services: [
-    {
-      description: { type: String, required: true },
-      amount: { type: Number, required: true, min: 0 },
-      quantity: { type: Number, required: true, min: 1 }
-    }
-  ],
+  services: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Service",
+    require: true
+  },
   total: {
     type: Number,
     required: true,

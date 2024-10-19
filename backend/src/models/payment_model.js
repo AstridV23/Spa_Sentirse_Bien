@@ -27,6 +27,11 @@ const paymentSchema = new Schema({
     required: true,
     match: /^[0-9]{3,4}$/
   },
+  cuit: {
+    type: String,
+    required: true,
+    match: /^[0-9]{11}$/
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

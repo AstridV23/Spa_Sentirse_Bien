@@ -114,11 +114,9 @@ function Home() {
             </Link>
           </div>
         </section>
-        <section className="comments-section" id="comments">
-          <div className="comments-container">
-            <Comments />
-          </div>
-        </section>
+        {<section className="comments-section" id="comments">
+          <Comments />
+        </section>}
       </main>
     </div>
   );

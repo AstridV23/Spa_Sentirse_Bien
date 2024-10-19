@@ -13,16 +13,15 @@ import IUser from '../types/IUser.ts';
 // Definir la interfaz para el usuario
 
 // Definir la interfaz del contexto de autenticación
-interface AuthContextType {
-  user: IUser | null;
+type AuthContextType = {
+  signup: (user: any) => Promise<void>; 
+  signin: (user: any) => Promise<void>;
+  logout: () => Promise<void>;
+  user: any;
   isAuthenticated: boolean;
+  errors: any;
   loading: boolean;
-  errors: string[];
-  signup: (user: IUser) => Promise<void>;
-  signin: (user: IUser) => Promise<void>;
-  logout: () => Promise<void>
-  getCurrentUser: () => { id: string | null, name: string };
-}
+};
 
 // Crear contexto con el tipo definido
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -46,22 +45,13 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<IUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  /* Nueva función para devolver el nombre de usuario
-  const getUsername = (): string | null => {
-    if (isAuthenticated && user) {
-      return user.username;
-    }
-    return null;
-  };*/
-
-  const signup = async (user: IUser) => {
+  const signup = async (user: any) => {
     try {
       const res = await registerRequest(user);
-      console.log(res.data);
       setUser(res.data.user);
       setIsAuthenticated(true);
       
@@ -84,13 +74,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const signin = async (user: IUser) => {
+  const signin = async (credentials: {username: string, password: string}) => {
     try {
-      const res = await loginRequest(user);
-      console.log(res);
+      console.log("user antes de login", user);
+      const res = await loginRequest(credentials);
+      console.log('Respuesta del servidor:', res.data);
+      
       setUser(res.data.user);
+      
+      console.log("user despues de login", user);
       setIsAuthenticated(true);
-      console.log(user)
 
     } catch (error: any) {
       console.log(error.response);
@@ -108,17 +101,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Si no es ni array ni objeto, establece un error genérico
         setErrors(["An unexpected error occurred."]);
       }
-    }
-  };
-
-  const getCurrentUser = () => {
-    
-    if (isAuthenticated && user) {
-      console.log(user)
-      return { id: user._id, name: user.username };
-    }
-    else {
-      return { id: null, name: 'Anónimo' };
     }
   };
 
@@ -149,16 +131,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       try {
-        const res = await verificarToken();
-        console.log(res);
-        if (!res.data) {
-          setIsAuthenticated(false);
-          setLoading(false);
-          return;
-        }
+        const res = await verificarToken(cookies.token);
+        if (!res.data) return setIsAuthenticated(false);
 
         setIsAuthenticated(true);
-        setUser(res.data.user);
+        setUser(res.data);
         setLoading(false);
 
       } catch (error) {
@@ -175,7 +152,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <AuthContext.Provider value={{
       signup,
       signin,
-      getCurrentUser,
       logout,
       loading,
       user,

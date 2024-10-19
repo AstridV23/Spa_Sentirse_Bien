@@ -25,7 +25,6 @@ type Pago = {
   //cliente: Cliente
   cuil: string;
   fecha: string;
-  hora: string;
   tratamiento: string;
   valor: number;
   pagoLocal: boolean;
@@ -64,7 +63,6 @@ export default function FormPago({ DatosTurno }: Props) {
       //cliente: Cliente
       cuil: tarjeta.cuil,
       fecha: DatosTurno.fecha,
-      hora: DatosTurno.hora,
       tratamiento: DatosTurno.tipoTratamiento,
       valor: DatosTurno.costo,
       pagoLocal: DatosTurno.pagoLocal,
@@ -76,9 +74,9 @@ export default function FormPago({ DatosTurno }: Props) {
       icon: "success",
     });
 
-    console.log(pago); //info del pago AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    console.log(tarjeta); //info de la tarjeta AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    console.log(DatosTurno); //info del turno AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    console.log("pago", pago); //info del pago AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    console.log("tarjeta", tarjeta); //info de la tarjeta AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    console.log("DatosTurno", DatosTurno); //info del turno AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     closePopUp(); // Cerrar el popup después del envío
   };
 
