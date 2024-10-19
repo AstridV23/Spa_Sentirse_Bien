@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Home.css";
 import Comments from "../components/comments";
 import Servicio from "../components/servicio";
 import { useLayoutEffect } from "react";
 import { TurnPopUp } from "../components/Turno";
 import { usePopUp } from "../components/PopUpContext";
-import LoginModal from "../components/LoginModal";
+//import LoginModal from "../components/LoginModal";
 
 const servicios = [
   {
@@ -35,10 +35,11 @@ function Home() {
   }, []);
 
   const { openPopUp } = usePopUp();
+  const navigate = useNavigate();
 
   // Simulando que el usuario es admin
   const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
-  const isLoggedIn = true; // Cambia esto a true para simular que el usuario está logueado
+  const isLoggedIn = false; // Cambia esto a true para simular que el usuario está logueado
 
   return (
     <div className="Home-page">
@@ -57,7 +58,9 @@ function Home() {
             <div className="buttonsFirst">
               <button
                 className="MainButton"
-                onClick={() => (isLoggedIn ? openPopUp("turn") : LoginModal())}
+                onClick={() =>
+                  isLoggedIn ? openPopUp("turn") : navigate("/login")
+                }
               >
                 Agendar Turno
               </button>
@@ -114,9 +117,11 @@ function Home() {
             </Link>
           </div>
         </section>
-        {<section className="comments-section" id="comments">
-          <Comments />
-        </section>}
+        {
+          <section className="comments-section" id="comments">
+            <Comments mode="home" />
+          </section>
+        }
       </main>
     </div>
   );
