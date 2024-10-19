@@ -128,7 +128,6 @@ export function FormPopUp() {
               />
             </div>
             <div className="buttons">
-              <input type="submit" className="MainButton" value="Enviar" />
               <button
                 type="button"
                 className="SecondButton"
@@ -136,6 +135,7 @@ export function FormPopUp() {
               >
                 Cancelar
               </button>
+              <input type="submit" className="MainButton" value="Enviar" />
             </div>
           </form>
         </div>
