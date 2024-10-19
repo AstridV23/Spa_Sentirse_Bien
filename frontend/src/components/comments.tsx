@@ -82,21 +82,38 @@ export default function Comments({ mode }: Props) {
   }*/
 
   // Maneja la eliminación de un comentario
-  function handleDeleteComment(index: number) {
+  async function handleDeleteComment(index: number) {
     swal({
       title: "¿Estás seguro?",
       text: "Una vez eliminado, no podrás recuperar este comentario.",
       icon: "warning",
       buttons: ["Cancelar", "Eliminar"],
       dangerMode: true,
-    }).then((willDelete) => {
+    }).then(async (willDelete) => {
       if (willDelete) {
-        const updatedComments = comments.filter((_, i) => i !== index); // aca se debe borrar el comentario de la base de datos y volver a definirlo en una const
-        setComments(updatedComments);
-        swal("Comentario eliminado con éxito", {
-          icon: "success",
+        try {
+          const commentId = comments[index]._id;
+          console.log(`Intentando eliminar comentario con ID: ${commentId}`);
+          
+          const response = await axios.delete(`/comment/${commentId}`);
+          console.log('Respuesta del servidor:', response);
+
+          if (response.status === 204 || response.status === 200) {
+          setComments(prevComments => prevComments.filter((_, i) => i !== index));
+          swal("Comentario eliminado con éxito", {
+            icon: "success",
+            timer: 1500,
+          });
+        } else {
+          throw new Error(`Respuesta inesperada del servidor: ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Error detallado al eliminar el comentario:", error);
+        swal("Error al eliminar el comentario", {
+          icon: "error",
           timer: 1500,
         });
+        }
       }
     });
   }
