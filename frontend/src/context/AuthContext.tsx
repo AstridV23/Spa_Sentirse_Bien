@@ -121,14 +121,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [errors]);*/
 
   useEffect(() => {
-    console.log('Estado de user actualizado:', user);
-  }, [user]);
-  
-  useEffect(() => {
-    console.log('Estado de isAuthenticated actualizado:', isAuthenticated);
-  }, [isAuthenticated]);
-
-  useEffect(() => {
     async function checkLogin() {
       const cookies = Cookies.get();
 

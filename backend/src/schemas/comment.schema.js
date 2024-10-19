@@ -5,5 +5,5 @@ export const createCommentSchema = z.object({
     }).optional().default("Anónimo"),
     content: z.string({
         required_error: "El texto del comentario es requerido."
-    }),
+    }).min(1),
 })
