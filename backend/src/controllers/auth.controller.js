@@ -47,16 +47,16 @@ export const register = async (req, res) => {
 
         res.cookie('token', token)
         res.json({
-            id: userFound._id,
-            username: userFound.username,
-            role: userFound.role,
-            firstname: userFound.firstname,
-            lastname: userFound.lastname,
-            email: userFound.email,
-            phone: userFound.phone,
-            sex: userFound.sex,
-            createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt
+            id: userSaved._id,
+            username: userSaved.username,
+            role: userSaved.role,
+            firstname: userSaved.firstname,
+            lastname: userSaved.lastname,
+            email: userSaved.email,
+            phone: userSaved.phone,
+            sex: userSaved.sex,
+            createdAt: userSaved.createdAt,
+            updatedAt: userSaved.updatedAt
         })
     }
     catch (error) {
