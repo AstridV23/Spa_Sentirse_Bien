@@ -18,7 +18,7 @@ export const paymentSchema = z.object({
   expirationDate: z.string({
     required_error: "Ingrese la fecha de expiración de la tarjeta."
   })
-  .regex(/^\d{4}-\d{2}-\d{2}$/, {
+  .regex(/^(0[1-9]|1[0-2])-\d{2}$/, {
     message: "Ingrese una fecha de expiración válida en formato YYYY-MM-DD."
   }),
 

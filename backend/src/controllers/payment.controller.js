@@ -29,12 +29,15 @@ export const createPayment = async (req, res) => {
             return res.status(400).json({ message: "CUIT inválido." });
         }
 
+        const [month, year] = expirationDate.split('-');
+        const vencimiento = new Date(parseInt(`20${year}`, 10), parseInt(month, 10) - 1);
+
         // Crear el nuevo pago
         const newPayment = new Payment({
             cardType,
             cardNumber,
             cardName,
-            expirationDate: new Date(expirationDate),
+            expirationDate: vencimiento,
             cvv,
             cuit,
             amount,
