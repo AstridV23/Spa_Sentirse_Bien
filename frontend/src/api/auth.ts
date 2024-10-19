@@ -9,8 +9,8 @@ export const logoutRequest = () => axios.post('/loguot')
 
 export const verificarToken = (token: string) => axios.get('/verify', {
     headers: {
-      Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`
     }
-  });
+});
 
 

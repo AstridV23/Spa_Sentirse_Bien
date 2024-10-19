@@ -40,8 +40,7 @@ function Home() {
   const {isAuthenticated} = useAuth();
   const {user} = useAuth()
   // Simulando que el usuario es admin
-  
-
+  const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
   const isLoggedIn = isAuthenticated; // Cambia esto a true para simular que el usuario está logueado
 
   return (
