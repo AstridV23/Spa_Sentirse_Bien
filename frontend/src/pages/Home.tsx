@@ -5,6 +5,7 @@ import Servicio from "../components/servicio";
 import { useLayoutEffect } from "react";
 import { TurnPopUp } from "../components/Turno";
 import { usePopUp } from "../components/PopUpContext";
+import { useAuth } from "../context/AuthContext";
 //import LoginModal from "../components/LoginModal";
 
 const servicios = [
@@ -36,10 +37,10 @@ function Home() {
 
   const { openPopUp } = usePopUp();
   const navigate = useNavigate();
-
+  const {isAuthenticated} = useAuth();
   // Simulando que el usuario es admin
   const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
-  const isLoggedIn = false; // Cambia esto a true para simular que el usuario está logueado
+  const isLoggedIn = isAuthenticated; // Cambia esto a true para simular que el usuario está logueado
 
   return (
     <div className="Home-page">
