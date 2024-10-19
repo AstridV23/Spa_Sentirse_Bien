@@ -38,8 +38,10 @@ function Home() {
   const { openPopUp } = usePopUp();
   const navigate = useNavigate();
   const {isAuthenticated} = useAuth();
+  const {user} = useAuth()
   // Simulando que el usuario es admin
-  const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
+  
+
   const isLoggedIn = isAuthenticated; // Cambia esto a true para simular que el usuario está logueado
 
   return (
@@ -60,7 +62,7 @@ function Home() {
               <button
                 className="MainButton"
                 onClick={() =>
-                  isLoggedIn ? openPopUp("turn") : navigate("/login")
+                  isAuthenticated ? openPopUp("turn") : navigate("/login")
                 }
               >
                 Agendar Turno
@@ -73,7 +75,7 @@ function Home() {
               </button>
 
               {/* Rendnerizado condicional */}
-              {isAdmin && (
+              {user && user.role !== "usuario" && (
                 <Link to="/admin" className="SecondButton">
                   Administrador
                 </Link>
