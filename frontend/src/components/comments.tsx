@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import "./comments.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 // Simulamos un usuario logueado o no logueado con una constante
 //const loggedInUser: string | null = "Anónimo"; // Cambiar a `null` si no está logueado
@@ -9,19 +10,13 @@ import axios from "../api/axios";
 // Simulando que el usuario es admin
 const isAdmin = true; // Cambia esto a false para simular que el usuario no es admin
 
-type User = {
-  _id: string;
-  username: string;
-  email: string;
-};
-
 type Comment = {
   _id: string;
-  author?: User;  // Hacemos author opcional
+  author?: string;  // Hacemos author opcional
   content: string;
   date: string;
   reply?: {
-    author?: User;  // También hacemos author opcional aquí
+    author?: string;  // También hacemos author opcional aquí
     content: string;
     date: string;
   };
@@ -32,8 +27,10 @@ export default function Comments() {
   const [text, setText] = useState("");
   const [replyText, setReplyText] = useState(""); 
   const [replyIndex, setReplyIndex] = useState<number | null>(null); 
+  const {getCurrentUser} = useAuth();
+  const currentUser = getCurrentUser();
 
-  // Función para obtener los comentarios del backend
+  /* Función para obtener los comentarios del backend
   async function fetchComments() {
     try {
       const response = await axios.get("/comment");
@@ -43,11 +40,13 @@ export default function Comments() {
       console.error("Error al obtener los comentarios:", error);
     }
   }
+    
 
     // Llamar a la función fetchComments cuando el componente se monte
     useEffect(() => {
       fetchComments();
     }, []);
+    */
 
   // Maneja el envío de un nuevo comentario
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -61,7 +60,7 @@ export default function Comments() {
         
         const newComment: Comment = {
           _id: response.data._id,
-          author: response.data.author,
+          author: currentUser.name,
           content: response.data.content,
           date: response.data.date,
         };
@@ -150,12 +149,12 @@ export default function Comments() {
       <ul>
         {comments.map((comment, index) => (
           <li key={index}>
-            <strong>{comment.author?.username||"Anónimo"}</strong> ({comment.date}): <br/> {comment.content}
+            <strong>{comment.author||"Anónimo"}</strong> ({comment.date}): <br/> {comment.content}
             {/* Mostrar la respuesta si existe */}
             {comment.reply && (
               <ul>
                 <li className="respuesta">
-                  <strong>{comment.reply.author?.username||"Anónimo"}</strong> ({comment.reply.date}):{" "}
+                  <strong>{comment.reply.author||"Anónimo"}</strong> ({comment.reply.date}):{" "}
                   {comment.reply.content}
                 </li>
               </ul>
