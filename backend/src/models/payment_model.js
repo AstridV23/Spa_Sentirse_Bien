@@ -1,4 +1,5 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
 
 const paymentSchema = new Schema({
   cardType: {
@@ -8,9 +9,10 @@ const paymentSchema = new Schema({
   },
   cardNumber: {
     type: String,
-    trim: true,
     required: true,
     match: /^[0-9]{16}$/,
+    get: (number) => `****-****-****-${number.slice(-4)}`,
+    set: (number) => number.replace(/\s/g, '')
   },
   cardName: {
     type: String,
@@ -18,14 +20,14 @@ const paymentSchema = new Schema({
     trim: true
   },
   expirationDate: {
-    type: String, 
-    required: true,
-    match: /^(0[1-9]|1[0-2])\/?([0-9]{2}|[0-9]{4})$/, 
+    type: Date,
+    required: true
   },
   cvv: {
     type: String,
     required: true,
-    match: /^[0-9]{3,4}$/
+    match: /^[0-9]{3,4}$/,
+    select: false // No se incluirá en las consultas por defecto
   },
   cuit: {
     type: String,
@@ -33,12 +35,24 @@ const paymentSchema = new Schema({
     match: /^[0-9]{11}$/
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
-    require: true
-},
+    //required: true
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  status: {
+    type: String,
+    default: 'aprobado'
+  }
 }, {
   timestamps: true
 });
+
+// Índice para mejorar las búsquedas por usuario
+paymentSchema.index({ user: 1 });
 
 export default model("Payment", paymentSchema);

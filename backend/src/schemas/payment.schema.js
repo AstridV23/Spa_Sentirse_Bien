@@ -13,19 +13,31 @@ export const paymentSchema = z.object({
 
   cardName: z.string({
     required_error: "Ingrese el nombre que aparece en la tarjeta."
-  }),
+  }).trim().min(1, { message: "El nombre no puede estar vacío." }),
 
   expirationDate: z.string({
     required_error: "Ingrese la fecha de expiración de la tarjeta."
   })
-  .regex(/^(0[1-9]|1[0-2])\/?([0-9]{2}|[0-9]{4})$/, {
-    message: "Ingrese una fecha de expiración válida en formato MM/YY o MM/YYYY."
+  .regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Ingrese una fecha de expiración válida en formato YYYY-MM-DD."
   }),
 
   cvv: z.string({
     required_error: "El CVV es requerido."
   })
-  .length(3, { message: "El CVV debe tener 3 dígitos." })
-  .or(z.string().length(4, { message: "El CVV debe tener 4 dígitos." }))
-  .regex(/^\d+$/, { message: "El CVV solo debe contener dígitos." }),
+  .refine(
+    (value) => /^\d{3,4}$/.test(value),
+    { message: "El CVV debe tener 3 o 4 dígitos y solo contener números." }
+  ),
+
+  cuit: z.string({
+    required_error: "El CUIT es requerido."
+  })
+  .length(11, { message: "El CUIT debe tener 11 dígitos." })
+  .regex(/^\d+$/, { message: "El CUIT solo debe contener dígitos." }),
+
+  amount: z.number({
+    required_error: "El monto es requerido."
+  })
+  .positive({ message: "El monto debe ser un número positivo." })
 });

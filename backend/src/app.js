@@ -8,7 +8,7 @@ import commentRoutes from "./routes/comment.routes.js";
 import newsRoutes from "./routes/news.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import serviceRoutes from "./routes/service.routes.js"
-
+import paymentRoutes from "./routes/payment.routes.js"
 const app = express();
 
 // Definir el origen según el entorno
@@ -35,6 +35,7 @@ app.use("/api", commentRoutes);
 app.use("/api", newsRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", serviceRoutes);
+app.use("/api", paymentRoutes);
 
 // Ruta principal
 app.get("/", (req, res) => {
