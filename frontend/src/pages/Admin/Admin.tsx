@@ -4,7 +4,7 @@ import NewsSection from "./Noticias";
 import PhotosSection from "./Fotos";
 import ServicesSection from "./Servicios";
 import HorasSection from "./Horas";
-//import Comments from "../../components/comments";
+import Comments from "../../components/comments";
 
 type Servicio = {
   img: string;
@@ -257,7 +257,7 @@ export default function Admin() {
                 />
                 <h3>Comentarios</h3>
               </button>
-              {/*desplegableComentarios && <Comments mode="admin" />*/}
+              {desplegableComentarios && <Comments mode="admin" />}
             </div>
           </div>
         )}
