@@ -1,32 +1,11 @@
 import mongoose from "mongoose";
-
-const authorSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
-  name: {
-    type: String,
-  }
-}, { _id: false });
-
-const replySchema = new mongoose.Schema({
-  author: authorSchema,
-  content: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  }
-}, {
-  timestamps: true
-});
+import { string } from "zod";
 
 const commentSchema = new mongoose.Schema({
-  author: authorSchema,
+  author: {
+    type: String,
+    required: true
+  },
   content: {
     type: String,
     required: true,
@@ -36,7 +15,6 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  reply: replySchema
 }, {
   timestamps: true
 });

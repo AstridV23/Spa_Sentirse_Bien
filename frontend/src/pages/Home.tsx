@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./Home.css";
-import Comments from "../components/comments";
+//import Comments from "../components/comments";
 import Servicio from "../components/servicio";
 import { useLayoutEffect } from "react";
 import { TurnPopUp } from "../components/Turno";
@@ -114,9 +114,9 @@ function Home() {
             </Link>
           </div>
         </section>
-        <section className="comments-section" id="comments">
+        {/*<section className="comments-section" id="comments">
           <Comments mode="home" />
-        </section>
+        </section>*/}
       </main>
     </div>
   );
