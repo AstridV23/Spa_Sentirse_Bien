@@ -50,7 +50,7 @@
 .comments #user {
   width: 95%;
   gap: 10px;
-  margin: 0 0 15px 15px;
+  margin: 15px 0 15px 15px;
 }
 .comments #comentario {
   display: flex;
@@ -62,13 +62,10 @@
   margin: 5px 5px 10px;
 }
 .comments #content {
-  padding: 10px 10px 0;
-}
-.comments #content {
   font-size: 13px;
 }
 .comments #content .content {
-  margin: 10px 20px 0;
+  margin: 10px 3px 0;
   color: var(--rosa);
 }
 .comments .avatar {
@@ -103,13 +100,13 @@
   padding: 0px;
   margin: 0;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 310px;
 }
 .comments li .avatar {
-  margin: 10px 0 auto;
+  margin: 0 0 auto;
 }
 .comments .delete {
-  margin: -30px 0 10px 10px;
+  margin: -15px 0 10px 10px;
 }
 
 @media screen and (max-width: 768px) {
