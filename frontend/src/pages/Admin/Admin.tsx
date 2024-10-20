@@ -127,8 +127,6 @@ const photosArray: Media[] = [
   },
 ];
 
-
-
 export default function Admin() {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -157,9 +155,9 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminName: string = user.name;
-  const AdminRole: string = user.role;
-  const AdminSex: string = user.sex;
+  const AdminName: string = user?.firstname || "Usuario";
+  const AdminRole: string = user?.role || "invitado";
+  const AdminSex: string = user?.sex || "otro";
 
   return (
     <div className="admin-page">
@@ -170,7 +168,13 @@ export default function Admin() {
         </div>
         <div className="sinPermisos">
           <h2 style={{ color: "var(--gris)" }}>
-            {AdminSex === "mujer" ? "Bienvenida" : "Bienvenido"} {AdminRole} {AdminName}
+            {AdminSex === "mujer" ? "Bienvenida" : "Bienvenido"}{" "}
+            {AdminRole === "admin"
+              ? AdminSex === "mujer"
+                ? "Doctora"
+                : "Doctor"
+              : AdminRole}{" "}
+            {AdminName}
           </h2>
           <img src="/assets/login.png" alt="Hola!" />
         </div>
