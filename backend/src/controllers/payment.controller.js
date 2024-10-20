@@ -2,7 +2,7 @@ import Payment from "../models/payment_model.js";
 
 export const createPayment = async (req, res) => {
     try {
-        const { cardType, cardNumber, cardName, expirationDate, cvv, cuit, amount } = req.body;
+        const { cardType, cardNumber, cardName, expirationDate, cvv, cuit, amount, user } = req.body;
 
         // Verificar que todos los campos requeridos estén presentes
         if (!cardType || !cardNumber || !cardName || !expirationDate || !cvv || !cuit || !amount) {

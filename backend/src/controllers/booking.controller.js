@@ -26,6 +26,13 @@ export const createBooking = async (req, res) =>{
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
 
+        // Actualizar el estado del turno a "pagado"
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            bookingId,
+            { status: 'pagado' },
+            { new: true }
+        );
+
     } catch (error) {
         console.error('Error al crear la reserva:', error);
         res.status(500).json({ message: 'Error al reservar turno.', error: error.message });
@@ -65,10 +72,8 @@ export const getAllBookings = async (req, res) => {
 //Retorna las reservas de un cliente
 export const getPersonalBookings = async(req, res) => {
     try {
-        const booking = await Booking.find({
-            user: req.user.id
-        }).populate('user')
-        res.json(booking)
+        const bookings = await Booking.find({ user: req.user.id }).populate('user');
+        res.json(bookings);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener reservas.', error });
     }
@@ -113,29 +118,36 @@ export const getBookingsByDate = async(req, res) => {
     }
 }
 
-//Cambiar estado de la reserva
 export const changeStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { service, treatment, date, info } = req.body;
-        const user = req.user ? req.user.username : 'Unknown';
+        const { status } = req.body;
+        const user = req.user ? req.user.id : null; // Asumiendo que tienes el ID del usuario en req.user
             
-        if (!service || !treatment || !date || !user) {
-            return res.status(400).json({ message: 'Faltan campos requeridos para procesar la solicitud.' });
+        if (!status || !["reservado", "pagado", "cancelado", "finalizado"].includes(status)) {
+            return res.status(400).json({ message: 'Estado de reserva inválido o no proporcionado.' });
+        }
+
+        if (!user) {
+            return res.status(401).json({ message: 'Usuario no autenticado.' });
         }
 
         const updatedBooking = await Booking.findByIdAndUpdate(
             id,
-            { service, treatment, date, info, satus: false, user },
-            { new: true, runValidators: true } // new: true devuelve el documento actualizado, runValidators asegura que los datos cumplen con el esquema            
+            { 
+                status,
+                user // Actualizamos el usuario que hizo el cambio
+            },
+            { new: true, runValidators: true }
         );
 
         if (!updatedBooking) {
-            return res.status(404).json({message: "Reserva no encontrada"})
+            return res.status(404).json({ message: "Reserva no encontrada" });
         }
 
-        res.satus(200).json(updatedBooking)
+        res.status(200).json(updatedBooking);
     } catch (error) {
-        res.status(500).json({message: "Reserva no encontrada"})
+        console.error('Error al cambiar el estado de la reserva:', error);
+        res.status(500).json({ message: "Error al cambiar el estado de la reserva" });
     }
-}
+};

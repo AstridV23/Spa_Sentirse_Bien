@@ -9,6 +9,7 @@ import newsRoutes from "./routes/news.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import serviceRoutes from "./routes/service.routes.js"
 import paymentRoutes from "./routes/payment.routes.js"
+
 const app = express();
 
 // Definir el origen según el entorno
