@@ -1,20 +1,25 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import "./Perfil.css";
 import React from "react";
-import Dropdown from "../components/Dropdown";
+import { useForm, Controller } from "react-hook-form";
+import swal from "sweetalert";
 
 type Perfil = {
   names: string;
-  surnames: string; 
+  surnames: string;
   username: string;
   email: string;
   phone: string;
   genero: string;
-  img: string;
   password: string;
   registro: Date;
   reservas: number;
 };
+
+type PerfilForm = Perfil & {
+  confirmPassword: string;
+};
+
 const DataPerfil: Perfil = {
   names: "Julian Ismael",
   surnames: "Codina de Pedro",
@@ -22,105 +27,91 @@ const DataPerfil: Perfil = {
   email: "depedrojulianismael@gmail.com",
   phone: "3624242424",
   genero: "Hombre",
-  img: "/assets/perfil.jpg",
   password: "StarWars1234",
   registro: new Date("07-09-24"),
   reservas: 3,
 };
-
 
 export default function Perfil() {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const[perfil, setPerfil] = useState<Perfil>(DataPerfil);
+  const [perfil, setPerfil] = React.useState<Perfil>(DataPerfil);
 
-  const [names, setNames] = useState<string>("");
-  const [surnames, setSurnames] = useState<string>("");
-  const [usernames, setUsernames] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [genero, setGenero] = useState<string>("");
-  const [image, setImage] = useState<string | undefined>();
-
-  const [password1, setPassword1] = useState<string>("");
-  const [password2, setPassword2] = useState<string>("");
-
-  const [reset, setReset] = useState(false);
+  const { control, handleSubmit, reset, watch, setValue } = useForm<PerfilForm>(
+    {
+      defaultValues: {
+        ...perfil,
+        password: "",
+        confirmPassword: "",
+      },
+    }
+  );
 
   useEffect(() => {
-    setPerfil(DataPerfil)
-    setImage(perfil.img)
-  }, []);
+    setPerfil(DataPerfil);
+    reset({
+      ...DataPerfil,
+      password: "",
+      confirmPassword: "",
+    });
+  }, [reset]);
 
   const registroString = `${perfil.registro.getDate()}/${
     perfil.registro.getMonth() + 1
   }/${perfil.registro.getFullYear()}`;
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string); // Actualiza el estado con la imagen cargada
-      };
-      reader.readAsDataURL(file); // Lee el archivo como una URL de datos
+  const onSubmit = (data: PerfilForm) => {
+    const confirmPassword = watch("confirmPassword");
+    if (data.password && data.password !== confirmPassword) {
+      swal({
+        title: "La contraseña no coincide",
+        icon: "warning",
+        timer: 1000,
+      });
+      return;
     }
-  };
 
-  const handleChangeOption = (value: string) => {
-    setGenero(value);
-    setReset(false);
-  };
+    const dataToSubmit: Partial<PerfilForm> = { ...data };
+    if (!dataToSubmit.password) {
+      delete dataToSubmit.password;
+    }
+    delete dataToSubmit.confirmPassword;
 
-  const handleSaveChanges = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
- 
-if(password1 !== password2){
-  swal({
-    title: "La contraseña no coincide",
-    icon: "warning",
-    timer: 1000,
-  });
-  return;
-}else{
-      if(!names && !surnames && !email && !phone && !genero && !password1 && !password2 ) {
+    // Agregar console.log para ver los datos que se envían
+    console.log("Datos enviados:", dataToSubmit);
+
+    if (Object.values(dataToSubmit).every((value) => !value)) {
       swal({
         title: "Falta información",
         icon: "warning",
         timer: 1000,
       });
       return;
-    } else {
+    }
 
-      swal({
-        title: "Cambios Hechos",
-        icon: "success",
-        timer: 1200,
-      });
+    const updatedPerfil = {
+      ...perfil,
+      ...dataToSubmit,
+    };
 
-    setPerfil((prevPerfil) => ({
-      ...prevPerfil,
-      names: names || prevPerfil.names,
-      surnames: surnames || prevPerfil.surnames,
-      username: usernames || prevPerfil.username,
-      email: email || prevPerfil.email,
-      phone: phone || prevPerfil.phone,
-      genero: genero || prevPerfil.genero,
-      password: password1 || prevPerfil.password
-    }));
-    setNames("")
-    setSurnames("")
-    setUsernames("")
-    setEmail("")
-    setPhone("")
-    setGenero("")
-    setPassword1("")
-    setPassword2("")
-    setReset(true);
-  }
-  }
+    setPerfil(updatedPerfil);
+    reset({
+      ...updatedPerfil,
+      password: "",
+      confirmPassword: "",
+    });
+
+    // Limpiar los campos de contraseña
+    setValue("password", "");
+    setValue("confirmPassword", "");
+
+    swal({
+      title: "Cambios Hechos",
+      icon: "success",
+      timer: 1200,
+    });
   };
 
   return (
@@ -136,24 +127,14 @@ if(password1 !== password2){
             <h3>Mi perfil</h3>
             <div className="tarjetaPerfil">
               <div className="nombres">
-              <h2>{perfil.names}</h2><h2>{perfil.surnames}</h2>
+                <h2>{perfil.names}</h2>
+                <h2>{perfil.surnames}</h2>
               </div>
               <p>{perfil.email}</p>
               <p>@{perfil.username}</p>
               <p>📞 {perfil.phone}</p>
               <p>{perfil.genero}</p>
-              <img src={image} alt="Foto" />
-              <div className="button">
-                <label htmlFor="file-upload" className="MainButton">
-                  Cambiar Foto
-                </label>
-                <input
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-              </div>
+              <img src="assets/perfil.jpg" alt="Foto" />
               <p>Miembro desde: {registroString}</p>
               <p>Reservas: {perfil.reservas}</p>
             </div>
@@ -162,72 +143,137 @@ if(password1 !== password2){
           <div className="editperfil-section">
             <h3>Editar información de perfil</h3>
             <div className="tarjetaEditarPerfil">
-              <form onSubmit={handleSaveChanges}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="par">
-                  <input
-                    className="textbox"
-                    type="text"
-                    value={names}
-                    onChange={(e) => setNames(e.target.value)}
-                    placeholder="Nombre"
-                  />
-                  <input
-                    className="textbox"
-                    type="text"
-                    value={surnames}
-                    onChange={(e) => setSurnames(e.target.value)}
-                    placeholder="Apellido"
-                  />
+                  <label>
+                    <p className="text">Nombre</p>
+                    <Controller
+                      name="names"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="text"
+                          placeholder="Nombre"
+                        />
+                      )}
+                    />
+                  </label>
+                  <label>
+                    <p className="text">Apellido</p>
+                    <Controller
+                      name="surnames"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="text"
+                          placeholder="Apellido"
+                        />
+                      )}
+                    />
+                  </label>
                 </div>
 
                 <div className="par">
-                  <input
-                    className="textbox"
-                    type="text"
-                    value={usernames}
-                    onChange={(e) => setUsernames(e.target.value)}
-                    placeholder="Usuario"
-                  />
-                  <input
-                    className="textbox"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Correo electrónico"
-                  />
+                  <label>
+                    <p className="text">Usuario</p>
+                    <Controller
+                      name="username"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="text"
+                          placeholder="Usuario"
+                        />
+                      )}
+                    />
+                  </label>
+                  <label>
+                    <p className="text">Correo electrónico</p>
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="email"
+                          placeholder="Correo electrónico"
+                        />
+                      )}
+                    />
+                  </label>
                 </div>
 
                 <div className="par">
-                  <input
-                    className="textbox"
-                    type="password"
-                    value={password1}
-                    onChange={(e) => setPassword1(e.target.value)}
-                    placeholder="Nueva contraseña"
-                  />
-                  <input
-                    className="textbox"
-                    type="password"
-                    value={password2}
-                    onChange={(e) => setPassword2(e.target.value)}
-                    placeholder="Confirmar contraseña"
-                  />
+                  <label>
+                    <p className="text">Género</p>
+                    <Controller
+                      name="genero"
+                      control={control}
+                      render={({ field }) => (
+                        <select {...field} className="textbox">
+                          <option value="">Seleccione género</option>
+                          <option value="Hombre">Hombre</option>
+                          <option value="Mujer">Mujer</option>
+                          <option value="Otro">Otro</option>
+                        </select>
+                      )}
+                    />
+                  </label>
+                  <label>
+                    <p className="text">Número de Teléfono</p>
+                    <Controller
+                      name="phone"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="text"
+                          placeholder="Número de Teléfono"
+                        />
+                      )}
+                    />
+                  </label>
                 </div>
 
                 <div className="par">
-                  <Dropdown
-                    label={"Genero"}
-                    options={["Hombre", "Mujer", "Otro"]}
-                    reset={reset}
-                    onChange={handleChangeOption}
-                  />
-                  <input
-                    className="textbox"
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Número de Telefono"
-                  />
+                  <label>
+                    <p className="text">Nueva contraseña</p>
+                    <Controller
+                      name="password"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="password"
+                          placeholder="Nueva contraseña"
+                        />
+                      )}
+                    />
+                  </label>
+                  <label>
+                    <p className="text">Confirmar contraseña</p>
+                    <Controller
+                      name="confirmPassword"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="textbox"
+                          type="password"
+                          placeholder="Confirmar contraseña"
+                        />
+                      )}
+                    />
+                  </label>
                 </div>
                 <button className="MainButton" type="submit">
                   Guardar Cambios

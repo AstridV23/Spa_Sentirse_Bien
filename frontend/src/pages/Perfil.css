@@ -118,11 +118,20 @@
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 10px 0;
-  gap: 10px;
+}
+.tarjetaEditarPerfil form .par label {
+  width: 45%;
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+}
+.tarjetaEditarPerfil form .par label p {
+  color: var(--rosa);
+  font-size: 12px;
 }
 .tarjetaEditarPerfil form .par input,
-.tarjetaEditarPerfil .dropdown {
-  width: 45%;
+.tarjetaEditarPerfil form select {
+  width: 100%;
   min-width: 150px;
 }
 .tarjetaEditarPerfil form .MainButton {
@@ -140,7 +149,7 @@
     padding: 20px 15px 20px;
   }
   .tarjetaEditarPerfil form .par input,
-  .tarjetaEditarPerfil .dropdown {
+  .tarjetaEditarPerfil form select {
     font-size: 11px;
     min-width: 110px;
   }
