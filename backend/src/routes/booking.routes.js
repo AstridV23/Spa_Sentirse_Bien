@@ -10,11 +10,11 @@ router.post('/bookings', authRequired, validateSchema(createBookingSchema), crea
 
 router.delete('/bookings/:id', authRequired, deleteBooking);
 
-router.get('/bookings/all', authRequired, getAllBookings);
-router.get('/bookings/personal', authRequired, getPersonalBookings);
-router.get('/bookings/active', authRequired, getActiveBookings);
-router.get('/bookings/date', authRequired, getBookingsByDate);
+router.get('/bookings', getAllBookings)
+router.get('/bookings', authRequired, getPersonalBookings);
+router.get('/bookings', authRequired, getActiveBookings);
+router.get('/bookings', authRequired, getBookingsByDate);
+router.patch('/bookings/:id', changeStatus);
 
-router.put('/bookings/:id', authRequired, changeStatus);
 
 export default router
