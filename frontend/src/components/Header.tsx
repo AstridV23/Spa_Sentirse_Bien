@@ -18,7 +18,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
 
   // Simulando el estado de inicio de sesión
   const { logout, isAuthenticated } = useAuth();
-  const isAdmin = false;
+  const { user } = useAuth();
 
   async function handleLogOut() {
     swal({
@@ -70,12 +70,12 @@ function Header({ SetIsOpen, IsOpen }: Props) {
             {/* Rendnerizado condicional */}
             {isAuthenticated ? (
               <>
-                {!isAdmin ? (
+                {user && user.role !== "usuario" ? (
                   <>
-                    <Link to="/turnos">Turnos</Link>
+                    <Link to="/admin">Admin</Link>
                   </>
                 ) : (
-                  <Link to="/admin">Admin</Link>
+                  <Link to="/turnos">Turnos</Link>
                 )}
                 <Link to="/perfil" className="SecondButton">
                   Perfil
