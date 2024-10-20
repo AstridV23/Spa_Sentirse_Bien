@@ -62,3 +62,46 @@ export const createPayment = async (req, res) => {
         res.status(500).json({ message: 'Error al realizar el pago.', error: error.message });
     }
 };
+
+export const getPaymentsByDateAndType = async (req, res) => {
+    try {
+        const { startDate, endDate, cardType } = req.query;
+
+        const filter = {};
+        
+        if (startDate) {
+            filter.createdAt = { $gte: new Date(startDate) };
+        }
+        
+        if (endDate) {
+            filter.createdAt = filter.createdAt || {};
+            filter.createdAt.$lte = new Date(endDate);
+        }
+
+        if (cardType && ['crédito', 'débito'].includes(cardType)) {
+            filter.cardType = cardType;
+        }
+
+        const result = await Payment.aggregate([
+            { $match: filter },
+            {
+                $group: {
+                    _id: null,
+                    payments: { $push: '$$ROOT' },
+                    totalAmount: { $sum: '$amount' }
+                }
+            }
+        ]);
+
+        if (result.length === 0) {
+            return res.json({ payments: [], totalAmount: 0 });
+        }
+
+        const { payments, totalAmount } = result[0];
+
+        res.json({ payments, totalAmount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al obtener pagos." });
+    }
+}
