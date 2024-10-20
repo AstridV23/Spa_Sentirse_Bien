@@ -3,9 +3,9 @@ import Booking from '../models/booking_model.js'
 // Método para guardar un turno en BD
 export const createBooking = async (req, res) =>{
     try {
-        const { service, treatment, date, info, status } = req.body;
+        const { service, treatment, date, info, cost, status } = req.body;
 
-        if (!service || ! treatment || !date) {
+        if (!service || ! treatment || !date || !cost) {
             return res.status(400).json({message: "Faltan campos requeridos para completar la solicitud."})
         };
 
@@ -19,19 +19,13 @@ export const createBooking = async (req, res) =>{
             treatment,
             date: bookingDate,
             info,
+            cost,
             user: req.user.id,
             status: status || "reservado",
         });
 
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
-
-        // Actualizar el estado del turno a "pagado"
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            bookingId,
-            { status: 'pagado' },
-            { new: true }
-        );
 
     } catch (error) {
         console.error('Error al crear la reserva:', error);

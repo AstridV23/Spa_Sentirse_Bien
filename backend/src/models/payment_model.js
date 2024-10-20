@@ -35,9 +35,14 @@ const paymentSchema = new Schema({
     match: /^[0-9]{11}$/
   },
   user: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    //required: true
+    required: true
+  },
+  booking: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Booking',
+    required: true
   },
   amount: {
     type: Number,

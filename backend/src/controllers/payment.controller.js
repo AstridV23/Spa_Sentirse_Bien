@@ -1,11 +1,12 @@
 import Payment from "../models/payment_model.js";
+import Booking from "../models/booking_model.js";
 
 export const createPayment = async (req, res) => {
     try {
-        const { cardType, cardNumber, cardName, expirationDate, cvv, cuit, amount, user } = req.body;
+        const { cardType, cardNumber, cardName, expirationDate, cvv, cuit, bookingId } = req.body;
 
         // Verificar que todos los campos requeridos estén presentes
-        if (!cardType || !cardNumber || !cardName || !expirationDate || !cvv || !cuit || !amount) {
+        if (!cardType || !cardNumber || !cardName || !expirationDate || !cvv || !cuit || !bookingId) {
             return res.status(400).json({ message: "Faltan campos requeridos para completar la solicitud." });
         }
 
@@ -29,6 +30,13 @@ export const createPayment = async (req, res) => {
             return res.status(400).json({ message: "CUIT inválido." });
         }
 
+        const booking = await Booking.findOne({ _id: bookingId, user: req.user.id });
+        if (!booking) {
+            return res.status(404).json({ message: "Reserva no encontrada o no pertenece al usuario actual." });
+        }
+
+        const amount = booking.cost;
+
         const [month, year] = expirationDate.split('-');
         const vencimiento = new Date(parseInt(`20${year}`, 10), parseInt(month, 10) - 1);
 
@@ -41,7 +49,8 @@ export const createPayment = async (req, res) => {
             cvv,
             cuit,
             amount,
-            user: req.user.id, 
+            user: req.user.id,
+            booking: bookingId,
             status: 'aprobado' // Estado inicial del pago
         });
 
