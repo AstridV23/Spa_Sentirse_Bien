@@ -61,3 +61,4 @@ const paymentSchema = new Schema({
 paymentSchema.index({ user: 1 });
 
 export default model("Payment", paymentSchema);
+ 
