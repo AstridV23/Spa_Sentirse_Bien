@@ -17,6 +17,16 @@ const serviceSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    hours: [{
+        type: String,
+        validate: {
+          validator: function(v) {
+            return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+          },
+          message: props => `${props.value} no es un formato de hora válido. Use HH:MM.`
+        },
+        required: [true, 'Al menos una hora es requerida']
+    }],
     encargado: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
