@@ -102,6 +102,9 @@
   overflow-y: auto;
   max-height: 310px;
 }
+.comments-admin ul {
+  max-height: 480px;
+}
 .comments li .avatar {
   margin: 0 0 auto;
 }

@@ -32,7 +32,7 @@ export default function NavBar({ IsOpen }: Props) {
               {/* Este bloque se renderiza solo si AdminType === 1 */}
               {AdminType === 1 && (
                 <Link className="item" to="/informe/usuarios">
-                  Listado de Clientes
+                  Listado de Usuarios
                 </Link>
               )}
               {/* Si es Doctora (AdminType === 1), renderiza todos los botones */}
@@ -44,7 +44,13 @@ export default function NavBar({ IsOpen }: Props) {
 
               {(AdminType === 1 || AdminType === 3) && (
                 <Link className="item" to="/informe/pagos">
-                  Registro de pagos
+                  Registro de Pagos
+                </Link>
+              )}
+
+              {AdminType === 1 && (
+                <Link className="item" to="/registro-empleado">
+                  Registrar Nuevo Empleado
                 </Link>
               )}
             </div>
