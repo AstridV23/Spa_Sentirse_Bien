@@ -28,7 +28,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/registro" element={<Registro />} />
+            <Route path="/registro" element={<Registro mode="main" />} />
             <Route path="/galeria" element={<Gallery />} />
             <Route path="/servicios" element={<Services />} />
             <Route path="/turnos" element={<Turn />} />
@@ -36,6 +36,10 @@ function App() {
             <Route path="/admin" element={<Admin />} />
 
             <Route path="/informe/:tipo" element={<Informe />} />
+            <Route
+              path="/registro-empleado"
+              element={<Registro mode="admin" />}
+            />
 
             <Route element={<ProtectedRoute />}></Route>
           </Routes>

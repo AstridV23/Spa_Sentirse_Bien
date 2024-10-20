@@ -15,7 +15,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Register />} />
+        <Route path="/registro" element={<Register mode="main" />} />
         <Route path="/galeria" element={<Gallery />} />
         <Route path="/servicios" element={<Services />} />
         <Route path="/turnos" element={<Turn />} />
@@ -23,6 +23,7 @@ const AppRoutes = () => {
         <Route path="/admin" element={<Admin />} />
 
         <Route path="/informe/:tipo" element={<Informe />} />
+        <Route path="/registro-empleado" element={<Register mode="admin" />} />
       </Routes>
     </Router>
   );

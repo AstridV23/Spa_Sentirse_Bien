@@ -7,14 +7,12 @@ import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 type Turno = {
-  tipoTratamiento: string;
-  servicio: string;
-  fecha: string;
-  hora: string;
-  informacion?: string;
-  costo: number;
-  pagoLocal: boolean;
-  pagado: boolean;
+  _id: string;
+  service: string;
+  treatment: string;
+  date: string;
+  info?: string;
+  status: string;
 };
 type Tarjeta = {
   numero: string;

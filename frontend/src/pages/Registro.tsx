@@ -2,27 +2,35 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { convertFieldValuesToUser } from "../libs/convertirValuesAUSer.ts";
 
-export function Register() {
+type Props = {
+  mode: "main" | "admin";
+};
+
+export function Register({ mode }: Props) {
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const { signup, isAuthenticated, errors: registerErrors } = useAuth();
+  const { signup, isAuthenticated, user, errors: registerErrors } = useAuth();
 
   const [, /*passwordMatch*/ setPasswordMatch] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && (!user || user.role !== "admin")) {
       navigate("/");
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, user]);
 
   const onSubmit = handleSubmit(async (values) => {
     if (values.password === values.password2) {
@@ -42,13 +50,21 @@ export function Register() {
       <div className="background-image" />
       <div className="contenedorRegistro">
         <div className="titulo">
-          <h1>Bienvenido!</h1>
-          <img src="/assets/registro.png" alt="" />
+          {mode === "main" ? (
+            <>
+              <h1>Bienvenido!</h1>
+              <img src="/assets/registro.png" alt="" />
+            </>
+          ) : (
+            <h1>Cargar Empleado</h1>
+          )}
         </div>
-        <p>
-          <Link to="/login">Inicia sesión</Link> o regístrate para solicitar un
-          turno
-        </p>
+        {mode === "main" && (
+          <p>
+            <Link to="/login">Inicia sesión</Link> o regístrate para solicitar
+            un turno
+          </p>
+        )}
 
         <form onSubmit={onSubmit}>
           <div>
@@ -93,7 +109,7 @@ export function Register() {
             )}
           </div>
 
-          <div>
+          <div className={mode === "admin" ? "par" : ""}>
             <label htmlFor="email">
               <p className="text">Correo Electrónico</p>
               <input
@@ -103,6 +119,22 @@ export function Register() {
                 {...register("email", { required: true })}
               />
             </label>
+
+            {mode === "admin" && (
+              <label htmlFor="role">
+                <p className="text">Rol</p>
+                <select
+                  id="role"
+                  className="textbox"
+                  {...register("role", { required: true })}
+                >
+                  <option value="">Selecciona</option>
+                  <option value="admin">Doctor</option>
+                  <option value="profesional">Profesional</option>
+                  <option value="secretario">Secretario</option>
+                </select>
+              </label>
+            )}
             {errors.email && (
               <span className="MensajeError">* Este campo es obligatorio</span>
             )}
