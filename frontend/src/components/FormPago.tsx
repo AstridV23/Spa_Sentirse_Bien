@@ -61,16 +61,26 @@ export default function FormPago({ DatosTurno }: Props) {
 
   // Manejador para el envío del formulario ////////////////////////////////////////////////////////////////////////////////////////////////
   const onSubmit: SubmitHandler<Tarjeta> = async (tarjeta) => {
+      // Validar el número de tarjeta
+    if (!/^\d{16}$/.test(tarjeta.numero)) {
+      swal({
+        title: "Error",
+        text: "Ingrese un número de tarjeta válido de 16 dígitos.",
+        icon: "error",
+      });
+      return;
+    }
+    const expirationDate = `${tarjeta.vto.slice(0, 2)}-${tarjeta.vto.slice(2, 4)}`;
     // Crea el objeto de pago con la estructura esperada por el backend
     const paymentData = {
       cardType: "crédito", // AGREGAR UN CONTROL PARA EL TIPO DE TARJETA, UNA CASILLA NOMAS JULIAN
       cardNumber: tarjeta.numero,
       cardName: tarjeta.prop,
-      expirationDate: tarjeta.vto,
+      expirationDate: expirationDate,
       cvv: tarjeta.codigo,
       cuit: tarjeta.cuil,
       amount: DatosTurno.costo,
-      user: user.id,
+      user: user,
     };
 
     try {
