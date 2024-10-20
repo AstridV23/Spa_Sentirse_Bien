@@ -14,7 +14,7 @@ router.get('/bookings', getAllBookings)
 router.get('/bookings', authRequired, getPersonalBookings);
 router.get('/bookings', authRequired, getActiveBookings);
 router.get('/bookings', authRequired, getBookingsByDate);
+router.patch('/bookings/:id', changeStatus);
 
-router.put('/bookings/:id', authRequired, changeStatus);
 
 export default router
