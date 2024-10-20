@@ -41,7 +41,7 @@ export function TurnPopUp() {
   const [precio, setPrecio] = useState<number>(0);
   const [servicios, setServicios] = useState<Servicios>({});
   const [, setPagoEnLocal] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   const {
     register,
@@ -147,7 +147,7 @@ export function TurnPopUp() {
       info: data.informacion,
       cost: precio,
       paymentLocal: data.pagoLocal,
-      user: user.id, // Incluye el ID o email del usuario
+      user: user.id,
     };
   
     console.log("Formulario enviado:", reservaTurno);
