@@ -3,6 +3,8 @@ import { usePopUp } from "../components/PopUpContext";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./FormPopUp.css";
 import swal from "sweetalert";
+import axios from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 type Turno = {
   tipoTratamiento: string;
@@ -36,6 +38,7 @@ type Props = {
 
 export default function FormPago({ DatosTurno }: Props) {
   const { activePopUp, closePopUp } = usePopUp();
+  const { user } = useAuth();
 
   const {
     register,
@@ -56,27 +59,38 @@ export default function FormPago({ DatosTurno }: Props) {
 
   if (activePopUp !== "pago") return null;
 
-  // Manejador para el envío del formulario
+  // Manejador para el envío del formulario ////////////////////////////////////////////////////////////////////////////////////////////////
   const onSubmit: SubmitHandler<Tarjeta> = async (tarjeta) => {
-    // Crea el objeto tarjeta de reserva
-    const pago: Pago = {
-      //cliente: Cliente
-      cuil: tarjeta.cuil,
-      fecha: DatosTurno.fecha,
-      tratamiento: DatosTurno.tipoTratamiento,
-      valor: DatosTurno.costo,
-      pagoLocal: DatosTurno.pagoLocal,
+    // Crea el objeto de pago con la estructura esperada por el backend
+    const paymentData = {
+      cardType: "crédito", // AGREGAR UN CONTROL PARA EL TIPO DE TARJETA, UNA CASILLA NOMAS JULIAN
+      cardNumber: tarjeta.numero,
+      cardName: tarjeta.prop,
+      expirationDate: tarjeta.vto,
+      cvv: tarjeta.codigo,
+      cuit: tarjeta.cuil,
+      amount: DatosTurno.costo,
+      user: user.id,
     };
 
-    swal({
-      title: "¡Reserva Pagada!",
-      text: `Te esperamos en nuestro local pronto`,
-      icon: "success",
-    });
+    try {
+      // Envía los datos al backend
+      await axios.post("/payment", paymentData);
+      swal({
+        title: "¡Reserva Pagada!",
+        text: `Te esperamos en nuestro local pronto`,
+        icon: "success",
+      });
+    } catch (error) {
+      console.error("Error al procesar el pago:", error);
+      swal({
+        title: "Error",
+        text: "Hubo un problema al procesar el pago. Por favor, inténtalo de nuevo.",
+        icon: "error",
+      });
+    }
 
-    console.log("pago", pago); //info del pago AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    console.log("tarjeta", tarjeta); //info de la tarjeta AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    console.log("DatosTurno", DatosTurno); //info del turno AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    console.log("paymentData", paymentData); // Información del pago
     closePopUp(); // Cerrar el popup después del envío
   };
 
@@ -198,3 +212,4 @@ export default function FormPago({ DatosTurno }: Props) {
     </div>
   );
 }
+
