@@ -5,6 +5,7 @@ import PhotosSection from "./Fotos";
 import ServicesSection from "./Servicios";
 import HorasSection from "./Horas";
 import Comments from "../../components/comments";
+import { useAuth } from "../../context/AuthContext";
 
 type Servicio = {
   img: string;
@@ -126,11 +127,14 @@ const photosArray: Media[] = [
   },
 ];
 
+
+
 export default function Admin() {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const { user } = useAuth();
   const [news, setNews] = useState<Array<Media>>([]);
   const [photos, setPhotos] = useState<Array<Media>>([]);
   const [services, setServices] = useState<Servicios>({});
@@ -153,8 +157,8 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminName: string = "Doctora Ana Felicidad";
-  const AdminRole: string = "admin";
+  const AdminName: string = user.name;
+  const AdminRole: string = user.role;
 
   return (
     <div className="admin-page">
