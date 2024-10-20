@@ -41,7 +41,7 @@ export const createPayment = async (req, res) => {
             cvv,
             cuit,
             amount,
-            //user: req.user.id, // Asumiendo que el ID del usuario está disponible en req.user.id
+            user: req.user.id, 
             status: 'aprobado' // Estado inicial del pago
         });
 
