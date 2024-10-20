@@ -159,6 +159,7 @@ export default function Admin() {
 
   const AdminName: string = user.name;
   const AdminRole: string = user.role;
+  const AdminSex: string = user.sex;
 
   return (
     <div className="admin-page">
@@ -169,7 +170,7 @@ export default function Admin() {
         </div>
         <div className="sinPermisos">
           <h2 style={{ color: "var(--gris)" }}>
-            Bienvenido {AdminRole} {AdminName}
+            {AdminSex === "mujer" ? "Bienvenida" : "Bienvenido"} {AdminRole} {AdminName}
           </h2>
           <img src="/assets/login.png" alt="Hola!" />
         </div>
