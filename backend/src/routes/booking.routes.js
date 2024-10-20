@@ -6,14 +6,14 @@ import { createBookingSchema } from '../schemas/booking.schema.js'
 
 const router = Router()
 
-router.post('/bookings', /*authRequired,*/ validateSchema(createBookingSchema), createBooking);
+router.post('/bookings', authRequired, validateSchema(createBookingSchema), createBooking);
 
 router.delete('/bookings/:id', authRequired, deleteBooking);
 
-router.get('/bookings', getAllBookings)
-router.get('/bookings', authRequired, getPersonalBookings);
-router.get('/bookings', authRequired, getActiveBookings);
-router.get('/bookings', authRequired, getBookingsByDate);
+router.get('/bookings/all', authRequired, getAllBookings);
+router.get('/bookings/personal', authRequired, getPersonalBookings);
+router.get('/bookings/active', authRequired, getActiveBookings);
+router.get('/bookings/date', authRequired, getBookingsByDate);
 
 router.put('/bookings/:id', authRequired, changeStatus);
 

@@ -26,6 +26,13 @@ export const createBooking = async (req, res) =>{
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
 
+        // Actualizar el estado del turno a "pagado"
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            bookingId,
+            { status: 'pagado' },
+            { new: true }
+        );
+
     } catch (error) {
         console.error('Error al crear la reserva:', error);
         res.status(500).json({ message: 'Error al reservar turno.', error: error.message });
@@ -65,10 +72,8 @@ export const getAllBookings = async (req, res) => {
 //Retorna las reservas de un cliente
 export const getPersonalBookings = async(req, res) => {
     try {
-        const booking = await Booking.find({
-            user: req.user.id
-        }).populate('user')
-        res.json(booking)
+        const bookings = await Booking.find({ user: req.user.id }).populate('user');
+        res.json(bookings);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener reservas.', error });
     }
