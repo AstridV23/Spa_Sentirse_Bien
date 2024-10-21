@@ -7,20 +7,17 @@ import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 type Servicio = {
-  nombre: string;
-  precio: number;
+  service_name: string;
+  service_type: string;
+  service_description: string;
+  service_price: number;
+  encargado: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  hours: string[];
 };
-
-const horas: string[] = [
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-];
 
 type Servicios = {
   [key: string]: Servicio[];
@@ -74,16 +71,17 @@ export function TurnPopUp() {
 
         // Transformar la respuesta en el formato que necesitas
         const transformedServices: Servicios = servicesData.reduce(
-          (acc: Servicios, curr: any) => {
-            const { service_name, service_type, service_price } = curr;
+          (acc: Servicios, curr: Servicio) => {
+            const { service_type, service_name, service_price } = curr;
 
-            if (!acc[service_name]) {
-              acc[service_name] = [];
+            if (!acc[service_type]) {
+              acc[service_type] = [];
             }
 
-            acc[service_name].push({
-              nombre: service_type,
-              precio: service_price,
+            acc[service_type].push({
+              ...curr,
+              service_name: service_name,
+              service_price: service_price,
             });
 
             return acc;
@@ -107,9 +105,9 @@ export function TurnPopUp() {
   useEffect(() => {
     if (tipoTratamiento && servicio) {
       const selectedService = servicios[tipoTratamiento]?.find(
-        (serv) => serv.nombre === servicio
+        (serv) => serv.service_name === servicio
       );
-      setPrecio(selectedService ? selectedService.precio : 0);
+      setPrecio(selectedService ? selectedService.service_price : 0);
     }
   }, [tipoTratamiento, servicio, servicios]);
 
@@ -250,11 +248,15 @@ export function TurnPopUp() {
                       {...register("servicio", { required: true })}
                     >
                       <option value="">Seleccione</option>
-                      {servicios[tipoTratamiento]?.map((serv) => (
-                        <option key={serv.nombre} value={serv.nombre}>
-                          {serv.nombre}
-                        </option>
-                      ))}
+                      {tipoTratamiento &&
+                        servicios[tipoTratamiento]?.map((serv) => (
+                          <option
+                            key={serv.service_name}
+                            value={serv.service_name}
+                          >
+                            {serv.service_name}
+                          </option>
+                        ))}
                     </select>
                   </label>
                   {errors.servicio && (
@@ -294,11 +296,15 @@ export function TurnPopUp() {
                       {...register("hour", { required: true })}
                     >
                       <option value="">Seleccione</option>
-                      {horas.map((hora) => (
-                        <option key={hora} value={hora}>
-                          {hora}
-                        </option>
-                      ))}
+                      {tipoTratamiento &&
+                        servicio &&
+                        servicios[tipoTratamiento]
+                          ?.find((s) => s.service_name === servicio)
+                          ?.hours?.map((hora) => (
+                            <option key={hora} value={hora}>
+                              {hora}
+                            </option>
+                          ))}
                     </select>
                   </label>
                   {errors.hour && (

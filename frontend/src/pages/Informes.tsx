@@ -422,7 +422,7 @@ export default function Informe() {
     const fetchData = async () => {
       if (tipo === "usuarios") {
         try {
-          const response = await axios.get<Usuario[]>('/api/users');
+          const response = await axios.get('/api/users');
           setDatos(response.data);
         } catch (error) {
           console.error('Error al obtener usuarios:', error);
