@@ -3,7 +3,10 @@ import "./Perfil.css";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import swal from "sweetalert";
+import axios from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
+// Define el tipo Perfil
 type Perfil = {
   names: string;
   surnames: string;
@@ -13,7 +16,7 @@ type Perfil = {
   genero: string;
   password: string;
   registro: Date;
-  reservas: number;
+  //reservas: number;
 };
 
 type PerfilForm = Perfil & {
@@ -29,7 +32,7 @@ const DataPerfil: Perfil = {
   genero: "Hombre",
   password: "StarWars1234",
   registro: new Date("07-09-24"),
-  reservas: 3,
+  //reservas: 3,
 };
 
 export default function Perfil() {
@@ -37,12 +40,17 @@ export default function Perfil() {
     window.scrollTo(0, 0);
   }, []);
 
-  const [perfil, setPerfil] = React.useState<Perfil>(DataPerfil);
+  const [perfil, setPerfil] = React.useState<Perfil | null>(null);
 
   const { control, handleSubmit, reset, watch, setValue } = useForm<PerfilForm>(
     {
       defaultValues: {
-        ...perfil,
+        names: "",
+        surnames: "",
+        username: "",
+        email: "",
+        phone: "",
+        genero: "",
         password: "",
         confirmPassword: "",
       },
@@ -50,17 +58,47 @@ export default function Perfil() {
   );
 
   useEffect(() => {
-    setPerfil(DataPerfil);
-    reset({
-      ...DataPerfil,
-      password: "",
-      confirmPassword: "",
-    });
+    const fetchPerfil = async () => {
+      try {
+        const response = await axios.get('/profile');
+        const perfilData: Perfil = {
+          names: response.data.names ?? "",
+          surnames: response.data.surnames ?? "",
+          username: response.data.username ?? "",
+          email: response.data.email ?? "",
+          phone: response.data.phone ?? "",
+          genero: response.data.genero ?? "",
+          password: response.data.password ?? "",
+          registro: response.data.registro ?? new Date(),
+        };
+        setPerfil(perfilData);
+        reset({
+          ...perfilData,
+          password: "",
+          confirmPassword: "",
+        });
+      } catch (error) {
+        console.error("Error al cargar el perfil:", error);
+        swal({
+          title: "Error al cargar el perfil, usando datos predeterminados",
+          icon: "warning",
+          timer: 2000,
+        });
+        setPerfil(DataPerfil);
+        reset({
+          ...DataPerfil,
+          password: "",
+          confirmPassword: "",
+        });
+      }
+    };
+
+    fetchPerfil();
   }, [reset]);
 
-  const registroString = `${perfil.registro.getDate()}/${
-    perfil.registro.getMonth() + 1
-  }/${perfil.registro.getFullYear()}`;
+  const registroString = perfil
+    ? `${perfil.registro.getDate()}/${perfil.registro.getMonth() + 1}/${perfil.registro.getFullYear()}`
+    : "";
 
   const onSubmit = (data: PerfilForm) => {
     const confirmPassword = watch("confirmPassword");
@@ -96,7 +134,7 @@ export default function Perfil() {
       ...dataToSubmit,
     };
 
-    setPerfil(updatedPerfil);
+    setPerfil(updatedPerfil as Perfil);
     reset({
       ...updatedPerfil,
       password: "",
@@ -126,17 +164,21 @@ export default function Perfil() {
           <div className="perfil-section">
             <h3>Mi perfil</h3>
             <div className="tarjetaPerfil">
-              <div className="nombres">
-                <h2>{perfil.names}</h2>
-                <h2>{perfil.surnames}</h2>
-              </div>
-              <p>{perfil.email}</p>
-              <p>@{perfil.username}</p>
-              <p>📞 {perfil.phone}</p>
-              <p>{perfil.genero}</p>
-              <img src="assets/perfil.jpg" alt="Foto" />
-              <p>Miembro desde: {registroString}</p>
-              <p>Reservas: {perfil.reservas}</p>
+              {perfil && (
+                <>
+                  <div className="nombres">
+                    <h2>{perfil.names}</h2>
+                    <h2>{perfil.surnames}</h2>
+                  </div>
+                  <p>{perfil.email}</p>
+                  <p>@{perfil.username}</p>
+                  <p>📞 {perfil.phone}</p>
+                  <p>{perfil.genero}</p>
+                  <img src="assets/perfil.jpg" alt="Foto" />
+                  <p>Miembro desde: {registroString}</p>
+                  {/* <p>Reservas: {perfil.reservas}</p> */}
+                </>
+              )}
             </div>
           </div>
 
