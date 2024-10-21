@@ -2,11 +2,12 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getAllBookings } from './booking.controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const createPDF = (req, res) => {
+export const createPDF = async (req, res) => {
     console.log('Iniciando generación de PDF');
     const { tipo } = req.params;
     
@@ -19,12 +20,6 @@ export const createPDF = (req, res) => {
         // Configurar la respuesta
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="${tipo}.pdf"`);
-
-        // Manejar errores en la tubería
-        doc.on('error', (err) => {
-            console.error('Error en la generación del PDF:', err);
-            res.status(500).end();
-        });
 
         // Pipe the PDF to the response
         doc.pipe(res);
@@ -50,31 +45,78 @@ export const createPDF = (req, res) => {
         doc.moveDown();
         doc.font('Helvetica').fontSize(12);
 
-        let contenido;
-        switch(tipo) {
-            case 'usuarios':
-                contenido = 'Este informe presenta un resumen detallado de los usuarios registrados en el sistema...';
-                break;
-            case 'turnos':
-                contenido = 'A continuación se muestra un resumen de los turnos programados...';
-                break;
-            case 'pagos':
-                contenido = 'Este documento proporciona un análisis de los pagos recibidos...';
-                break;
-            default:
-                contenido = `Informe general para: ${tipo}`;
-        }
+        if (tipo === 'turnos') {
+            // Crear un objeto de respuesta simulado para pasar a getAllBookings
+            let bookingsData;
+            const mockRes = {
+                status: () => mockRes,
+                json: (data) => {
+                    bookingsData = data;
+                    return mockRes;
+                }
+            };
 
-        doc.text(contenido, {
-            width: 500,
-            align: 'justify'
-        });
+            // Obtener los datos de turnos usando el controlador importado
+            await getAllBookings(req, mockRes);
+
+            // Verificar si bookingsData es undefined o null
+            if (!bookingsData) {
+                throw new Error('No se pudieron obtener los datos de las reservas');
+            }
+
+            const { bookings, total } = bookingsData;
+
+            // Crear la tabla
+            doc.font('Helvetica-Bold').fontSize(14).text(`Total de turnos: ${total}`, { align: 'center' });
+            doc.moveDown();
+
+            const tableTop = 200;
+            const tableLeft = 50;
+            const rowHeight = 20;
+            const colWidths = [80, 80, 80, 60, 60, 100];
+
+            // Encabezados de la tabla
+            doc.font('Helvetica-Bold').fontSize(10);
+            ['Fecha', 'Hora', 'Servicio', 'Tratamiento', 'Costo', 'Cliente'].forEach((header, i) => {
+                doc.text(header, tableLeft + colWidths.slice(0, i).reduce((a, b) => a + b, 0), tableTop);
+            });
+
+            // Filas de la tabla
+            doc.font('Helvetica').fontSize(8);
+            bookings.forEach((booking, index) => {
+                const y = tableTop + rowHeight * (index + 1);
+                doc.text(new Date(booking.date).toLocaleDateString(), tableLeft, y);
+                doc.text(booking.hour || '', tableLeft + colWidths[0], y);
+                doc.text(booking.service || '', tableLeft + colWidths[0] + colWidths[1], y);
+                doc.text(booking.treatment || '', tableLeft + colWidths[0] + colWidths[1] + colWidths[2], y);
+                doc.text(`$${booking.cost || 0}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3], y);
+                
+                // Manejar el caso en que booking.user pueda ser null
+                const userName = booking.user 
+                    ? `${booking.user.firstname || ''} ${booking.user.lastname || ''}`
+                    : 'Usuario no disponible';
+                doc.text(userName, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4], y);
+            });
+
+        } else {
+            // Contenido para otros tipos de informes
+            let contenido;
+            switch(tipo) {
+                case 'usuarios':
+                    contenido = 'Este informe presenta un resumen detallado de los usuarios registrados en el sistema...';
+                    break;
+                case 'pagos':
+                    contenido = 'Este documento proporciona un análisis de los pagos recibidos...';
+                    break;
+                default:
+                    contenido = `Informe general para: ${tipo}`;
+            }
+            doc.text(contenido, { width: 500, align: 'justify' });
+        }
 
         // Pie de página
         const bottomOfPage = doc.page.height - 50;
-        doc.fontSize(10).text('Página 1 de 1', 50, bottomOfPage, {
-            align: 'center'
-        });
+        doc.fontSize(10).text('Página 1 de 1', 50, bottomOfPage, { align: 'center' });
 
         // Finalizar el PDF
         doc.end();
