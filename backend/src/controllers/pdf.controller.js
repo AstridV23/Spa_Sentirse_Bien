@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getAllBookings } from './booking.controller.js';
+import { getPaymentsByDateAndType } from './payment.controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,17 +12,15 @@ export const createPDF = async (req, res) => {
     console.log('Iniciando generación de PDF');
     const { tipo } = req.params;
     
+    let doc;
     try {
-        // Crea un nuevo documento PDF
-        const doc = new PDFDocument({
+        doc = new PDFDocument({
             margins: { top: 50, bottom: 50, left: 72, right: 72 }
         });
 
-        // Configurar la respuesta
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="${tipo}.pdf"`);
 
-        // Pipe the PDF to the response
         doc.pipe(res);
 
         // Añadir logo
@@ -41,7 +40,6 @@ export const createPDF = async (req, res) => {
         // Línea separadora
         doc.moveTo(50, 100).lineTo(550, 100).stroke();
 
-        // Contenido del informe
         doc.moveDown();
         doc.font('Helvetica').fontSize(12);
 
@@ -125,56 +123,99 @@ export const createPDF = async (req, res) => {
                 // Línea horizontal después de cada fila
                 drawLine(tableLeft, y + rowHeight, tableLeft + tableWidth, y + rowHeight);
             });
+        } else if (tipo === 'pagos') {
+            try {
+                // Obtener datos de pagos
+                const mockReq = { query: {} }; // Ajusta según sea necesario
+                const { payments, totalAmount } = await getPaymentsByDateAndType(mockReq);
 
+                if (!payments || !Array.isArray(payments)) {
+                    throw new Error('No se pudieron obtener los datos de pagos correctamente');
+                }
+
+                // Configuración de la tabla
+                const tableTop = 150;
+                const tableLeft = 50;
+                const rowHeight = 20;
+                const colWidths = [80, 60, 80, 80, 60, 100];
+                const tableWidth = colWidths.reduce((sum, width) => sum + width, 0);
+                const tableHeight = (payments.length + 1) * rowHeight;
+                const tableBottom = tableTop + tableHeight;
+
+                // Resumen de pagos
+                doc.font('Helvetica-Bold').fontSize(14)
+                   .text(`Resumen de pagos: Total $${totalAmount || 0}`, 50, tableTop - 30, { align: 'left' });
+
+                // Función para dibujar una línea
+                const drawLine = (x1, y1, x2, y2) => {
+                    doc.moveTo(x1, y1).lineTo(x2, y2).stroke();
+                };
+
+                // Dibujar el contorno de la tabla
+                drawLine(tableLeft, tableTop, tableLeft + tableWidth, tableTop);
+                drawLine(tableLeft, tableTop, tableLeft, tableBottom);
+                drawLine(tableLeft + tableWidth, tableTop, tableLeft + tableWidth, tableBottom);
+                drawLine(tableLeft, tableBottom, tableLeft + tableWidth, tableBottom);
+
+                // Encabezados de la tabla
+                doc.font('Helvetica-Bold').fontSize(10);
+                let currentLeft = tableLeft;
+                ['Fecha', 'Tipo', 'Número', 'Nombre', 'Monto', 'Estado'].forEach((header, i) => {
+                    doc.text(header, currentLeft + 5, tableTop + 5, { width: colWidths[i], align: 'left' });
+                    currentLeft += colWidths[i];
+                    if (i < colWidths.length - 1) {
+                        drawLine(currentLeft, tableTop, currentLeft, tableBottom);
+                    }
+                });
+
+                // Línea horizontal después de los encabezados
+                drawLine(tableLeft, tableTop + rowHeight, tableLeft + tableWidth, tableTop + rowHeight);
+
+                // Filas de la tabla
+                doc.font('Helvetica').fontSize(8);
+                payments.forEach((payment, index) => {
+                    const y = tableTop + rowHeight * (index + 1);
+                    currentLeft = tableLeft;
+
+                    [
+                        new Date(payment.createdAt).toLocaleDateString(),
+                        payment.cardType,
+                        payment.cardNumber.slice(-4),
+                        payment.cardName,
+                        `$${payment.amount}`,
+                        payment.status
+                    ].forEach((text, i) => {
+                        doc.text(text, currentLeft + 5, y + 5, { width: colWidths[i], align: 'left' });
+                        currentLeft += colWidths[i];
+                    });
+
+                    // Línea horizontal después de cada fila
+                    if (index < payments.length - 1) {
+                        drawLine(tableLeft, y + rowHeight, tableLeft + tableWidth, y + rowHeight);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al obtener datos de pagos:', error);
+                doc.text('Error al generar el informe de pagos', 50, 150);
+            }
         } else {
             // Contenido para otros tipos de informes
-            let contenido;
-            switch(tipo) {
-                case 'usuarios':
-                    contenido = 'Este informe presenta un resumen detallado de los usuarios registrados en el sistema...';
-                    break;
-                case 'pagos':
-                    contenido = 'Este documento proporciona un análisis de los pagos recibidos...';
-                    break;
-                default:
-                    contenido = `Informe general para: ${tipo}`;
-            }
-            doc.text(contenido, { width: 500, align: 'justify' });
+            doc.text(`Informe general para: ${tipo}`, { width: 500, align: 'justify' });
         }
 
         // Pie de página
         const bottomOfPage = doc.page.height - 50;
         doc.fontSize(10).text('Página 1 de 1', 50, bottomOfPage, { align: 'center' });
 
-        // Finalizar el PDF
         doc.end();
-
         console.log(`PDF con tipo "${tipo}" generado correctamente`);
     } catch (error) {
         console.error('Error detallado al generar el PDF:', error);
         if (!res.headersSent) {
             res.status(500).json({ message: 'Error al generar el PDF', error: error.message });
         }
-    }
-};
-
-const getPaymentsByDateAndType = async (req, res) => {
-    try {
-        const { startDate, endDate, type } = req.query;
-        
-        let query = {};
-        
-        if (startDate && endDate) {
-            query.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        if (doc && typeof doc.end === 'function') {
+            doc.end();
         }
-        
-        if (type) {
-            query.type = type;
-        }
-        
-        const payments = await Payment.find(query);
-        res.json(payments);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
     }
 };

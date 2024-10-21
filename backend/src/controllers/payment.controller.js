@@ -85,15 +85,13 @@ export const getPaymentsByDateAndType = async (req, res) => {
             }
         ]);
 
-        if (result.length === 0) {
-            return res.json({ payments: [], totalAmount: 0 });
-        }
+        const response = result.length > 0 
+            ? { payments: result[0].payments, totalAmount: result[0].totalAmount }
+            : { payments: [], totalAmount: 0 };
 
-        const { payments, totalAmount } = result[0];
-
-        res.json({ payments, totalAmount });
+        return response; // Cambiado de res.json a return
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Error al obtener pagos." });
+        throw error; // Lanzar el error en lugar de enviar una respuesta
     }
 }
