@@ -210,17 +210,34 @@ export const getUsers = async (req, res) => {
         const users = role ? await User.find({ role }) : await User.find();
 
         // Si no hay usuarios encontrados
-        if (users.length === 0) return res.status(404).json({ 
-            message: role ? `No se encontraron usuarios con el rol: ${role}` : 'No se encontraron usuarios.' 
-        });
+        if (users.length === 0) {
+            const message = role ? `No se encontraron usuarios con el rol: ${role}` : 'No se encontraron usuarios.';
+            
+            // Si res es una función, estamos en el contexto de generación de PDF
+            if (typeof res === 'function') {
+                return res({ message, status: 404 });
+            }
+            // Si no, estamos en el contexto de una solicitud HTTP
+            return res.status(404).json({ message });
+        }
         
+        // Si res es una función, estamos en el contexto de generación de PDF
+        if (typeof res === 'function') {
+            return res({ users, status: 200 });
+        }
+        // Si no, estamos en el contexto de una solicitud HTTP
         return res.status(200).json(users);
         
     } catch (error) {
-
-        return res.status(500).json({ message: 'Error al obtener usuarios.', error });
+        const errorMessage = 'Error al obtener usuarios.';
+        
+        // Si res es una función, estamos en el contexto de generación de PDF
+        if (typeof res === 'function') {
+            return res({ message: errorMessage, error, status: 500 });
+        }
+        // Si no, estamos en el contexto de una solicitud HTTP
+        return res.status(500).json({ message: errorMessage, error });
     }
-
 };
 
 export const getUserById = async (req, res) => {
