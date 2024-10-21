@@ -141,6 +141,7 @@ export default function ServicesSection({
                 descripcion: text,
                 precio: precioNuevo,
                 img: imagePreviewServicio,
+                ProfAsignado: profesional,
               }
             : servicio
         );
@@ -153,14 +154,28 @@ export default function ServicesSection({
             titulo: titulo,
             descripcion: text,
             precio: precioNuevo,
-            ProfAsignado: "profesional",
+            ProfAsignado: profesional,
           },
         ];
       }
 
-      setServices({
+      const updatedAllServices = {
         ...services,
         [Data.tipoTratamiento]: updatedServices,
+      };
+
+      setServices(updatedAllServices);
+
+      // Imprimir el servicio actualizado en la consola
+      console.log("Servicio actualizado:", {
+        tipoTratamiento: Data.tipoTratamiento,
+        servicio: {
+          img: imagePreviewServicio,
+          titulo: titulo,
+          descripcion: text,
+          precio: precioNuevo,
+          ProfAsignado: profesional,
+        },
       });
 
       // Reseteo de imagen
