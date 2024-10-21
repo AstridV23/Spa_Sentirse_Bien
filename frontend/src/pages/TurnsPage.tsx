@@ -31,7 +31,6 @@ export default function Turn() {
     const fetchPersonalBookings = async () => {
       try {
         const response = await axios.get('/bookings/personal');
-        console.log("Datos de reservas personales:", response.data); // Imprime los datos en la consola
         setMisTurnos(response.data);
       } catch (error) {
         console.error("Error al obtener las reservas personales", error);

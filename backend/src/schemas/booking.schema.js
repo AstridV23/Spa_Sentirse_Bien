@@ -12,10 +12,10 @@ export const createBookingSchema = z.object({
     }, z.date({
         required_error: "La fecha del tratamiento es requerida."
     })),
-    info: z.string().optional(),
-    user: z.string({
-        required_error: "El ID del usuario es requerido."
+    hour: z.string({
+        required_error: "La hora del tratamiento es requerida."
     }),
+    info: z.string().optional(),
     status: z.enum(["reservado", "pagado", "cancelado", "finalizado"])
         .default("reservado")
         .optional()

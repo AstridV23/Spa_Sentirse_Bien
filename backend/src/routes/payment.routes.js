@@ -6,7 +6,7 @@ import { paymentSchema } from '../schemas/payment.schema.js'
 
 const router = new Router()
 
-router.post("/payment", validateSchema(paymentSchema), createPayment);
-router.get("/payment", getPaymentsByDateAndType);
+router.post("/payment", authRequired, validateSchema(paymentSchema), createPayment);
+router.get("/payment", authRequired, getPaymentsByDateAndType);
 
 export default router

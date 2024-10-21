@@ -1,25 +1,54 @@
+import { z } from 'zod';
 import Service from "../models/service_model.js";
+import { createServiceSchema } from '../schemas/service.schema.js';
 
 export const createService = async (req, res) => {
     try {
-        const { service_name, service_type, service_description, service_price  } = req.body;
+        // Validar los datos de entrada usando el schema de Zod
+        const validatedData = createServiceSchema.parse(req.body);
 
-        // Validación de campos requeridos
-        if (!service_name || !service_description) {
-            return res.status(400).json({ message: 'Title y description son requeridos.' });
-        }
+        const defaultHours = [
+            "09:00", "10:00", "11:00", "12:00", "13:00", 
+            "14:00", "15:00", "16:00", "17:00", "18:00"
+        ];
 
+        // Crear el nuevo servicio con los datos validados
         const newService = new Service({
-            service_name,
-            service_type,
-            service_description,
-            service_price
+            service_name: validatedData.service_name,
+            service_type: validatedData.service_type,
+            service_description: validatedData.service_description,
+            service_price: validatedData.service_price,
+            encargado: validatedData.encargado.id, // Guardamos solo el ID del encargado
+            hours: defaultHours
         });
 
         const savedService = await newService.save();
-        res.status(201).json(savedService);
+
+        res.status(201).json({
+            message: "Servicio creado exitosamente",
+            service: {
+                id: savedService._id,
+                service_name: savedService.service_name,
+                service_type: savedService.service_type,
+                service_description: savedService.service_description,
+                service_price: savedService.service_price,
+                encargado: {
+                    id: validatedData.encargado.id,
+                    name: validatedData.encargado.name,
+                    email: validatedData.encargado.email
+                }
+            }
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear el servicio.', error });
+        if (error instanceof z.ZodError) {
+            // Error de validación del schema
+            return res.status(400).json({ 
+                message: "Error de validación", 
+                errors: error.errors 
+            });
+        }
+        console.error('Error al crear el servicio:', error);
+        res.status(500).json({ message: 'Error al crear el servicio.', error: error.message });
     }
 };
 
@@ -34,3 +63,50 @@ export const getServices = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los Servicio.', error });
     }
 }
+
+export const updateServiceHours = async (req, res) => {
+    try {
+        const { serviceId } = req.params;
+        const { currentHour, newHour } = req.body;
+
+        // Validar el formato de las horas
+        const horaValida = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        if (!horaValida.test(currentHour) || !horaValida.test(newHour)) {
+            return res.status(400).json({ message: "Formato de hora inválido. Use HH:MM." });
+        }
+
+        // Buscar el servicio
+        const service = await Service.findById(serviceId);
+        if (!service) {
+            return res.status(404).json({ message: "Servicio no encontrado." });
+        }
+
+        // Verificar si la hora actual existe en el array de horas
+        const index = service.hours.indexOf(currentHour);
+        if (index === -1) {
+            return res.status(400).json({ message: "La hora actual no existe en el servicio." });
+        }
+
+        // Verificar si la nueva hora ya existe en el array
+        if (service.hours.includes(newHour)) {
+            return res.status(400).json({ message: "La nueva hora ya existe en el servicio." });
+        }
+
+        // Reemplazar la hora actual con la nueva hora
+        service.hours[index] = newHour;
+
+        // Ordenar el array de horas
+        service.hours.sort();
+
+        // Guardar los cambios
+        await service.save();
+
+        res.status(200).json({
+            message: "Horario actualizado exitosamente",
+            updatedHours: service.hours
+        });
+    } catch (error) {
+        console.error('Error al actualizar el horario del servicio:', error);
+        res.status(500).json({ message: 'Error al actualizar el horario del servicio.', error: error.message });
+    }
+};

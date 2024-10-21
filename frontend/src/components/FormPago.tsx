@@ -73,16 +73,24 @@ export default function FormPago({ DatosTurno }: Props) {
       cuit: tarjeta.cuil,
       amount: DatosTurno.amount,
       user: user,
+      bookingId: DatosTurno._id,
     };
+
+    console.log('Datos enviados al servidor:', paymentData);
 
     try {
       // Envía los datos al backend
-      await axios.post("/payment", paymentData);
-      swal({
-        title: "¡Reserva Pagada!",
-        text: `Te esperamos en nuestro local pronto`,
-        icon: "success",
-      });
+      const response = await axios.post("/payment", paymentData);
+      if (response.data.success) {
+        
+        swal({
+          title: "¡Reserva Pagada!",
+          text: `Te esperamos en nuestro local pronto`,
+          icon: "success",
+        });
+      } else {
+        throw new Error("El pago no fue procesado correctamente");
+      }
     } catch (error) {
       console.error("Error al procesar el pago:", error);
       swal({

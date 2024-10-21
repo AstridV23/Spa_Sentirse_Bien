@@ -19,7 +19,7 @@ export const paymentSchema = z.object({
     required_error: "Ingrese la fecha de expiración de la tarjeta."
   })
   .regex(/^(0[1-9]|1[0-2])-\d{2}$/, {
-    message: "Ingrese una fecha de expiración válida en formato YYYY-MM-DD."
+    message: "Ingrese una fecha de expiración válida en formato MM-YY."
   }),
 
   cvv: z.string({
@@ -36,8 +36,7 @@ export const paymentSchema = z.object({
   .length(11, { message: "El CUIT debe tener 11 dígitos." })
   .regex(/^\d+$/, { message: "El CUIT solo debe contener dígitos." }),
 
-  amount: z.number({
-    required_error: "El monto es requerido."
+  bookingId: z.string({
+    required_error: "El ID de la reserva es requerido."
   })
-  .positive({ message: "El monto debe ser un número positivo." })
 });
