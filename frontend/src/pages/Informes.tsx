@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ImagePDFDownloadButton from "../components/PDF/PDFDownloadButton";
+import downloadIcon from "/assets/descargar.png";
 import "./Informes.css"; 
 //import axios from "axios";
 
@@ -737,7 +739,13 @@ export default function Informe() {
               placeholder="Buscar aqui"
               onChange={handleSearch}
             />
-              <img src="/assets/descargar.png" alt="pdf" />
+
+          <ImagePDFDownloadButton 
+            pdfUrl={`/generar-pdf/${tipo}`} // Ajusta esta URL a la ruta correcta de tu backend
+            imageSrc={downloadIcon}
+            altText="Descargar PDF"
+          />
+
           </div>
           <div className="filtros">
             <h3>Filtros</h3>
