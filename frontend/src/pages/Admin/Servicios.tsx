@@ -24,9 +24,6 @@ export default function ServicesSection() {
   const [services, setServices] = useState<Servicios>({});
 
   const [profesional, setProfesional] = useState("");
-  const [profesionales, setProfesionales] = useState<{ [key: string]: string }>(
-    {}
-  );
   const [titulo, setTitulo] = useState("");
   const [text, setText] = useState("");
   const [precioNuevo, setPrecioNuevo] = useState<number>(0);
@@ -48,10 +45,13 @@ export default function ServicesSection() {
     hours: [],
   });
 
-  const { handleSubmit, watch, reset } = useForm<Servicio>();
+  const { reset } = useForm<Servicio>();
 
   const [tipoTratamiento, setTipoTratamiento] = useState("");
   const [servicio, setServicio] = useState("");
+  const [allProfessionals, setAllProfessionals] = useState<
+    Array<{ id: string; name: string; email: string }>
+  >([]);
 
   useEffect(() => {
     reset({
@@ -109,7 +109,18 @@ export default function ServicesSection() {
       }
     };
 
+    // Cargar todos los profesionales
+    const fetchProfessionals = async () => {
+      try {
+        const response = await axios.get("/users/role/profesional");
+        setAllProfessionals(response.data);
+      } catch (error) {
+        console.error("Error al cargar los profesionales", error);
+      }
+    };
+
     fetchServices();
+    fetchProfessionals();
   }, [reset]);
 
   const handleChangeOptions = async (name: string, value: string) => {
@@ -129,65 +140,38 @@ export default function ServicesSection() {
         (serv) => serv.service_name === value
       );
       if (selectedService) {
-        setTitulo(selectedService.service_name);
-        setText(selectedService.service_description);
-        setPrecioNuevo(selectedService.service_price);
-        setServiceData(selectedService);
+        setTitulo(selectedService.service_name || "");
+        setText(selectedService.service_description || "");
+        setPrecioNuevo(selectedService.service_price || 0);
 
-        // Fetch professional data if not already in cache
-        if (!profesionales[selectedService.encargado.id]) {
-          try {
-            console.log(selectedService.encargado);
-            const response = await axios.get(
-              `/users/${selectedService.encargado}`
-            );
-            console.log(response.data.name);
-            setProfesionales((prev) => ({
-              ...prev,
-              [selectedService.encargado.id]: response.data.name,
-            }));
-            setProfesional(response.data.name);
-          } catch (error) {
-            console.error("Error fetching professional data", error);
-            setProfesional("");
-          }
-        } else {
-          setProfesional(profesionales[selectedService.encargado.id]);
-        }
+        const encargado = await axios.get(
+          `/users/${selectedService.encargado}`
+        );
+        setProfesional(encargado.data?.username || "");
+        setServiceData(selectedService);
       } else {
         setTitulo("");
         setText("");
         setPrecioNuevo(0);
         setProfesional("");
-        setServiceData((prevData) => ({
-          ...prevData,
+        setServiceData({
           service_name: "",
+          service_type: "",
           service_description: "",
           service_price: 0,
           encargado: { id: "", name: "", email: "" },
           hours: [],
-        }));
+        });
       }
     }
   };
 
   function handleInputChangeServicio(event: ChangeEvent<HTMLInputElement>) {
-    setTitulo(event.target.value);
-  }
-  function handleProfesionalChange(event: ChangeEvent<HTMLSelectElement>) {
-    const selectedProfesionalName = event.target.value;
-    setProfesional(selectedProfesionalName);
-
-    // Update ServiceData with the selected professional
-    const selectedProfesional = services[tipoTratamiento]?.find(
-      (serv) => serv.encargado.name === selectedProfesionalName
-    )?.encargado;
-
-    if (selectedProfesional) {
-      setServiceData((prevData) => ({
-        ...prevData,
-        encargado: selectedProfesional,
-      }));
+    const { name, value } = event.target;
+    if (name === "titulo") {
+      setTitulo(value);
+    } else if (name === "profesional") {
+      setProfesional(value);
     }
   }
   function handleTextAreaChangeServicio(
@@ -196,7 +180,7 @@ export default function ServicesSection() {
     setText(event.target.value);
   }
   function handleChangePrecio(event: React.ChangeEvent<HTMLInputElement>) {
-    setPrecioNuevo(Number(event.target.value));
+    setPrecioNuevo(Number(event.target.value) || 0);
   }
   /*const handleImageChangeServicio = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -215,27 +199,65 @@ export default function ServicesSection() {
       !ServiceData.service_name ||
       !ServiceData.service_description ||
       ServiceData.service_price === 0 ||
-      !ServiceData.encargado.name
+      !profesional
     ) {
       swal({
         title: "Falta información",
+        text: "Por favor, completa todos los campos.",
         icon: "warning",
-        timer: 1000,
+        timer: 2000,
       });
       return;
     }
 
     try {
+      // Verificar si el profesional existe
+      const professionalResponse = await axios.get("/users/role/profesional");
+      const allProfessionals = professionalResponse.data;
+
+      const profesionalExists = allProfessionals.some(
+        (prof: any) =>
+          prof.name?.toLowerCase() === profesional.toLowerCase() ||
+          prof.username?.toLowerCase() === profesional.toLowerCase()
+      );
+
+      if (!profesionalExists) {
+        swal({
+          title: "Profesional no encontrado",
+          text: "El profesional ingresado no existe en la base de datos.",
+          icon: "error",
+          timer: 3000,
+        });
+        return;
+      }
+
+      // Preparar los datos actualizados del servicio
+      const updatedServiceData = {
+        ...ServiceData,
+        service_name: titulo,
+        service_description: text,
+        service_price: precioNuevo,
+        encargado: {
+          ...ServiceData.encargado,
+          name: profesional,
+        },
+      };
+
+      console.log("Datos a actualizar:", updatedServiceData);
+
+      // Enviar la solicitud de actualización
       const response = await axios.put(
         `/service/${ServiceData.service_name}`,
-        ServiceData
+        updatedServiceData
       );
+
+      console.log("Respuesta del servidor:", response.data);
 
       if (response.status === 200) {
         swal({
           title: "Servicio actualizado con éxito",
           icon: "success",
-          timer: 1000,
+          timer: 2000,
         });
 
         // Actualizar el estado local
@@ -245,7 +267,7 @@ export default function ServicesSection() {
             ServiceData.service_type
           ].map((service) =>
             service.service_name === ServiceData.service_name
-              ? ServiceData
+              ? updatedServiceData
               : service
           ),
         }));
@@ -268,8 +290,9 @@ export default function ServicesSection() {
       console.error("Error al actualizar el servicio", error);
       swal({
         title: "Error al actualizar el servicio",
+        text: "Hubo un problema al intentar actualizar el servicio. Por favor, inténtalo de nuevo.",
         icon: "error",
-        timer: 1000,
+        timer: 3000,
       });
     }
   }
@@ -378,32 +401,6 @@ export default function ServicesSection() {
                 </option>
               ))}
           </select>
-          <select
-            name="profesional"
-            id="profesional"
-            onChange={handleProfesionalChange}
-            value={profesional}
-          >
-            <option key="default-profesional" value="">
-              {profesional
-                ? `Encargado: ${profesional}`
-                : "Seleccione un encargado"}
-            </option>
-            {tipoTratamiento &&
-              Array.from(
-                new Set(
-                  services[tipoTratamiento]?.map(
-                    (serv) => profesionales[serv.encargado.id]
-                  )
-                )
-              )
-                .filter(Boolean)
-                .map((name, index) => (
-                  <option key={`profesional-${name}-${index}`} value={name}>
-                    {name}
-                  </option>
-                ))}
-          </select>
         </div>
       </div>
 
@@ -421,6 +418,13 @@ export default function ServicesSection() {
             value={titulo}
             onChange={handleInputChangeServicio}
             placeholder="Título"
+          />
+          <input
+            name="profesional"
+            type="text"
+            value={profesional}
+            onChange={handleInputChangeServicio}
+            placeholder="Profesional"
           />
           <textarea
             name="text"
