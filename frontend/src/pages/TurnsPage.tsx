@@ -30,7 +30,7 @@ export default function Turn() {
   useEffect(() => {
     const fetchPersonalBookings = async () => {
       try {
-        const response = await axios.get('/bookings/personal');
+        const response = await axios.get("/bookings/personal");
         setMisTurnos(response.data);
       } catch (error) {
         console.error("Error al obtener las reservas personales", error);
@@ -96,7 +96,6 @@ export default function Turn() {
                       }
                       style={{
                         margin: "0 auto",
-                        textDecoration: "underline",
                         cursor: "pointer",
                         color: "var(--rosa)",
                         opacity: 0.7,
@@ -115,14 +114,14 @@ export default function Turn() {
                         turn.status === "pagado"
                           ? "Pagado"
                           : turn.status === "reservado"
-                          ? "PorLocal"
+                          ? "Sinpagar"
                           : "Sinpagar"
                       }
                       value={
                         turn.status === "pagado"
                           ? "Pagado"
                           : turn.status === "reservado"
-                          ? "Por Local"
+                          ? "Sin pagar"
                           : "Sin pagar"
                       }
                       onClick={() => {

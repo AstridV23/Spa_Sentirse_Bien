@@ -1,10 +1,12 @@
+import React from "react";
 import { useEffect } from "react";
 import { usePopUp } from "../components/PopUpContext";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import "./FormPopUp.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { format } from "date-fns";
 
 type Turno = {
   _id: string;
@@ -22,6 +24,7 @@ type Tarjeta = {
   cuil: string;
   vto: string;
   codigo: string;
+  tarjeta: string;
 };
 
 type Props = {
@@ -33,11 +36,21 @@ export default function FormPago({ DatosTurno }: Props) {
   const { user } = useAuth();
 
   const {
-    register,
+    control,
     handleSubmit,
-    reset,
     formState: { errors },
-  } = useForm<Tarjeta>();
+    register,
+    reset,
+  } = useForm<Tarjeta>({
+    defaultValues: {
+      numero: "",
+      prop: "",
+      cuil: "",
+      vto: "",
+      codigo: "",
+      tarjeta: "",
+    },
+  });
 
   useEffect(() => {
     reset({
@@ -46,6 +59,7 @@ export default function FormPago({ DatosTurno }: Props) {
       cuil: "",
       vto: "",
       codigo: "",
+      tarjeta: "",
     });
   }, [reset]);
 
@@ -53,8 +67,15 @@ export default function FormPago({ DatosTurno }: Props) {
 
   // Manejador para el envío del formulario ////////////////////////////////////////////////////////////////////////////////////////////////
   const onSubmit: SubmitHandler<Tarjeta> = async (tarjeta) => {
-      // Validar el número de tarjeta
-    if (!/^\d{16}$/.test(tarjeta.numero)) {
+    // Eliminar espacios del número de tarjeta
+    const numeroSinEspacios = tarjeta.numero.replace(/\s/g, "");
+
+    // Formatear la fecha de vencimiento
+    const [month, year] = tarjeta.vto.split("/");
+    const formattedExpirationDate = `${month}-${year}`;
+
+    // Validar el número de tarjeta
+    if (!/^\d{16}$/.test(numeroSinEspacios)) {
       swal({
         title: "Error",
         text: "Ingrese un número de tarjeta válido de 16 dígitos.",
@@ -62,13 +83,13 @@ export default function FormPago({ DatosTurno }: Props) {
       });
       return;
     }
-    const expirationDate = `${tarjeta.vto.slice(0, 2)}-${tarjeta.vto.slice(2, 4)}`;
+
     // Crea el objeto de pago con la estructura esperada por el backend
     const paymentData = {
-      cardType: "crédito", // AGREGAR UN CONTROL PARA EL TIPO DE TARJETA, UNA CASILLA NOMAS JULIAN
-      cardNumber: tarjeta.numero,
+      cardType: tarjeta.tarjeta,
+      cardNumber: numeroSinEspacios,
       cardName: tarjeta.prop,
-      expirationDate: expirationDate,
+      expirationDate: formattedExpirationDate,
       cvv: tarjeta.codigo,
       cuit: tarjeta.cuil,
       amount: DatosTurno.amount,
@@ -76,13 +97,12 @@ export default function FormPago({ DatosTurno }: Props) {
       bookingId: DatosTurno._id,
     };
 
-    console.log('Datos enviados al servidor:', paymentData);
+    console.log("Datos enviados al servidor:", paymentData);
 
     try {
       // Envía los datos al backend
       const response = await axios.post("/payment", paymentData);
       if (response.data.success) {
-        
         swal({
           title: "¡Reserva Pagada!",
           text: `Te esperamos en nuestro local pronto`,
@@ -100,8 +120,31 @@ export default function FormPago({ DatosTurno }: Props) {
       });
     }
 
-    console.log("paymentData", paymentData); // Información del pago
-    closePopUp(); // Cerrar el popup después del envío
+    closePopUp();
+  };
+
+  // Función para formatear la fecha
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, "dd/MM/yyyy HH:mm");
+  };
+
+  const formatCardNumber = (value: string) => {
+    // Remove all non-digit characters
+    const v = value.replace(/\D/g, "");
+    const matches = v.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+
+    if (parts.length) {
+      return parts.join(" ");
+    } else {
+      return v;
+    }
   };
 
   return (
@@ -120,26 +163,68 @@ export default function FormPago({ DatosTurno }: Props) {
                 Tratamiento: {DatosTurno.treatment} ~ Servicio:{" "}
                 {DatosTurno.service}
               </p>
-              <p>
-                Fecha: {DatosTurno.date} 
-              </p>
+              <p>Fecha: {formatDateTime(DatosTurno.date)}</p>
             </div>
 
-            <div className="boxLargo">
-              <label htmlFor="numero">
-                <h4>
-                  Número de Tarjeta <span className="required"></span>
-                </h4>
-                <input
-                  className="textbox"
-                  type="text"
-                  id="numero"
-                  {...register("numero", { required: true })}
-                />
-              </label>
-              {errors.numero && (
-                <span className="MensajeError">Este campo es obligatorio</span>
-              )}
+            <div className="par">
+              <div className="box">
+                <label htmlFor="numero">
+                  <h4>
+                    Número de Tarjeta <span className="required"></span>
+                  </h4>
+                  <Controller
+                    name="numero"
+                    control={control}
+                    rules={{
+                      required: true,
+                      validate: (value) =>
+                        value.replace(/\s/g, "").length === 16,
+                    }}
+                    render={({ field }) => (
+                      <input
+                        className="textbox"
+                        type="text"
+                        id="numero"
+                        {...field}
+                        onChange={(e) => {
+                          const formatted = formatCardNumber(e.target.value);
+                          field.onChange(formatted);
+                        }}
+                        maxLength={19} // 16 digits + 3 spaces
+                      />
+                    )}
+                  />
+                </label>
+                {errors.numero?.type === "required" && (
+                  <span className="MensajeError">
+                    Este campo es obligatorio
+                  </span>
+                )}
+                {errors.numero?.type === "validate" && (
+                  <span className="MensajeError">
+                    Ingrese un número de tarjeta válido de 16 dígitos
+                  </span>
+                )}
+              </div>
+              <div className="box">
+                <label htmlFor="tarjeta">
+                  <h4>Tipo de Tarjeta</h4>
+                  <select
+                    id="tarjeta"
+                    className="textbox"
+                    {...register("tarjeta", { required: true })}
+                  >
+                    <option value="">Seleccione</option>
+                    <option value="crédito">Crédito</option>
+                    <option value="débito">Débito</option>
+                  </select>
+                </label>
+                {errors.tarjeta?.type === "required" && (
+                  <span className="MensajeError">
+                    Este campo es obligatorio
+                  </span>
+                )}
+              </div>
             </div>
             <div className="par">
               <div className="box">
@@ -160,49 +245,122 @@ export default function FormPago({ DatosTurno }: Props) {
                   <h4>
                     Número de CUIL <span className="required"></span>
                   </h4>
-                  <input
-                    className="textbox"
-                    type="text"
-                    id="cuil"
-                    {...register("cuil", { required: true })}
+                  <Controller
+                    name="cuil"
+                    control={control}
+                    rules={{
+                      required: "Este campo es obligatorio",
+                      pattern: {
+                        value: /^\d{11}$/,
+                        message: "El CUIL debe tener exactamente 11 dígitos",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <input
+                        className="textbox"
+                        type="text"
+                        id="cuil"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 11);
+                          field.onChange(value);
+                        }}
+                        maxLength={11}
+                      />
+                    )}
                   />
                 </label>
+                {errors.cuil && (
+                  <span className="MensajeError">{errors.cuil.message}</span>
+                )}
               </div>
             </div>
-            {(errors.cuil || errors.prop) && (
-              <span className="MensajeError">Este campo es obligatorio</span>
-            )}
             <div className="par">
               <div className="box">
                 <label htmlFor="vto">
                   <h4>
                     Fecha de Vencimiento <span className="required"></span>
                   </h4>
-                  <input
-                    className="textbox"
-                    type="text"
-                    id="vto"
-                    {...register("vto", { required: true })}
+                  <Controller
+                    name="vto"
+                    control={control}
+                    rules={{
+                      required: true,
+                      pattern: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
+                    }}
+                    render={({ field }) => (
+                      <input
+                        className="textbox"
+                        type="text"
+                        id="vto"
+                        {...field}
+                        placeholder="MM/YY"
+                        maxLength={5}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, "");
+                          if (value.length > 2) {
+                            value = value.slice(0, 2) + "/" + value.slice(2);
+                          }
+                          field.onChange(value);
+                        }}
+                      />
+                    )}
                   />
                 </label>
+                {errors.vto?.type === "required" && (
+                  <span className="MensajeError">
+                    Este campo es obligatorio
+                  </span>
+                )}
+                {errors.vto?.type === "pattern" && (
+                  <span className="MensajeError">
+                    Formato inválido. Use MM/YY
+                  </span>
+                )}
               </div>
               <div className="box">
                 <label htmlFor="codigo">
                   <h4>
                     Código de Seguridad <span className="required"></span>
                   </h4>
-                  <input
-                    className="textbox"
-                    type="text"
-                    id="codigo"
-                    {...register("codigo", { required: true })}
+                  <Controller
+                    name="codigo"
+                    control={control}
+                    rules={{
+                      required: true,
+                      pattern: /^[0-9]{3}$/,
+                    }}
+                    render={({ field }) => (
+                      <input
+                        className="textbox"
+                        type="text"
+                        id="codigo"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 3);
+                          field.onChange(value);
+                        }}
+                        maxLength={3}
+                      />
+                    )}
                   />
                 </label>
+                {errors.codigo?.type === "required" && (
+                  <span className="MensajeError">
+                    Este campo es obligatorio
+                  </span>
+                )}
+                {errors.codigo?.type === "pattern" && (
+                  <span className="MensajeError">
+                    Ingrese un código de 3 dígitos
+                  </span>
+                )}
               </div>
             </div>
-            {(errors.codigo || errors.vto) && (
-              <span className="MensajeError">Este campo es obligatorio</span>
-            )}
 
             <div className="buttons">
               <button type="submit" className="MainButton">
@@ -222,4 +380,3 @@ export default function FormPago({ DatosTurno }: Props) {
     </div>
   );
 }
-

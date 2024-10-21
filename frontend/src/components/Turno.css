@@ -82,7 +82,8 @@
   width: 100%;
 }
 .turno-component .box input,
-.turno-component .boxLargo input {
+.turno-component .boxLargo input,
+.turno-component .box select {
   box-sizing: border-box;
   width: 100%;
 }
