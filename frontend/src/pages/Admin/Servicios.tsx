@@ -236,7 +236,8 @@ export default function ServicesSection() {
         service_description: text,
         service_price: precioNuevo,
         encargado: {
-          id: selectedProfessional._id, // Enviamos solo el ID del profesional
+          id: selectedProfessional._id,
+          username: selectedProfessional.username,
         },
       };
 
@@ -269,7 +270,7 @@ export default function ServicesSection() {
                     ...service,
                     ...updatedServiceData,
                     encargado: {
-                      id: updatedServiceData.encargado,
+                      id: selectedProfessional._id,
                       username: selectedProfessional.username,
                     },
                   }
@@ -286,7 +287,7 @@ export default function ServicesSection() {
           service_type: "",
           service_description: "",
           service_price: 0,
-          encargado: { id: "", username: "" }, // Cambiado a objeto para almacenar ID y username
+          encargado: { id: "", username: "" },
           hours: [],
         });
         setTitulo("");

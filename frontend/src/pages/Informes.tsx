@@ -2,135 +2,146 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ImagePDFDownloadButton from "../components/PDF/PDFDownloadButton";
 import downloadIcon from "/assets/descargar.png";
-import "./Informes.css"; 
-import axios from "axios";
-import IUser from "../types/IUser";
+import "./Informes.css";
+//import axios from "axios";
+//import IUser from "../types/IUser";
 
+interface User {
+  _id: number;
+  username: string;
+  email: string;
+  phone: string;
+  firstname: string;
+  lastname: string;
+  sex: string;
+  role: string;
+  createdAt: string;
+  reservations: number;
+}
 
-/*
-const clientesFalsos: Usuario[] = [
+const clientesFalsos: User[] = [
   {
-    id: 1,
-    status: "usuario",
+    _id: 1,
+    role: "usuario",
     username: "JuanPerez",
-    nombres: "Juan",
-    apellidos: "Perez",
-    correo: "juan.perez@example.com",
-    genero: "Masculino",
-    telefono: "555-1234",
-    fechaCreacion: "2023-01-15",
-    reservas: 3,
+    firstname: "Juan",
+    lastname: "Perez",
+    email: "juan.perez@example.com",
+    sex: "Masculino",
+    phone: "555-1234",
+    createdAt: "2023-01-15",
+    reservations: 3,
   },
   {
-    id: 2,
-    status: "usuario",
+    _id: 2,
+    role: "usuario",
     username: "AnaGomez",
-    nombres: "Ana",
-    apellidos: "Gómez",
-    correo: "ana.gomez@example.com",
-    genero: "Femenino",
-    telefono: "555-5678",
-    fechaCreacion: "2022-11-20",
-    reservas: 5,
+    firstname: "Ana",
+    lastname: "Gómez",
+    email: "ana.gomez@example.com",
+    sex: "Femenino",
+    phone: "555-5678",
+    createdAt: "2022-11-20",
+    reservations: 5,
   },
   {
-    id: 3,
-    status: "usuario",
+    _id: 3,
+    role: "usuario",
     username: "JuanPerez",
-    nombres: "Juan",
-    apellidos: "Perez",
-    correo: "juan.perez@example.com",
-    genero: "Masculino",
-    telefono: "555-1234",
-    fechaCreacion: "2023-01-15",
-    reservas: 3,
+    firstname: "Juan",
+    lastname: "Perez",
+    email: "juan.perez@example.com",
+    sex: "Masculino",
+    phone: "555-1234",
+    createdAt: "2023-01-15",
+    reservations: 3,
   },
   {
-    id: 4,
-    status: "profesional",
+    _id: 4,
+    role: "profesional",
     username: "AnaGomez",
-    nombres: "Ana",
-    apellidos: "Gómez",
-    correo: "ana.gomez@example.com",
-    genero: "Femenino",
-    telefono: "555-5678",
-    fechaCreacion: "2022-11-20",
-    reservas: 5,
+    firstname: "Ana",
+    lastname: "Gómez",
+    email: "ana.gomez@example.com",
+    sex: "Femenino",
+    phone: "555-5678",
+    createdAt: "2022-11-20",
+    reservations: 5,
   },
   {
-    id: 5,
-    status: "usuario",
+    _id: 5,
+    role: "usuario",
     username: "JuanPerez",
-    nombres: "Juan",
-    apellidos: "Perez",
-    correo: "juan.perez@example.com",
-    genero: "Masculino",
-    telefono: "555-1234",
-    fechaCreacion: "2023-01-15",
-    reservas: 3,
+    firstname: "Juan",
+    lastname: "Perez",
+    email: "juan.perez@example.com",
+    sex: "Masculino",
+    phone: "555-1234",
+    createdAt: "2023-01-15",
+    reservations: 3,
   },
   {
-    id: 6,
-    status: "usuario",
+    _id: 6,
+    role: "usuario",
     username: "AnaGomez",
-    nombres: "Ana",
-    apellidos: "Gómez",
-    correo: "ana.gomez@example.com",
-    genero: "Femenino",
-    telefono: "555-5678",
-    fechaCreacion: "2022-11-20",
-    reservas: 5,
+    firstname: "Ana",
+    lastname: "Gómez",
+    email: "ana.gomez@example.com",
+    sex: "Femenino",
+    phone: "555-5678",
+    createdAt: "2022-11-20",
+    reservations: 5,
   },
   {
-    id: 7,
-    status: "secretario",
+    _id: 7,
+    role: "secretario",
     username: "JuanPerez",
-    nombres: "Juan",
-    apellidos: "Perez",
-    correo: "juan.perez@example.com",
-    genero: "Masculino",
-    telefono: "555-1234",
-    fechaCreacion: "2023-01-15",
-    reservas: 3,
+    firstname: "Juan",
+    lastname: "Perez",
+    email: "juan.perez@example.com",
+    sex: "Masculino",
+    phone: "555-1234",
+    createdAt: "2023-01-15",
+    reservations: 3,
   },
   {
-    id: 8,
-    status: "profesional",
+    _id: 8,
+    role: "profesional",
     username: "AnaGomez",
-    nombres: "Ana",
-    apellidos: "Gómez",
-    correo: "ana.gomez@example.com",
-    genero: "Femenino",
-    telefono: "555-5678",
-    fechaCreacion: "2022-11-20",
-    reservas: 5,
+    firstname: "Ana",
+    lastname: "Gómez",
+    email: "ana.gomez@example.com",
+    sex: "Femenino",
+    phone: "555-5678",
+    createdAt: "2022-11-20",
+    reservations: 5,
   },
   {
-    id: 9,
-    status: "usuario",
+    _id: 9,
+    role: "usuario",
     username: "JuanPerez",
-    nombres: "Juan",
-    apellidos: "Perez",
-    correo: "juan.perez@example.com",
-    genero: "Masculino",
-    telefono: "555-1234",
-    fechaCreacion: "2023-01-15",
-    reservas: 3,
+    firstname: "Juan",
+    lastname: "Perez",
+    email: "juan.perez@example.com",
+    sex: "Masculino",
+    phone: "555-1234",
+    createdAt: "2023-01-15",
+    reservations: 3,
   },
   {
-    id: 10,
-    status: "doctor",
+    _id: 10,
+    role: "doctor",
     username: "AnaGomez",
-    nombres: "Ana",
-    apellidos: "Gómez",
-    correo: "ana.gomez@example.com",
-    genero: "Femenino",
-    telefono: "555-5678",
-    fechaCreacion: "2022-11-20",
-    reservas: 5,
+    firstname: "Ana",
+    lastname: "Gómez",
+    email: "ana.gomez@example.com",
+    sex: "Femenino",
+    phone: "555-5678",
+    createdAt: "2022-11-20",
+    reservations: 5,
   },
 ];
-*/
+
 type Turno = {
   TurnoId: number;
   cliente: {
@@ -401,8 +412,8 @@ const pagosFalsos: Pago[] = [
 
 export default function Informe() {
   const { tipo } = useParams<{ tipo: string }>();
-  const [datos, setDatos] = useState<(IUser | Turno | Pago)[]>([]);
-  const [userData, setUserData] = useState<IUser[]>([]);
+  const [datos, setDatos] = useState<(User | Turno | Pago)[]>([]);
+  //const [userData, setUserData] = useState<User[]>([]);
 
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
@@ -411,22 +422,27 @@ export default function Informe() {
   useEffect(() => {
     const fetchData = async () => {
       if (tipo === "usuarios") {
-        try {
-          const response = await axios.get('/api/users');
+        /*
+try {
+          const response = await axios.get("/api/users");
           if (Array.isArray(response.data)) {
             setUserData(response.data);
             setDatos(response.data);
           } else {
-            console.error('La respuesta no es un array:', response.data);
+            console.error("La respuesta no es un array:", response.data);
             setUserData([]);
             setDatos([]);
           }
         } catch (error) {
-          console.error('Error al obtener usuarios:', error);
+          console.error("Error al obtener usuarios:", error);
           setUserData([]);
           setDatos([]);
           // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje al usuario
         }
+*/
+
+        //setUserData(clientesFalsos);
+        setDatos(clientesFalsos);
       } else if (tipo === "turnos") {
         // Ordenar los turnos por fecha y hora
         const turnosOrdenados = [...turnosFalsos].sort((a, b) => {
@@ -550,13 +566,13 @@ export default function Informe() {
     });
   }
 
-  const isCliente = (dato: IUser | Turno | Pago): dato is IUser => {
-    return "status" in dato; // Verifica si la propiedad "correo" pertenece a dato
+  const isCliente = (dato: User | Turno | Pago): dato is User => {
+    return "role" in dato; // Verifica si la propiedad "correo" pertenece a dato
   };
-  const isTurno = (dato: IUser | Turno | Pago): dato is Turno => {
+  const isTurno = (dato: User | Turno | Pago): dato is Turno => {
     return "TurnoId" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
-  const isPago = (dato: IUser | Turno | Pago): dato is Pago => {
+  const isPago = (dato: User | Turno | Pago): dato is Pago => {
     return "cuil" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
 
@@ -579,18 +595,23 @@ export default function Informe() {
               </tr>
             </thead>
             <tbody>
-              {userData.filter((dato): dato is IUser => 'email' in dato).map((dato) => (
-                <tr key={dato._id}>
-                  <td data-label="ID">{dato._id}</td>
-                  <td data-label="Rol">{dato.role}</td>
-                  <td data-label="Usuario">{dato.username}</td>
-                  <td data-label="Nombres">{dato.firstname}</td>
-                  <td data-label="Apellidos">{dato.lastname}</td>
-                  <td data-label="Correo">{dato.email}</td>
-                  <td data-label="Género">{dato.sex}</td>
-                  <td data-label="Teléfono">{dato.phone}</td>
-                </tr>
-              ))}
+              {datos.map((dato) => {
+                if (isCliente(dato)) {
+                  return (
+                    <tr key={dato._id}>
+                      <td data-label="ID">{dato._id}</td>
+                      <td data-label="Rol">{dato.role}</td>
+                      <td data-label="Usuario">{dato.username}</td>
+                      <td data-label="Nombres">{dato.firstname}</td>
+                      <td data-label="Apellidos">{dato.lastname}</td>
+                      <td data-label="Correo">{dato.email}</td>
+                      <td data-label="Género">{dato.sex}</td>
+                      <td data-label="Teléfono">{dato.phone}</td>
+                    </tr>
+                  );
+                }
+                return null;
+              })}
             </tbody>
           </table>
         </div>
@@ -622,11 +643,11 @@ export default function Informe() {
                   return (
                     <tr key={dato.TurnoId}>
                       <td data-label="ID">{dato.TurnoId}</td>
-                      <td data-label="C.ID">{dato.cliente.id}</td>
+                      <td data-label="C.ID">{cliente.id}</td>
                       <td data-label="Cliente">
                         {cliente.nombre} {cliente.apellido}
                       </td>
-                      <td data-label="P.ID">{dato.profesional.id}</td>
+                      <td data-label="P.ID">{profesional.id}</td>
                       <td data-label="Profesional">
                         {profesional.nombre} {profesional.apellido}
                       </td>
@@ -750,12 +771,11 @@ export default function Informe() {
               onChange={handleSearch}
             />
 
-          <ImagePDFDownloadButton 
-            pdfUrl={`/pdf/${tipo}`} // Ajusta esta URL a la ruta correcta de tu backend
-            imageSrc={downloadIcon}
-            altText="Descargar PDF"
-          />
-
+            <ImagePDFDownloadButton
+              pdfUrl={`/pdf/${tipo}`} // Ajusta esta URL a la ruta correcta de tu backend
+              imageSrc={downloadIcon}
+              altText="Descargar PDF"
+            />
           </div>
           <div className="filtros">
             <h3>Filtros</h3>
