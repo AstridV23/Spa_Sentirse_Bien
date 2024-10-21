@@ -109,7 +109,7 @@ const trataCo: TarjetaProps[] = [
     titulo: "Ultracavitación",
     texto:
       "Técnica reductora que combate la grasa localizada, esculpiendo tu figura.",
-    precio: 5000,
+    precio: 8000,
   },
 ];
 

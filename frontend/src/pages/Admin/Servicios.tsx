@@ -1,83 +1,194 @@
-import React, { ChangeEvent, useState } from "react";
-import Dropdown from "../../components/Dropdown";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import swal from "sweetalert";
-//import axios from "../../api/axios";
+import axios from "../../api/axios";
+import { useForm } from "react-hook-form";
 
 type Servicio = {
-  img: string;
-  titulo: string;
-  descripcion: string;
-  precio: number;
-  ProfAsignado: string;
+  service_name: string;
+  service_type: string;
+  service_description: string;
+  service_price: number;
+  encargado: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  hours: string[];
 };
 
 type Servicios = {
   [key: string]: Servicio[];
 };
 
-type DataState = {
-  tipoTratamiento: string;
-  servicio: string;
-};
+export default function ServicesSection() {
+  const [services, setServices] = useState<Servicios>({});
 
-type ServicesSectionProps = {
-  services: Servicios;
-  setServices: (services: Servicios) => void;
-};
-
-export default function ServicesSection({
-  services,
-  setServices,
-}: ServicesSectionProps) {
   const [profesional, setProfesional] = useState("");
+  const [profesionales, setProfesionales] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [titulo, setTitulo] = useState("");
   const [text, setText] = useState("");
   const [precioNuevo, setPrecioNuevo] = useState<number>(0);
-  const [, /*image*/ setImage] = useState<File | null>(null); // image es lo que se debe mandar a la base de datos
-  const [imagePreviewServicio, setImagePreviewServicio] = useState<
+  //const [image, setImage] = useState<File | null>(null); // image es lo que se debe mandar a la base de datos
+  /*const [imagePreviewServicio, setImagePreviewServicio] = useState<
     string | null
-  >(null); // imagePreviewNew es la version URL de image, para poder verla necesitamos string
+  >(null); // imagePreviewNew es la version URL de image, para poder verla necesitamos string*/
 
-  const [reset, setReset] = useState(false);
-
-  const [Data, setData] = useState<DataState>({
-    tipoTratamiento: "",
-    servicio: "",
+  const [ServiceData, setServiceData] = useState<Servicio>({
+    service_name: "",
+    service_type: "",
+    service_description: "",
+    service_price: 0,
+    encargado: {
+      id: "",
+      name: "",
+      email: "",
+    },
+    hours: [],
   });
 
-  const handleChangeOptions = (name: string, value: string) => {
-    const ServiceData: DataState = { ...Data, [name]: value };
-    setReset(false);
+  const { handleSubmit, watch, reset } = useForm<Servicio>();
 
+  const [tipoTratamiento, setTipoTratamiento] = useState("");
+  const [servicio, setServicio] = useState("");
+
+  useEffect(() => {
+    reset({
+      service_name: "",
+      service_type: "",
+      service_description: "",
+      service_price: 0,
+      encargado: {
+        id: "",
+        name: "",
+        email: "",
+      },
+      hours: [],
+    });
+
+    // Cargar los servicios desde el backend
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get("/service"); // Asegúrate de que esta ruta sea la correcta
+        const servicesData = response.data;
+
+        // Verificar si servicesData es un array
+        if (Array.isArray(servicesData)) {
+          // Transformar la respuesta en el formato que necesitas
+          const transformedServices: Servicios = servicesData.reduce(
+            (acc: Servicios, curr: Servicio) => {
+              const { service_type, service_name, service_price } = curr;
+
+              if (!acc[service_type]) {
+                acc[service_type] = [];
+              }
+
+              acc[service_type].push({
+                ...curr,
+                service_name: service_name,
+                service_price: service_price,
+              });
+
+              return acc;
+            },
+            {}
+          );
+
+          setServices(transformedServices);
+        } else if (typeof servicesData === "object" && servicesData !== null) {
+          // Si servicesData ya es un objeto con la estructura deseada
+          setServices(servicesData);
+        } else {
+          console.error("Formato de datos inesperado:", servicesData);
+          setServices({});
+        }
+      } catch (error) {
+        console.error("Error al cargar los servicios", error);
+        setServices({});
+      }
+    };
+
+    fetchServices();
+  }, [reset]);
+
+  const handleChangeOptions = async (name: string, value: string) => {
     if (name === "tipoTratamiento") {
-      ServiceData.servicio = ""; // Reiniciar el servicio cuando se cambia el tipo de tratamiento
-    }
-    if (name === "servicio") {
-      const selectedService = services[ServiceData.tipoTratamiento]?.find(
-        (serv) => serv.titulo === value
+      setTipoTratamiento(value);
+      setServicio("");
+      setProfesional("");
+      setServiceData((prevData) => ({
+        ...prevData,
+        service_type: value,
+        service_name: "",
+        encargado: { id: "", name: "", email: "" },
+      }));
+    } else if (name === "servicio") {
+      setServicio(value);
+      const selectedService = services[tipoTratamiento]?.find(
+        (serv) => serv.service_name === value
       );
       if (selectedService) {
-        setTitulo(selectedService.titulo);
-        setText(selectedService.descripcion);
-        setPrecioNuevo(selectedService.precio);
-        setImagePreviewServicio(selectedService.img);
-        setProfesional(selectedService.ProfAsignado);
+        setTitulo(selectedService.service_name);
+        setText(selectedService.service_description);
+        setPrecioNuevo(selectedService.service_price);
+        setServiceData(selectedService);
+
+        // Fetch professional data if not already in cache
+        if (!profesionales[selectedService.encargado.id]) {
+          try {
+            console.log(selectedService.encargado);
+            const response = await axios.get(
+              `/users/${selectedService.encargado}`
+            );
+            console.log(response.data.name);
+            setProfesionales((prev) => ({
+              ...prev,
+              [selectedService.encargado.id]: response.data.name,
+            }));
+            setProfesional(response.data.name);
+          } catch (error) {
+            console.error("Error fetching professional data", error);
+            setProfesional("");
+          }
+        } else {
+          setProfesional(profesionales[selectedService.encargado.id]);
+        }
       } else {
         setTitulo("");
         setText("");
         setPrecioNuevo(0);
-        setImagePreviewServicio("");
         setProfesional("");
+        setServiceData((prevData) => ({
+          ...prevData,
+          service_name: "",
+          service_description: "",
+          service_price: 0,
+          encargado: { id: "", name: "", email: "" },
+          hours: [],
+        }));
       }
     }
-    setData(ServiceData); // Actualiza el estado con el nuevo objeto
   };
 
   function handleInputChangeServicio(event: ChangeEvent<HTMLInputElement>) {
     setTitulo(event.target.value);
   }
   function handleProfesionalChange(event: ChangeEvent<HTMLSelectElement>) {
-    setProfesional(event.target.value);
+    const selectedProfesionalName = event.target.value;
+    setProfesional(selectedProfesionalName);
+
+    // Update ServiceData with the selected professional
+    const selectedProfesional = services[tipoTratamiento]?.find(
+      (serv) => serv.encargado.name === selectedProfesionalName
+    )?.encargado;
+
+    if (selectedProfesional) {
+      setServiceData((prevData) => ({
+        ...prevData,
+        encargado: selectedProfesional,
+      }));
+    }
   }
   function handleTextAreaChangeServicio(
     event: ChangeEvent<HTMLTextAreaElement>
@@ -87,7 +198,7 @@ export default function ServicesSection({
   function handleChangePrecio(event: React.ChangeEvent<HTMLInputElement>) {
     setPrecioNuevo(Number(event.target.value));
   }
-  const handleImageChangeServicio = (
+  /*const handleImageChangeServicio = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
@@ -96,16 +207,15 @@ export default function ServicesSection({
       const previewUrl = URL.createObjectURL(file);
       setImagePreviewServicio(previewUrl);
     }
-  };
+  };*/
 
-  function handleUpdateServicio() {
+  async function handleUpdateServicio() {
     if (
-      !Data.tipoTratamiento ||
-      !titulo ||
-      !text ||
-      precioNuevo === null ||
-      !imagePreviewServicio ||
-      !profesional
+      !ServiceData.service_type ||
+      !ServiceData.service_name ||
+      !ServiceData.service_description ||
+      ServiceData.service_price === 0 ||
+      !ServiceData.encargado.name
     ) {
       swal({
         title: "Falta información",
@@ -113,121 +223,120 @@ export default function ServicesSection({
         timer: 1000,
       });
       return;
-    } else {
-      swal({
-        title: "Carga exitosa",
-        icon: "success",
-        timer: 1000,
-      });
+    }
 
-      const currentServices = services[Data.tipoTratamiento] || [];
-
-      // Comprobar si el servicio existe
-      const existingService = currentServices.find(
-        (servicio) =>
-          servicio.titulo.trim().toLowerCase() ===
-          Data.servicio.trim().toLowerCase()
+    try {
+      const response = await axios.put(
+        `/service/${ServiceData.service_name}`,
+        ServiceData
       );
 
-      let updatedServices;
+      if (response.status === 200) {
+        swal({
+          title: "Servicio actualizado con éxito",
+          icon: "success",
+          timer: 1000,
+        });
 
-      if (existingService) {
-        // Si el servicio existe, lo actualiza
-        updatedServices = currentServices.map((servicio) =>
-          servicio.titulo.trim().toLowerCase() ===
-          Data.servicio.trim().toLowerCase()
-            ? {
-                ...servicio,
-                titulo: titulo,
-                descripcion: text,
-                precio: precioNuevo,
-                img: imagePreviewServicio,
-                ProfAsignado: profesional,
-              }
-            : servicio
-        );
-      } else {
-        // Si no existe, lo agrega
-        updatedServices = [
-          ...currentServices,
-          {
-            img: imagePreviewServicio,
-            titulo: titulo,
-            descripcion: text,
-            precio: precioNuevo,
-            ProfAsignado: profesional,
-          },
-        ];
+        // Actualizar el estado local
+        setServices((prevServices) => ({
+          ...prevServices,
+          [ServiceData.service_type]: prevServices[
+            ServiceData.service_type
+          ].map((service) =>
+            service.service_name === ServiceData.service_name
+              ? ServiceData
+              : service
+          ),
+        }));
+
+        // Limpiar el formulario
+        setServiceData({
+          service_name: "",
+          service_type: "",
+          service_description: "",
+          service_price: 0,
+          encargado: { id: "", name: "", email: "" },
+          hours: [],
+        });
+        setTitulo("");
+        setProfesional("");
+        setText("");
+        setPrecioNuevo(0);
       }
-
-      const updatedAllServices = {
-        ...services,
-        [Data.tipoTratamiento]: updatedServices,
-      };
-
-      setServices(updatedAllServices);
-
-      // Imprimir el servicio actualizado en la consola
-      console.log("Servicio actualizado:", {
-        tipoTratamiento: Data.tipoTratamiento,
-        servicio: {
-          img: imagePreviewServicio,
-          titulo: titulo,
-          descripcion: text,
-          precio: precioNuevo,
-          ProfAsignado: profesional,
-        },
+    } catch (error) {
+      console.error("Error al actualizar el servicio", error);
+      swal({
+        title: "Error al actualizar el servicio",
+        icon: "error",
+        timer: 1000,
       });
-
-      // Reseteo de imagen
-      setTitulo("");
-      setProfesional("");
-      setText("");
-      setPrecioNuevo(0);
-      setImage(null);
-      setImagePreviewServicio(null);
     }
   }
 
-  function handleDeleteService() {
-    if (!titulo) {
+  async function handleDeleteService() {
+    if (!ServiceData.service_name) {
       swal({
         title: "Falta información",
         icon: "warning",
         timer: 1000,
       });
-    } else {
-      swal({
-        title: "¿Estás seguro?",
-        text: "Una vez eliminado, deberas subirlo de nuevo.",
-        icon: "warning",
-        buttons: ["Cancelar", "Eliminar"],
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          const updatedServicios = {
-            ...services,
-            [Data.tipoTratamiento]:
-              services[Data.tipoTratamiento]?.filter(
-                (servicio) => servicio.titulo !== Data.servicio
-              ) || [],
-          };
+      return;
+    }
 
-          setServices(updatedServicios);
-          setTitulo("");
-          setProfesional("");
-          setText("");
-          setPrecioNuevo(0);
-          setImage(null);
-          setImagePreviewServicio(null);
-          setReset(true);
+    const willDelete = await swal({
+      title: "¿Estás seguro?",
+      text: "Una vez eliminado, deberás subirlo de nuevo.",
+      icon: "warning",
+      buttons: ["Cancelar", "Eliminar"],
+      dangerMode: true,
+    });
+
+    if (willDelete) {
+      try {
+        const response = await axios.delete(
+          `/service/${ServiceData.service_name}`
+        );
+
+        if (response.status === 200) {
           swal({
             title: "Servicio eliminado",
             icon: "success",
             timer: 1000,
           });
+
+          // Actualizar el estado local
+          setServices((prevServices) => ({
+            ...prevServices,
+            [ServiceData.service_type]: prevServices[
+              ServiceData.service_type
+            ].filter(
+              (service) => service.service_name !== ServiceData.service_name
+            ),
+          }));
+
+          // Limpiar el formulario
+          setServiceData({
+            service_name: "",
+            service_type: "",
+            service_description: "",
+            service_price: 0,
+            encargado: { id: "", name: "", email: "" },
+            hours: [],
+          });
+          setTitulo("");
+          setProfesional("");
+          setText("");
+          setPrecioNuevo(0);
         }
-      });
+      } catch (error) {
+        console.error("Error al eliminar el servicio", error);
+        swal({
+          title: "Error al eliminar el servicio",
+          icon: "error",
+          timer: 1000,
+        });
+      }
     }
   }
 
@@ -235,33 +344,65 @@ export default function ServicesSection({
     <div className="services-section">
       <div className="buttons">
         <div className="par">
-          <Dropdown
-            label="Tipo"
-            options={Object.keys(services)}
-            onChange={(selectedOption) =>
-              handleChangeOptions("tipoTratamiento", selectedOption)
+          <select
+            name="tipoTratamiento"
+            onChange={(e) =>
+              handleChangeOptions("tipoTratamiento", e.target.value)
             }
-          />
-          <Dropdown
-            label="Servicio"
-            options={
-              services[Data.tipoTratamiento]?.map(
-                (servicio) => servicio.titulo
-              ) || []
-            }
-            reset={reset}
-            onChange={(selectedOption) =>
-              handleChangeOptions("servicio", selectedOption)
-            }
-          />
+            value={tipoTratamiento}
+          >
+            <option key="default-tratamiento" value="">
+              Tratamiento
+            </option>
+            {Object.keys(services).map((tipo, index) => (
+              <option key={`tipo-${tipo}-${index}`} value={tipo}>
+                {tipo}
+              </option>
+            ))}
+          </select>
+          <select
+            name="servicio"
+            onChange={(e) => handleChangeOptions("servicio", e.target.value)}
+            value={servicio}
+          >
+            <option key="default-servicio" value="">
+              Servicio
+            </option>
+            {tipoTratamiento &&
+              services[tipoTratamiento]?.map((serv, index) => (
+                <option
+                  key={`servicio-${serv.service_name}-${index}`}
+                  value={serv.service_name}
+                >
+                  {serv.service_name}
+                </option>
+              ))}
+          </select>
           <select
             name="profesional"
             id="profesional"
             onChange={handleProfesionalChange}
+            value={profesional}
           >
-            <option value="">Prof. asignado: {profesional}</option>
-            <option value="JuanPerez">JuanPerez</option>
-            <option value="AnastaciaLopez">AnastaciaLopez</option>
+            <option key="default-profesional" value="">
+              {profesional
+                ? `Encargado: ${profesional}`
+                : "Seleccione un encargado"}
+            </option>
+            {tipoTratamiento &&
+              Array.from(
+                new Set(
+                  services[tipoTratamiento]?.map(
+                    (serv) => profesionales[serv.encargado.id]
+                  )
+                )
+              )
+                .filter(Boolean)
+                .map((name, index) => (
+                  <option key={`profesional-${name}-${index}`} value={name}>
+                    {name}
+                  </option>
+                ))}
           </select>
         </div>
       </div>
@@ -296,6 +437,7 @@ export default function ServicesSection({
           />
         </div>
         <div className="par">
+          {/*
           <div className="boton">
             <label htmlFor="file-upload-servicio">Subir imagen</label>
             <input
@@ -306,6 +448,7 @@ export default function ServicesSection({
               style={{ display: "none" }}
             />
           </div>
+          */}
           <input className="MainBoton" type="submit" value="Guardar" />
           <input
             className="borrar"
@@ -315,12 +458,12 @@ export default function ServicesSection({
           />
         </div>
       </form>
-      {imagePreviewServicio && (
+      {/*imagePreviewServicio && (
         <div className="image-preview">
           <p>Vista previa:</p>
           <img src={imagePreviewServicio} alt="Vista previa" />
         </div>
-      )}
+      )} */}
     </div>
   );
 }
