@@ -116,3 +116,42 @@ export const updateServiceHours = async (req, res) => {
         res.status(500).json({ message: 'Error al actualizar el horario del servicio.', error: error.message });
     }
 };
+
+export const updateService = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Validar los datos de entrada usando el schema de Zod
+        const validatedData = createServiceSchema.parse(req.body);
+
+        // Buscar el servicio por ID y actualizarlo
+        const updatedService = await Service.findByIdAndUpdate(id, validatedData, { new: true });
+
+        if (!updatedService) {
+            return res.status(404).json({ message: "Servicio no encontrado" });
+        }
+
+        res.status(200).json({
+            message: "Servicio actualizado exitosamente",
+            service: {
+                id: updatedService._id,
+                service_name: updatedService.service_name,
+                service_type: updatedService.service_type,
+                service_description: updatedService.service_description,
+                service_price: updatedService.service_price,
+                encargado: updatedService.encargado,
+                hours: updatedService.hours
+            }
+        });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            // Error de validación del schema
+            return res.status(400).json({ 
+                message: "Error de validación", 
+                errors: error.errors 
+            });
+        }
+        console.error('Error al actualizar el servicio:', error);
+        res.status(500).json({ message: 'Error al actualizar el servicio.', error: error.message });
+    }
+};
