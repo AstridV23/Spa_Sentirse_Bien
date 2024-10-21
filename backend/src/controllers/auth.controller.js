@@ -177,7 +177,6 @@ export const getUsers = async (req, res) => {
         return res.status(500).json({ message: 'Error al obtener usuarios.', error });
     }
 
-
 };
 
 export const getUserById = async (req, res) => {
