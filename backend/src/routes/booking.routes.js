@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createBooking, deleteBooking, getAllBookings, getPersonalBookings, getActiveBookings, getBookingsByDate, changeStatus } from '../controllers/booking.controller.js'
+import { createBooking, deleteBooking, getAllBookings, getPersonalBookings, getActiveBookings, getBookingsByDate } from '../controllers/booking.controller.js'
 import { authRequired } from '../middlewares/validateToken.js'
 import { validateSchema } from '../middlewares/validator.middleware.js'
 import { createBookingSchema } from '../schemas/booking.schema.js'
@@ -14,7 +14,6 @@ router.get('/bookings', getAllBookings)
 router.get('/bookings/personal', authRequired, getPersonalBookings);
 router.get('/bookings', authRequired, getActiveBookings);
 router.get('/bookings', authRequired, getBookingsByDate);
-router.patch('/bookings/:id', changeStatus);
 
 
 export default router

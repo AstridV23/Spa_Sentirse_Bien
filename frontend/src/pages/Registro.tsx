@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext.tsx";
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useLayoutEffect } from "react";
 import { convertFieldValuesToUser } from "../libs/convertirValuesAUSer.ts";
+import { registerAdminRequest } from "../api/auth.ts";
 
 type Props = {
   mode: "main" | "admin";
@@ -42,7 +43,13 @@ export function Register({ mode }: Props) {
 
       setIsLoading(true);
       try {
-        await signup(convertFieldValuesToUser(values));
+        if (mode === "admin") {
+          // Usar registerAdmin para el modo admin
+          await registerAdminRequest(convertFieldValuesToUser(values));
+        } else {
+          // Usar signup para el modo normal
+          await signup(convertFieldValuesToUser(values));
+        }
         await swal("Usuario registrado con éxito", {
           icon: "success",
           timer: 1000,

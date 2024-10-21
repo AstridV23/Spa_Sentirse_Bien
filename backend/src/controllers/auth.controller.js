@@ -13,22 +13,18 @@ export const register = async (req, res) => {
     
     try {
 
-        console.log("Verificando si el correo ya está registrado...");
         const userFoundByEmail = await User.findOne({ email });
         
         if (userFoundByEmail)
             return res.status(400).json(["Ya existe un ususario registrado con este email."]);
     
-        console.log("Verificando si el nombre de usuario ya está registrado...");
         const userFoundByUsername = await User.findOne({ username });
     
         if (userFoundByUsername)
             return res.status(400).json(["Ya existe un usuario registrado con este nombre de usuario."]);
     
-        console.log("Hashing la contraseña...");
         const passwordHash = await bcrypt.hash(password, 10);
     
-        console.log("Creando un nuevo usuario...");
         const newUser = new User({
             username,
             firstname,
@@ -42,7 +38,6 @@ export const register = async (req, res) => {
     
         const userSaved = await newUser.save();
 
-        console.log("debe ser acá")
         const token = await createAccessToken({id: userSaved._id});
 
         res.cookie('token', token)
@@ -61,6 +56,55 @@ export const register = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({message: error.message});
+    }
+};
+
+export const registerAdmin = async (req, res) => {
+    try {
+        const { username, email, password, firstname, lastname, role, phone, sex } = req.body;
+
+        // Verificar si el usuario ya existe
+        const userFound = await User.findOne({ email });
+        if (userFound) return res.status(400).json(["El email ya está en uso"]);
+
+        const userFoundByUsername = await User.findOne({ username });
+    
+        if (userFoundByUsername)
+            return res.status(400).json(["Ya existe un usuario registrado con este nombre de usuario."]);
+
+        // Encriptar la contraseña
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        // Crear el nuevo usuario
+        const newUser = new User({
+            username,
+            email,
+            password: passwordHash,
+            firstname,
+            lastname,
+            role,
+            phone,
+            sex
+        });
+
+        // Guardar el usuario en la base de datos
+        const userSaved = await newUser.save();
+
+        // Responder con los datos del usuario creado (sin la contraseña)
+        res.json({
+            id: userSaved._id,
+            username: userSaved.username,
+            email: userSaved.email,
+            firstname: userSaved.firstname,
+            lastname: userSaved.lastname,
+            role: userSaved.role,
+            phone: userSaved.phone,
+            sex: userSaved.sex,
+            createdAt: userSaved.createdAt,
+            updatedAt: userSaved.updatedAt,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
 
