@@ -66,36 +66,64 @@ export const createPDF = async (req, res) => {
 
             const { bookings, total } = bookingsData;
 
-            // Crear la tabla
-            doc.font('Helvetica-Bold').fontSize(14).text(`Total de turnos: ${total}`, { align: 'center' });
-            doc.moveDown();
-
-            const tableTop = 200;
+            // Configuración de la tabla
+            const tableTop = 150; // Reducir este valor para subir la tabla
             const tableLeft = 50;
             const rowHeight = 20;
-            const colWidths = [80, 80, 80, 60, 60, 100];
+            const colWidths = [80, 60, 80, 80, 60, 100];
+            const tableWidth = colWidths.reduce((sum, width) => sum + width, 0);
+            const tableHeight = (bookings.length + 1) * rowHeight;
+            const tableBottom = tableTop + tableHeight;
+
+            // Resumen de turnos
+            doc.font('Helvetica-Bold').fontSize(14)
+               .text(`Resumen de turnos: ${total}`, 50, tableTop - 30, { align: 'left' });
+
+            // Función para dibujar una línea
+            const drawLine = (x1, y1, x2, y2) => {
+                doc.moveTo(x1, y1).lineTo(x2, y2).stroke();
+            };
+
+            // Dibujar el contorno de la tabla
+            drawLine(tableLeft, tableTop, tableLeft + tableWidth, tableTop);
+            drawLine(tableLeft, tableTop, tableLeft, tableBottom);
+            drawLine(tableLeft + tableWidth, tableTop, tableLeft + tableWidth, tableBottom);
+            drawLine(tableLeft, tableBottom, tableLeft + tableWidth, tableBottom);
 
             // Encabezados de la tabla
             doc.font('Helvetica-Bold').fontSize(10);
+            let currentLeft = tableLeft;
             ['Fecha', 'Hora', 'Servicio', 'Tratamiento', 'Costo', 'Cliente'].forEach((header, i) => {
-                doc.text(header, tableLeft + colWidths.slice(0, i).reduce((a, b) => a + b, 0), tableTop);
+                doc.text(header, currentLeft + 5, tableTop + 5, { width: colWidths[i], align: 'left' });
+                currentLeft += colWidths[i];
+                if (i < colWidths.length - 1) {
+                    drawLine(currentLeft, tableTop, currentLeft, tableBottom);
+                }
             });
+
+            // Línea horizontal después de los encabezados
+            drawLine(tableLeft, tableTop + rowHeight, tableLeft + tableWidth, tableTop + rowHeight);
 
             // Filas de la tabla
             doc.font('Helvetica').fontSize(8);
             bookings.forEach((booking, index) => {
                 const y = tableTop + rowHeight * (index + 1);
-                doc.text(new Date(booking.date).toLocaleDateString(), tableLeft, y);
-                doc.text(booking.hour || '', tableLeft + colWidths[0], y);
-                doc.text(booking.service || '', tableLeft + colWidths[0] + colWidths[1], y);
-                doc.text(booking.treatment || '', tableLeft + colWidths[0] + colWidths[1] + colWidths[2], y);
-                doc.text(`$${booking.cost || 0}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3], y);
-                
-                // Manejar el caso en que booking.user pueda ser null
-                const userName = booking.user 
-                    ? `${booking.user.firstname || ''} ${booking.user.lastname || ''}`
-                    : 'Usuario no disponible';
-                doc.text(userName, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4], y);
+                currentLeft = tableLeft;
+
+                [
+                    new Date(booking.date).toLocaleDateString(),
+                    booking.hour || '',
+                    booking.service || '',
+                    booking.treatment || '',
+                    `$${booking.cost || 0}`,
+                    booking.user ? `${booking.user.firstname || ''} ${booking.user.lastname || ''}` : 'Usuario no disponible'
+                ].forEach((text, i) => {
+                    doc.text(text, currentLeft + 5, y + 5, { width: colWidths[i], align: 'left' });
+                    currentLeft += colWidths[i];
+                });
+
+                // Línea horizontal después de cada fila
+                drawLine(tableLeft, y + rowHeight, tableLeft + tableWidth, y + rowHeight);
             });
 
         } else {
