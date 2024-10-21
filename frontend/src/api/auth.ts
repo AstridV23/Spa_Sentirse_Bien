@@ -13,4 +13,6 @@ export const verificarToken = (token: string) => axios.get('/verify', {
     }
 });
 
+export const registerAdminRequest = (user: any) => axios.post('/register_admin', user);
+
 

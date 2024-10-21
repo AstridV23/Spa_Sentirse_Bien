@@ -1,4 +1,5 @@
 import Booking from '../models/booking_model.js'
+import User from '../models/user_model.js';
 
 // Método para guardar un turno en BD
 export const createBooking = async (req, res) =>{
@@ -53,14 +54,35 @@ export const deleteBooking = async (req, res) => {
 // Método para obtener todas las reservas
 export const getAllBookings = async (req, res) => {
     try {
-        // Consultar todas las reservas en la base de datos
-        const bookings = await Booking.find().populate('user'); 
+        const { username } = req.query; // Obtener el nombre de usuario de los parámetros de consulta
+        let query = {};
 
-        // Enviar las reservas en la respuesta
-        res.status(200).json(bookings);
+        if (username) {
+            // Si se proporciona un nombre de usuario, buscamos primero el usuario
+            const user = await User.findOne({ username: new RegExp(username, 'i') });
+            if (user) {
+                query.user = user._id;
+            } else {
+                // Si no se encuentra el usuario, devolvemos un array vacío
+                return res.status(200).json({ bookings: [], total: 0 });
+            }
+        }
+
+        // Consultar las reservas en la base de datos con el filtro (si existe)
+        const bookings = await Booking.find(query).populate('user');
+
+        // Contar el total de reservas que coinciden con la consulta
+        const total = await Booking.countDocuments(query);
+
+        // Enviar las reservas y el total en la respuesta
+        res.status(200).json({
+            bookings: bookings,
+            total: total
+        });
     } catch (error) {
         // Manejo de errores
-        res.status(500).json({ message: 'Error al obtener todas las reservas.', error });
+        console.error('Error al obtener las reservas:', error);
+        res.status(500).json({ message: 'Error al obtener las reservas.', error: error.message });
     }
 };
 
@@ -112,37 +134,3 @@ export const getBookingsByDate = async(req, res) => {
         res.status(500).json({ message: "Error al obtener reservas." });
     }
 }
-
-export const changeStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
-        const user = req.user ? req.user.id : null; // Asumiendo que tienes el ID del usuario en req.user
-            
-        if (!status || !["reservado", "pagado", "cancelado", "finalizado"].includes(status)) {
-            return res.status(400).json({ message: 'Estado de reserva inválido o no proporcionado.' });
-        }
-
-        if (!user) {
-            return res.status(401).json({ message: 'Usuario no autenticado.' });
-        }
-
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            id,
-            { 
-                status,
-                user // Actualizamos el usuario que hizo el cambio
-            },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedBooking) {
-            return res.status(404).json({ message: "Reserva no encontrada" });
-        }
-
-        res.status(200).json(updatedBooking);
-    } catch (error) {
-        console.error('Error al cambiar el estado de la reserva:', error);
-        res.status(500).json({ message: "Error al cambiar el estado de la reserva" });
-    }
-};
