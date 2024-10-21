@@ -4,20 +4,9 @@ import ImagePDFDownloadButton from "../components/PDF/PDFDownloadButton";
 import downloadIcon from "/assets/descargar.png";
 import "./Informes.css"; 
 import axios from "axios";
+import IUser from "../types/IUser";
 
-type Usuario = {
-  _id: string;
-  username: string;
-  email: string;
-  firstname: string;
-  lastname: string;
-  sex: string;
-  role: string;
-  phone: string;
-  createdAt: string;
-  updatedAt: string;
-  // bookingsByUser: number;
-};
+
 /*
 const clientesFalsos: Usuario[] = [
   {
@@ -412,7 +401,8 @@ const pagosFalsos: Pago[] = [
 
 export default function Informe() {
   const { tipo } = useParams<{ tipo: string }>();
-  const [datos, setDatos] = useState<(Usuario | Turno | Pago)[]>([]);
+  const [datos, setDatos] = useState<(IUser | Turno | Pago)[]>([]);
+  const [userData, setUserData] = useState<IUser[]>([]);
 
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
@@ -423,9 +413,18 @@ export default function Informe() {
       if (tipo === "usuarios") {
         try {
           const response = await axios.get('/api/users');
-          setDatos(response.data);
+          if (Array.isArray(response.data)) {
+            setUserData(response.data);
+            setDatos(response.data);
+          } else {
+            console.error('La respuesta no es un array:', response.data);
+            setUserData([]);
+            setDatos([]);
+          }
         } catch (error) {
           console.error('Error al obtener usuarios:', error);
+          setUserData([]);
+          setDatos([]);
           // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje al usuario
         }
       } else if (tipo === "turnos") {
@@ -551,13 +550,13 @@ export default function Informe() {
     });
   }
 
-  const isCliente = (dato: Usuario | Turno | Pago): dato is Usuario => {
+  const isCliente = (dato: IUser | Turno | Pago): dato is IUser => {
     return "status" in dato; // Verifica si la propiedad "correo" pertenece a dato
   };
-  const isTurno = (dato: Usuario | Turno | Pago): dato is Turno => {
+  const isTurno = (dato: IUser | Turno | Pago): dato is Turno => {
     return "TurnoId" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
-  const isPago = (dato: Usuario | Turno | Pago): dato is Pago => {
+  const isPago = (dato: IUser | Turno | Pago): dato is Pago => {
     return "cuil" in dato; // Verifica si la propiedad "id" pertenece a dato
   };
 
@@ -580,7 +579,7 @@ export default function Informe() {
               </tr>
             </thead>
             <tbody>
-              {datos.filter((dato): dato is Usuario => 'email' in dato).map((dato) => (
+              {userData.filter((dato): dato is IUser => 'email' in dato).map((dato) => (
                 <tr key={dato._id}>
                   <td data-label="ID">{dato._id}</td>
                   <td data-label="Rol">{dato.role}</td>
@@ -590,7 +589,6 @@ export default function Informe() {
                   <td data-label="Correo">{dato.email}</td>
                   <td data-label="Género">{dato.sex}</td>
                   <td data-label="Teléfono">{dato.phone}</td>
-                  <td data-label="Creado">{new Date(dato.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
