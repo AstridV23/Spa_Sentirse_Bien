@@ -13,7 +13,9 @@ type Turno = {
   date: string;
   info?: string;
   status: string;
+  amount: number;
 };
+
 type Tarjeta = {
   numero: string;
   prop: string;
@@ -21,16 +23,7 @@ type Tarjeta = {
   vto: string;
   codigo: string;
 };
-/*
-type Pago = {
-  cliente: Cliente
-  cuil: string;
-  fecha: string;
-  tratamiento: string;
-  valor: number;
-  pagoLocal: boolean;
-};
-*/
+
 type Props = {
   DatosTurno: Turno;
 };
@@ -78,7 +71,7 @@ export default function FormPago({ DatosTurno }: Props) {
       expirationDate: expirationDate,
       cvv: tarjeta.codigo,
       cuit: tarjeta.cuil,
-      //amount: DatosTurno.costo,
+      amount: DatosTurno.amount,
       user: user,
     };
 
@@ -116,11 +109,11 @@ export default function FormPago({ DatosTurno }: Props) {
             <hr id="hr" />
             <div className="info">
               <p className="info">
-                Tratamiento: {DatosTurno.tipoTratamiento} ~ Servicio:{" "}
-                {DatosTurno.servicio}
+                Tratamiento: {DatosTurno.treatment} ~ Servicio:{" "}
+                {DatosTurno.service}
               </p>
               <p>
-                Fecha: {DatosTurno.fecha} ~ Hora: {DatosTurno.hora} hs
+                Fecha: {DatosTurno.date} 
               </p>
             </div>
 

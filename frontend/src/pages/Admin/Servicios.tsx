@@ -1,11 +1,13 @@
 import React, { ChangeEvent, useState } from "react";
 import Dropdown from "../../components/Dropdown";
+import swal from "sweetalert";
 
 type Servicio = {
   img: string;
   titulo: string;
   descripcion: string;
   precio: number;
+  ProfAsignado: string;
 };
 
 type Servicios = {
@@ -22,14 +24,14 @@ type ServicesSectionProps = {
   setServices: (services: Servicios) => void;
 };
 
-export function ServicesSection({
+export default function ServicesSection({
   services,
   setServices,
 }: ServicesSectionProps) {
-  const [precioNuevo, setPrecioNuevo] = useState<number>(0);
-
+  const [profesional, setProfesional] = useState("");
   const [titulo, setTitulo] = useState("");
   const [text, setText] = useState("");
+  const [precioNuevo, setPrecioNuevo] = useState<number>(0);
   const [, /*image*/ setImage] = useState<File | null>(null); // image es lo que se debe mandar a la base de datos
   const [imagePreviewServicio, setImagePreviewServicio] = useState<
     string | null
@@ -58,26 +60,31 @@ export function ServicesSection({
         setText(selectedService.descripcion);
         setPrecioNuevo(selectedService.precio);
         setImagePreviewServicio(selectedService.img);
+        setProfesional(selectedService.ProfAsignado);
       } else {
         setTitulo("");
         setText("");
         setPrecioNuevo(0);
         setImagePreviewServicio("");
+        setProfesional("");
       }
     }
     setData(ServiceData); // Actualiza el estado con el nuevo objeto
   };
 
-  function handleChangePrecio(event: React.ChangeEvent<HTMLInputElement>) {
-    setPrecioNuevo(Number(event.target.value));
-  }
   function handleInputChangeServicio(event: ChangeEvent<HTMLInputElement>) {
     setTitulo(event.target.value);
+  }
+  function handleProfesionalChange(event: ChangeEvent<HTMLSelectElement>) {
+    setProfesional(event.target.value);
   }
   function handleTextAreaChangeServicio(
     event: ChangeEvent<HTMLTextAreaElement>
   ) {
     setText(event.target.value);
+  }
+  function handleChangePrecio(event: React.ChangeEvent<HTMLInputElement>) {
+    setPrecioNuevo(Number(event.target.value));
   }
   const handleImageChangeServicio = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -96,7 +103,8 @@ export function ServicesSection({
       !titulo ||
       !text ||
       precioNuevo === null ||
-      !imagePreviewServicio
+      !imagePreviewServicio ||
+      !profesional
     ) {
       swal({
         title: "Falta información",
@@ -133,6 +141,7 @@ export function ServicesSection({
                 descripcion: text,
                 precio: precioNuevo,
                 img: imagePreviewServicio,
+                ProfAsignado: profesional,
               }
             : servicio
         );
@@ -145,17 +154,33 @@ export function ServicesSection({
             titulo: titulo,
             descripcion: text,
             precio: precioNuevo,
+            ProfAsignado: profesional,
           },
         ];
       }
 
-      setServices({
+      const updatedAllServices = {
         ...services,
         [Data.tipoTratamiento]: updatedServices,
+      };
+
+      setServices(updatedAllServices);
+
+      // Imprimir el servicio actualizado en la consola
+      console.log("Servicio actualizado:", {
+        tipoTratamiento: Data.tipoTratamiento,
+        servicio: {
+          img: imagePreviewServicio,
+          titulo: titulo,
+          descripcion: text,
+          precio: precioNuevo,
+          ProfAsignado: profesional,
+        },
       });
 
       // Reseteo de imagen
       setTitulo("");
+      setProfesional("");
       setText("");
       setPrecioNuevo(0);
       setImage(null);
@@ -189,6 +214,7 @@ export function ServicesSection({
 
           setServices(updatedServicios);
           setTitulo("");
+          setProfesional("");
           setText("");
           setPrecioNuevo(0);
           setImage(null);
@@ -227,6 +253,15 @@ export function ServicesSection({
               handleChangeOptions("servicio", selectedOption)
             }
           />
+          <select
+            name="profesional"
+            id="profesional"
+            onChange={handleProfesionalChange}
+          >
+            <option value="">Prof. asignado: {profesional}</option>
+            <option value="JuanPerez">JuanPerez</option>
+            <option value="AnastaciaLopez">AnastaciaLopez</option>
+          </select>
         </div>
       </div>
 
@@ -288,5 +323,3 @@ export function ServicesSection({
     </div>
   );
 }
-
-export default ServicesSection;

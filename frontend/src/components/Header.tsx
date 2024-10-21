@@ -12,13 +12,15 @@ type Props = {
 function Header({ SetIsOpen, IsOpen }: Props) {
   const location = useLocation();
   const isOnSpecificPage =
-    location.pathname === "/admin" || location.pathname.startsWith("/informe/");
+    location.pathname === "/admin" ||
+    location.pathname.startsWith("/informe/") ||
+    location.pathname === "/registro-empleado";
 
   const navigate = useNavigate();
 
   // Simulando el estado de inicio de sesión
   const { logout, isAuthenticated } = useAuth();
-  const isAdmin = false;
+  const { user } = useAuth();
 
   async function handleLogOut() {
     swal({
@@ -70,12 +72,12 @@ function Header({ SetIsOpen, IsOpen }: Props) {
             {/* Rendnerizado condicional */}
             {isAuthenticated ? (
               <>
-                {!isAdmin ? (
+                {user && user.role !== "usuario" ? (
                   <>
-                    <Link to="/turnos">Turnos</Link>
+                    <Link to="/admin">Admin</Link>
                   </>
                 ) : (
-                  <Link to="/admin">Admin</Link>
+                  <Link to="/turnos">Turnos</Link>
                 )}
                 <Link to="/perfil" className="SecondButton">
                   Perfil
@@ -99,7 +101,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
             )}
           </>
         ) : (
-          <Link to="/">Volver a la Pagina</Link>
+          <Link to="/">Volver a la Página ↩</Link>
         )}
       </div>
     </header>

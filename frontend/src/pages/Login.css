@@ -12,6 +12,34 @@
   left: 0;
   z-index: -1;
 }
+#admin .background-image {
+  background-color: #49635f;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-image: none;
+  filter: none;
+}
+#admin h1 {
+  color: black;
+  font-size: 24px;
+}
+#admin form .text {
+  color: var(--gris);
+  opacity: 0.8;
+}
+#admin .textbox {
+  border: 1px solid #ddd;
+  background-color: white;
+  color: black;
+}
+#admin .MainButton {
+  background-color: #49635f;
+  color: var(--blanco);
+}
 
 .ingreso .contenedor,
 .ingreso .contenedorRegistro {
