@@ -106,18 +106,29 @@ export const logout = (req, res) => {
     return res.sendStatus(200)
 }
 
-export const profile = async (req,res) => {
-    const userFound = await User.findById(req.user.id)
-    
-    if (!userFound) return res.status(400).json({message:'Usuario no encontrado'});
+export const profile = async (req, res) => {
+    try {
+        // Asumimos que el middleware de autenticación ha añadido el id del usuario a req.user
+        const userFound = await User.findById(req.user.id).select('-password');
+        
+        if (!userFound) return res.status(400).json({message: 'Usuario no encontrado'});
 
-    return res.json({
-        id: userFound._id,
-        username: userFound.username,
-        email: userFound.email,
-        createdAt: userFound.createdAt,
-        updatesAt: userFound.updatedAt
-    })
+        return res.json({
+            id: userFound._id,
+            username: userFound.username,
+            email: userFound.email,
+            firstname: userFound.firstname,
+            lastname: userFound.lastname,
+            role: userFound.role,
+            phone: userFound.phone,
+            sex: userFound.sex,
+            createdAt: userFound.createdAt,
+            updatedAt: userFound.updatedAt
+        });
+    } catch (error) {
+        console.error("Error en el perfil:", error);
+        res.status(500).json({message: "Error interno del servidor", error: error.message});
+    }
 }
 
 export const verifyToken = async (req, res) => {
