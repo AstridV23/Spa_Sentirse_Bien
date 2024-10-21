@@ -46,7 +46,7 @@ export function Register({ mode }: Props) {
   });
 
   return (
-    <div className="ingreso">
+    <div className="ingreso" id={mode === "admin" ? "admin" : ""}>
       <div className="background-image" />
       <div className="contenedorRegistro">
         <div className="titulo">
@@ -56,7 +56,7 @@ export function Register({ mode }: Props) {
               <img src="/assets/registro.png" alt="" />
             </>
           ) : (
-            <h1>Cargar Empleado</h1>
+            <h1>CARGAR EMPLEADO</h1>
           )}
         </div>
         {mode === "main" && (

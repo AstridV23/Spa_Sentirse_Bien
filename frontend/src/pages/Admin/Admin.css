@@ -185,7 +185,8 @@
 .admin-page input[type="text"],
 .admin-page input[type="number"],
 .admin-page input[type="time"],
-.admin-page .dropdown .SecondButton {
+.admin-page .dropdown .SecondButton,
+.admin-page select {
   min-height: 39px;
   min-width: 215px;
   max-height: 150px;

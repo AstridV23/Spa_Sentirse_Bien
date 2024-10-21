@@ -1,6 +1,7 @@
 import "./servicio.css";
 import { usePopUp } from "./PopUpContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 type Props = {
   img: string;
@@ -14,10 +15,10 @@ export default function Servicio(props: Props) {
   const { img, titulo, texto, precio } = props;
   const navigate = useNavigate();
 
-  const isLoggedIn = false;
+  const { isAuthenticated } = useAuth();
 
   const handleClick = () => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       openPopUp("turn");
     } else {
       navigate("/login");
