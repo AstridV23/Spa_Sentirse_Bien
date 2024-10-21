@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getAllBookings } from './booking.controller.js';
 import { getPaymentsByDateAndType } from './payment.controller.js';
+import { getUsers } from './auth.controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -200,6 +201,95 @@ export const createPDF = async (req, res) => {
             } catch (error) {
                 console.error('Error al obtener datos de pagos:', error);
                 doc.text('Error al generar el informe de pagos', 50, 150);
+            }
+        } else if (tipo === 'usuarios') {
+            try {
+                // Obtener datos de usuarios
+                const { users, status, message, error } = await getUsers(req, (response) => response);
+
+                if (status !== 200 || !users || !Array.isArray(users)) {
+                    throw new Error(message || 'No se pudieron obtener los datos de usuarios correctamente');
+                }
+
+                // Configuración de la tabla
+                const tableTop = 150;
+                const tableLeft = 50;
+                const headerHeight = 40;
+                const rowHeight = 20;
+                // Ajustamos los anchos de las columnas, dando más espacio a "Fecha Creación"
+                const colWidths = [65, 65, 130, 65, 55, 90];
+                const tableWidth = colWidths.reduce((sum, width) => sum + width, 0);
+                const tableHeight = headerHeight + (users.length * rowHeight);
+                const tableBottom = tableTop + tableHeight;
+
+                // Resumen de usuarios
+                doc.font('Helvetica-Bold').fontSize(14)
+                   .text(`Total de usuarios: ${users.length}`, 50, tableTop - 30, { align: 'left' });
+
+                // Función para dibujar una línea
+                const drawLine = (x1, y1, x2, y2) => {
+                    doc.moveTo(x1, y1).lineTo(x2, y2).stroke();
+                };
+
+                // Dibujar el contorno de la tabla
+                drawLine(tableLeft, tableTop, tableLeft + tableWidth, tableTop);
+                drawLine(tableLeft, tableTop, tableLeft, tableBottom);
+                drawLine(tableLeft + tableWidth, tableTop, tableLeft + tableWidth, tableBottom);
+                drawLine(tableLeft, tableBottom, tableLeft + tableWidth, tableBottom);
+
+                // Encabezados de la tabla
+                doc.font('Helvetica-Bold').fontSize(10);
+                let currentLeft = tableLeft;
+                ['Nombre', 'Apellido', 'Email', 'Teléfono', 'Rol', 'Fecha Creación'].forEach((header, i) => {
+                    doc.text(header, currentLeft + 5, tableTop + 15, {
+                        width: colWidths[i],
+                        align: 'left',
+                        lineBreak: false
+                    });
+                    currentLeft += colWidths[i];
+                    if (i < colWidths.length - 1) {
+                        drawLine(currentLeft, tableTop, currentLeft, tableBottom);
+                    }
+                });
+
+                // Línea horizontal después de los encabezados
+                drawLine(tableLeft, tableTop + headerHeight, tableLeft + tableWidth, tableTop + headerHeight);
+
+                // Filas de la tabla
+                doc.font('Helvetica').fontSize(7); // Mantenemos el tamaño de fuente reducido
+                users.forEach((user, index) => {
+                    const y = tableTop + headerHeight + (rowHeight * index);
+                    currentLeft = tableLeft;
+
+                    [
+                        user.firstname,
+                        user.lastname,
+                        user.email,
+                        user.phone,
+                        user.role,
+                        new Date(user.createdAt).toLocaleDateString('es-ES', { 
+                            year: 'numeric', 
+                            month: '2-digit', 
+                            day: '2-digit' 
+                        })
+                    ].forEach((text, i) => {
+                        doc.text(text || '', currentLeft + 5, y + 5, { 
+                            width: colWidths[i] - 10, 
+                            align: 'left',
+                            lineBreak: false,
+                            ellipsis: true
+                        });
+                        currentLeft += colWidths[i];
+                    });
+
+                    // Línea horizontal después de cada fila
+                    if (index < users.length - 1) {
+                        drawLine(tableLeft, y + rowHeight, tableLeft + tableWidth, y + rowHeight);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al obtener datos de usuarios:', error);
+                doc.text('Error al generar el informe de usuarios', 50, 150);
             }
         } else {
             // Contenido para otros tipos de informes
