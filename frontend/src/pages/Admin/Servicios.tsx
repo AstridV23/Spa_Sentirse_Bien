@@ -2,16 +2,17 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import swal from "sweetalert";
 import axios from "../../api/axios";
 import { useForm } from "react-hook-form";
+import IUser from "../../types/IUser";
 
 type Servicio = {
+  _id: string;
   service_name: string;
   service_type: string;
   service_description: string;
   service_price: number;
   encargado: {
     id: string;
-    name: string;
-    email: string;
+    username: string;
   };
   hours: string[];
 };
@@ -33,14 +34,14 @@ export default function ServicesSection() {
   >(null); // imagePreviewNew es la version URL de image, para poder verla necesitamos string*/
 
   const [ServiceData, setServiceData] = useState<Servicio>({
+    _id: "",
     service_name: "",
     service_type: "",
     service_description: "",
     service_price: 0,
     encargado: {
       id: "",
-      name: "",
-      email: "",
+      username: "",
     },
     hours: [],
   });
@@ -49,9 +50,7 @@ export default function ServicesSection() {
 
   const [tipoTratamiento, setTipoTratamiento] = useState("");
   const [servicio, setServicio] = useState("");
-  const [allProfessionals, setAllProfessionals] = useState<
-    Array<{ id: string; name: string; email: string }>
-  >([]);
+  const [allProfessionals, setAllProfessionals] = useState<IUser[]>([]);
 
   useEffect(() => {
     reset({
@@ -61,8 +60,7 @@ export default function ServicesSection() {
       service_price: 0,
       encargado: {
         id: "",
-        name: "",
-        email: "",
+        username: "",
       },
       hours: [],
     });
@@ -113,9 +111,12 @@ export default function ServicesSection() {
     const fetchProfessionals = async () => {
       try {
         const response = await axios.get("/users/role/profesional");
+        console.log(response.data);
         setAllProfessionals(response.data);
+        console.log(allProfessionals);
       } catch (error) {
         console.error("Error al cargar los profesionales", error);
+        setAllProfessionals([]);
       }
     };
 
@@ -132,7 +133,7 @@ export default function ServicesSection() {
         ...prevData,
         service_type: value,
         service_name: "",
-        encargado: { id: "", name: "", email: "" },
+        encargado: { id: "", username: "" },
       }));
     } else if (name === "servicio") {
       setServicio(value);
@@ -155,11 +156,12 @@ export default function ServicesSection() {
         setPrecioNuevo(0);
         setProfesional("");
         setServiceData({
+          _id: "",
           service_name: "",
           service_type: "",
           service_description: "",
           service_price: 0,
-          encargado: { id: "", name: "", email: "" },
+          encargado: { id: "", username: "" },
           hours: [],
         });
       }
@@ -211,17 +213,11 @@ export default function ServicesSection() {
     }
 
     try {
-      // Verificar si el profesional existe
-      const professionalResponse = await axios.get("/users/role/profesional");
-      const allProfessionals = professionalResponse.data;
-
-      const profesionalExists = allProfessionals.some(
-        (prof: any) =>
-          prof.name?.toLowerCase() === profesional.toLowerCase() ||
-          prof.username?.toLowerCase() === profesional.toLowerCase()
+      const selectedProfessional = allProfessionals.find(
+        (prof) => prof.username.toLowerCase() === profesional.toLowerCase()
       );
 
-      if (!profesionalExists) {
+      if (!selectedProfessional) {
         swal({
           title: "Profesional no encontrado",
           text: "El profesional ingresado no existe en la base de datos.",
@@ -231,15 +227,16 @@ export default function ServicesSection() {
         return;
       }
 
-      // Preparar los datos actualizados del servicio
+      console.log("Profesional seleccionado:", selectedProfessional);
+
       const updatedServiceData = {
         ...ServiceData,
+        _id: ServiceData._id,
         service_name: titulo,
         service_description: text,
         service_price: precioNuevo,
         encargado: {
-          ...ServiceData.encargado,
-          name: profesional,
+          id: selectedProfessional._id, // Enviamos solo el ID del profesional
         },
       };
 
@@ -247,7 +244,7 @@ export default function ServicesSection() {
 
       // Enviar la solicitud de actualización
       const response = await axios.put(
-        `/service/${ServiceData.service_name}`,
+        `/service/${ServiceData._id}`,
         updatedServiceData
       );
 
@@ -261,24 +258,35 @@ export default function ServicesSection() {
         });
 
         // Actualizar el estado local
-        setServices((prevServices) => ({
-          ...prevServices,
-          [ServiceData.service_type]: prevServices[
-            ServiceData.service_type
-          ].map((service) =>
-            service.service_name === ServiceData.service_name
-              ? updatedServiceData
-              : service
-          ),
-        }));
+        setServices((prevServices) => {
+          const updatedServices = { ...prevServices };
+          if (updatedServices[ServiceData.service_type]) {
+            updatedServices[ServiceData.service_type] = updatedServices[
+              ServiceData.service_type
+            ].map((service) =>
+              service.service_name === ServiceData.service_name
+                ? {
+                    ...service,
+                    ...updatedServiceData,
+                    encargado: {
+                      id: updatedServiceData.encargado,
+                      username: selectedProfessional.username,
+                    },
+                  }
+                : service
+            );
+          }
+          return updatedServices;
+        });
 
         // Limpiar el formulario
         setServiceData({
+          _id: "",
           service_name: "",
           service_type: "",
           service_description: "",
           service_price: 0,
-          encargado: { id: "", name: "", email: "" },
+          encargado: { id: "", username: "" }, // Cambiado a objeto para almacenar ID y username
           hours: [],
         });
         setTitulo("");
@@ -288,9 +296,14 @@ export default function ServicesSection() {
       }
     } catch (error) {
       console.error("Error al actualizar el servicio", error);
+      let errorMessage =
+        "Hubo un problema al intentar actualizar el servicio. Por favor, inténtalo de nuevo.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       swal({
         title: "Error al actualizar el servicio",
-        text: "Hubo un problema al intentar actualizar el servicio. Por favor, inténtalo de nuevo.",
+        text: errorMessage,
         icon: "error",
         timer: 3000,
       });
@@ -340,11 +353,12 @@ export default function ServicesSection() {
 
           // Limpiar el formulario
           setServiceData({
+            _id: "",
             service_name: "",
             service_type: "",
             service_description: "",
             service_price: 0,
-            encargado: { id: "", name: "", email: "" },
+            encargado: { id: "", username: "" },
             hours: [],
           });
           setTitulo("");
