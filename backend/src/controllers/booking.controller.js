@@ -53,14 +53,29 @@ export const deleteBooking = async (req, res) => {
 // Método para obtener todas las reservas
 export const getAllBookings = async (req, res) => {
     try {
-        // Consultar todas las reservas en la base de datos
-        const bookings = await Booking.find().populate('user'); 
+        const bookings = await Booking.find().populate('user', 'firstname lastname');
+        
+        const result = {
+            bookings,
+            total: bookings.length
+        };
 
-        // Enviar las reservas en la respuesta
-        res.status(200).json(bookings);
+        if (res && typeof res.json === 'function') {
+            // Si se llama desde una ruta API
+            res.json(result);
+        } else {
+            // Si se llama para generar PDF
+            return result;
+        }
     } catch (error) {
-        // Manejo de errores
-        res.status(500).json({ message: 'Error al obtener todas las reservas.', error });
+        console.error('Error al obtener las reservas:', error);
+        if (res && typeof res.status === 'function') {
+            // Si se llama desde una ruta API
+            res.status(500).json({ message: "Error al obtener las reservas." });
+        } else {
+            // Si se llama para generar PDF
+            throw error;
+        }
     }
 };
 

@@ -759,7 +759,7 @@ export default function Informe() {
             />
 
           <ImagePDFDownloadButton 
-            pdfUrl={`/generar-pdf/${tipo}`} // Ajusta esta URL a la ruta correcta de tu backend
+            pdfUrl={`/pdf/${tipo}`} // Ajusta esta URL a la ruta correcta de tu backend
             imageSrc={downloadIcon}
             altText="Descargar PDF"
           />

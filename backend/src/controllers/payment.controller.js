@@ -55,10 +55,8 @@ export const createPayment = async (req, res) => {
     }
 };
 
-export const getPaymentsByDateAndType = async (req, res) => {
+export const getPaymentsByDateAndType = async (startDate, endDate, cardType) => {
     try {
-        const { startDate, endDate, cardType } = req.query;
-
         const filter = {};
         
         if (startDate) {
@@ -86,14 +84,24 @@ export const getPaymentsByDateAndType = async (req, res) => {
         ]);
 
         if (result.length === 0) {
-            return res.json({ payments: [], totalAmount: 0 });
+            return { payments: [], totalAmount: 0 };
         }
 
-        const { payments, totalAmount } = result[0];
+        return result[0];
+    } catch (error) {
+        console.error('Error al obtener pagos:', error);
+        throw error;
+    }
+};
 
-        res.json({ payments, totalAmount });
+// Esta función se mantiene para la ruta API existente
+export const getPaymentsByDateAndTypeAPI = async (req, res) => {
+    try {
+        const { startDate, endDate, cardType } = req.query;
+        const result = await getPaymentsByDateAndType(startDate, endDate, cardType);
+        res.json(result);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error al obtener pagos." });
     }
-}
+};
