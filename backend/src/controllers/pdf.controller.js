@@ -142,9 +142,12 @@ export const createPDF = async (req, res) => {
                 const tableHeight = (payments.length + 1) * rowHeight;
                 const tableBottom = tableTop + tableHeight;
 
-                // Resumen de pagos
+                // Resumen de pagos con el total en verde
                 doc.font('Helvetica-Bold').fontSize(14)
-                   .text(`Resumen de pagos: Total $${totalAmount || 0}`, 50, tableTop - 30, { align: 'left' });
+                   .text('Resumen de pagos: Total ', 50, tableTop - 30, { continued: true })
+                   .fillColor('green')
+                   .text(`$${totalAmount || 0}`, { align: 'left' })
+                   .fillColor('black'); // Volver al color negro para el resto del texto
 
                 // Función para dibujar una línea
                 const drawLine = (x1, y1, x2, y2) => {
