@@ -12,7 +12,9 @@ type Props = {
 function Header({ SetIsOpen, IsOpen }: Props) {
   const location = useLocation();
   const isOnSpecificPage =
-    location.pathname === "/admin" || location.pathname.startsWith("/informe/");
+    location.pathname === "/admin" ||
+    location.pathname.startsWith("/informe/") ||
+    location.pathname === "/registro-empleado";
 
   const navigate = useNavigate();
 
@@ -99,7 +101,7 @@ function Header({ SetIsOpen, IsOpen }: Props) {
             )}
           </>
         ) : (
-          <Link to="/">Volver a la Pagina</Link>
+          <Link to="/">Volver a la Página ↩</Link>
         )}
       </div>
     </header>

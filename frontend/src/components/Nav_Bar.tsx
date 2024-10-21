@@ -9,7 +9,9 @@ type Props = {
 export default function NavBar({ IsOpen }: Props) {
   const location = useLocation();
   const isOnSpecificPage =
-    location.pathname === "/admin" || location.pathname.startsWith("/informe/");
+    location.pathname === "/admin" ||
+    location.pathname.startsWith("/informe/") ||
+    location.pathname === "/registro-empleado";
 
   // Simulando el estado de admin
   const AdminType = 1; // Cambia esto a 1 para doctora, 2 para profesional, 3 secretario
@@ -50,7 +52,7 @@ export default function NavBar({ IsOpen }: Props) {
 
               {AdminType === 1 && (
                 <Link className="item" to="/registro-empleado">
-                  Registrar Nuevo Empleado
+                  Nuevo Empleado
                 </Link>
               )}
             </div>
