@@ -228,7 +228,7 @@ export const getUserById = async (req, res) => {
     const { id } = req.params; // Obtener el ID de los parámetros de la URL
 
     try {
-        const userFound = await User.findById(id); // Buscar usuario por ID
+        const userFound = await User.findById(id).select('-password'); // Buscar usuario por ID y excluir el campo de contraseña
 
         if (!userFound) return res.status(404).json({ message: "Usuario no encontrado" });
 
@@ -236,11 +236,18 @@ export const getUserById = async (req, res) => {
             id: userFound._id,
             username: userFound.username,
             email: userFound.email,
+            firstname: userFound.firstname,
+            lastname: userFound.lastname,
+            phone: userFound.phone,
+            sex: userFound.sex,
+            role: userFound.role,
             createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt
+            updatedAt: userFound.updatedAt,
+            // Añade aquí cualquier otro campo que quieras incluir
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Error al obtener el usuario.', error });
+        console.error('Error al obtener el usuario:', error);
+        return res.status(500).json({ message: 'Error al obtener el usuario.', error: error.message });
     }
 };
 
