@@ -12,6 +12,7 @@ type Servicio = {
   titulo: string;
   descripcion: string;
   precio: number;
+  ProfAsignado: string;
 };
 type Servicios = {
   [key: string]: Servicio[];
@@ -23,24 +24,28 @@ const servicios: Servicios = {
       titulo: "Antiestres",
       descripcion: "Antiestres asdasdasd",
       precio: 5000,
+      ProfAsignado: "JuanPerez",
     },
     {
       img: "/assets/masaje-antiestres.jpg",
       titulo: "Descontracturantes",
       descripcion: " Descontracturantes asdasdas",
       precio: 6000,
+      ProfAsignado: "AnastaciaLopez",
     },
     {
       img: "/assets/masaje-antiestres.jpg",
       titulo: "Con piedras calientes",
       descripcion: "Con piedras calientes  asdasd",
       precio: 7000,
+      ProfAsignado: "JuanPerez",
     },
     {
       img: "/assets/masaje-antiestres.jpg",
       titulo: "Circulatorios",
       descripcion: "",
       precio: 5500,
+      ProfAsignado: "AnastaciaLopez",
     },
   ],
   Belleza: [
@@ -49,12 +54,14 @@ const servicios: Servicios = {
       titulo: "Corte de cabello",
       descripcion: "Corte de cabello asda s",
       precio: 2000,
+      ProfAsignado: "JuanPerez",
     },
     {
       img: "/assets/masaje-antiestres.jpg",
       titulo: "Manicura",
       descripcion: "Manicura asda sdas asd",
       precio: 1500,
+      ProfAsignado: "JuanPerez",
     },
   ],
   Faciales: [
@@ -63,12 +70,14 @@ const servicios: Servicios = {
       titulo: "Limpieza facial",
       descripcion: "Limpieza facial asd as da",
       precio: 3000,
+      ProfAsignado: "JuanPerez",
     },
     {
       img: "/assets/masaje-antiestres.jpg",
       titulo: "Tratamiento antiarrugas",
       descripcion: "Tratamiento antiarrugas asda ",
       precio: 4500,
+      ProfAsignado: "AnastaciaLopez",
     },
   ],
 };
