@@ -3,9 +3,9 @@ import Booking from '../models/booking_model.js'
 // Método para guardar un turno en BD
 export const createBooking = async (req, res) =>{
     try {
-        const { service, treatment, date, info, cost, status } = req.body;
+        const { service, treatment, date, hour, info, cost, status } = req.body;
 
-        if (!service || ! treatment || !date || !cost) {
+        if (!service || ! treatment || !date || !hour || !cost) {
             return res.status(400).json({message: "Faltan campos requeridos para completar la solicitud."})
         };
 
@@ -18,6 +18,7 @@ export const createBooking = async (req, res) =>{
             service,
             treatment,
             date: bookingDate,
+            hour,
             info,
             cost,
             user: req.user.id,

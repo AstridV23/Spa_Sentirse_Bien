@@ -30,9 +30,9 @@ type Data = {
   tipoTratamiento: string;
   servicio: string;
   fecha: string;
-  hora: string;
+  hour: string;
   informacion: string;
-  costo: number;
+  cost: number;
   pagoLocal: boolean;
 };
 
@@ -56,9 +56,9 @@ export function TurnPopUp() {
       tipoTratamiento: "",
       servicio: "",
       fecha: "",
-      hora: "",
+      hour: "",
       informacion: "",
-      costo: 0,
+      cost: 0,
       pagoLocal: false,
     });
     setPagoEnLocal(false);
@@ -144,15 +144,15 @@ export function TurnPopUp() {
       service: data.servicio,
       treatment: data.tipoTratamiento,
       date: formattedDate,
+      hour: data.hour,
       info: data.informacion,
       cost: precio,
       paymentLocal: data.pagoLocal,
-      user: user.id,
     };
   
     console.log("Formulario enviado:", reservaTurno);
   
-    if (!data.tipoTratamiento || !data.servicio || !data.fecha || !data.hora) {
+    if (!data.tipoTratamiento || !data.servicio || !data.fecha || !data.hour) {
       swal({
         title: "Campos vacíos",
         text: "Ingrese toda la información solicitada",
@@ -168,7 +168,7 @@ export function TurnPopUp() {
         // Manejar la respuesta del backend
         if (response.status === 201) {
           const formattedDate = formatDate(data.fecha);
-          const alertaString = `Te esperamos el ${formattedDate} a las ${data.hora}hs`;
+          const alertaString = `Te esperamos el ${formattedDate} a las ${data.hour}hs`;
           swal({
             title: "¡Reserva confirmada!",
             text: alertaString,
@@ -284,7 +284,7 @@ export function TurnPopUp() {
                     <select
                       id="hora"
                       className="textbox"
-                      {...register("hora", { required: true })}
+                      {...register("hour", { required: true })}
                     >
                       <option value="">Seleccione</option>
                       {horas.map((hora) => (
@@ -294,7 +294,7 @@ export function TurnPopUp() {
                       ))}
                     </select>
                   </label>
-                  {errors.hora && (
+                  {errors.hour && (
                     <span className="MensajeError">
                       Este campo es obligatorio
                     </span>
