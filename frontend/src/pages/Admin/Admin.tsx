@@ -164,7 +164,7 @@ export default function Admin() {
     setHoras(horasArray);
   }, []);
 
-  const AdminName: string = user?.firstname || "Usuario";
+  const AdminName: string = user?.lastname || "Usuario";
   const AdminRole: string = user?.role || "invitado";
   const AdminSex: string = user?.sex || "otro";
 

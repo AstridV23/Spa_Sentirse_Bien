@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Informes.css";
+import { PDFDownloadLink } from "@react-pdf/renderer";      
+import axios from "axios";
 
 type Usuario = {
   id: number;
@@ -736,7 +738,7 @@ export default function Informe() {
               placeholder="Buscar aqui"
               onChange={handleSearch}
             />
-            <img src="/assets/descargar.png" alt="pdf" />
+              <img src="/assets/descargar.png" alt="pdf" />
           </div>
           <div className="filtros">
             <h3>Filtros</h3>

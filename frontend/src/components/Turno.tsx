@@ -41,7 +41,7 @@ export function TurnPopUp() {
   const [precio, setPrecio] = useState<number>(0);
   const [servicios, setServicios] = useState<Servicios>({});
   const [, setPagoEnLocal] = useState(false);
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const {
     register,
@@ -127,7 +127,7 @@ export function TurnPopUp() {
 
   // método para mandar al backend
   const onSubmit = async (data: Data) => {
-    if (!user) {
+    if (!isAuthenticated) {
       swal({
         title: "Usuario no autenticado",
         text: "Por favor inicia sesión para reservar un turno.",
