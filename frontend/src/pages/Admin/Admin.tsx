@@ -7,80 +7,6 @@ import HorasSection from "./Horas";
 import Comments from "../../components/comments";
 import { useAuth } from "../../context/AuthContext";
 
-type Servicio = {
-  img: string;
-  titulo: string;
-  descripcion: string;
-  precio: number;
-  ProfAsignado: string;
-};
-type Servicios = {
-  [key: string]: Servicio[];
-};
-const servicios: Servicios = {
-  Masajes: [
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Antiestres",
-      descripcion: "Antiestres asdasdasd",
-      precio: 5000,
-      ProfAsignado: "JuanPerez",
-    },
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Descontracturantes",
-      descripcion: " Descontracturantes asdasdas",
-      precio: 6000,
-      ProfAsignado: "AnastaciaLopez",
-    },
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Con piedras calientes",
-      descripcion: "Con piedras calientes  asdasd",
-      precio: 7000,
-      ProfAsignado: "JuanPerez",
-    },
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Circulatorios",
-      descripcion: "",
-      precio: 5500,
-      ProfAsignado: "AnastaciaLopez",
-    },
-  ],
-  Belleza: [
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Corte de cabello",
-      descripcion: "Corte de cabello asda s",
-      precio: 2000,
-      ProfAsignado: "JuanPerez",
-    },
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Manicura",
-      descripcion: "Manicura asda sdas asd",
-      precio: 1500,
-      ProfAsignado: "JuanPerez",
-    },
-  ],
-  Faciales: [
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Limpieza facial",
-      descripcion: "Limpieza facial asd as da",
-      precio: 3000,
-      ProfAsignado: "JuanPerez",
-    },
-    {
-      img: "/assets/masaje-antiestres.jpg",
-      titulo: "Tratamiento antiarrugas",
-      descripcion: "Tratamiento antiarrugas asda ",
-      precio: 4500,
-      ProfAsignado: "AnastaciaLopez",
-    },
-  ],
-};
 const horasArray: string[] = [
   "09:00",
   "10:00",
@@ -144,7 +70,6 @@ export default function Admin() {
   const { user } = useAuth();
   const [news, setNews] = useState<Array<Media>>([]);
   const [photos, setPhotos] = useState<Array<Media>>([]);
-  const [services, setServices] = useState<Servicios>({});
   const [horas, setHoras] = useState<string[]>([]);
   const [desplegableNoticias, setDesplegableNoticias] =
     useState<boolean>(false);
@@ -160,7 +85,6 @@ export default function Admin() {
   useEffect(() => {
     setNews(newsArray);
     setPhotos(photosArray);
-    setServices(servicios);
     setHoras(horasArray);
   }, []);
 
@@ -236,12 +160,7 @@ export default function Admin() {
                 />
                 <h3>Servicios</h3>
               </button>
-              {desplegableServicios && (
-                <ServicesSection
-                  services={services}
-                  setServices={setServices}
-                />
-              )}
+              {desplegableServicios && <ServicesSection />}
               <hr />
             </div>
             <div className="Desplegable">
