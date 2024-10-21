@@ -129,7 +129,7 @@ export function Register({ mode }: Props) {
                   {...register("role", { required: true })}
                 >
                   <option value="">Selecciona</option>
-                  <option value="admin">Doctor</option>
+                  <option value="admin">Admin</option>
                   <option value="profesional">Profesional</option>
                   <option value="secretario">Secretario</option>
                 </select>

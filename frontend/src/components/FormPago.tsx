@@ -21,15 +21,16 @@ type Tarjeta = {
   vto: string;
   codigo: string;
 };
+/*
 type Pago = {
-  //cliente: Cliente
+  cliente: Cliente
   cuil: string;
   fecha: string;
   tratamiento: string;
   valor: number;
   pagoLocal: boolean;
 };
-
+*/
 type Props = {
   DatosTurno: Turno;
 };
@@ -77,7 +78,7 @@ export default function FormPago({ DatosTurno }: Props) {
       expirationDate: expirationDate,
       cvv: tarjeta.codigo,
       cuit: tarjeta.cuil,
-      amount: DatosTurno.costo,
+      //amount: DatosTurno.costo,
       user: user,
     };
 
