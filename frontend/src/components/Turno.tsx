@@ -43,6 +43,8 @@ export function TurnPopUp() {
   const [, setPagoEnLocal] = useState(false);
   const { isAuthenticated } = useAuth();
 
+  const isOnSpecificPage = location.pathname === "/turnos";
+
   const {
     register,
     handleSubmit,
@@ -120,6 +122,7 @@ export function TurnPopUp() {
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
+    date.setDate(date.getDate() + 1); // Sumamos un día
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     return `${day}/${month}`;
@@ -136,22 +139,23 @@ export function TurnPopUp() {
       });
       return;
     }
-  
+
     const formattedDate = new Date(data.fecha);
-  
+    formattedDate.setDate(formattedDate.getDate());
+
     // Crea el objeto de reserva incluyendo la información del usuario
     const reservaTurno = {
       service: data.servicio,
       treatment: data.tipoTratamiento,
-      date: formattedDate,
+      date: formattedDate.toISOString().split("T")[0], // Enviar solo la fecha en formato YYYY-MM-DD
       hour: data.hour,
       info: data.informacion,
       cost: precio,
       paymentLocal: data.pagoLocal,
     };
-  
+
     console.log("Formulario enviado:", reservaTurno);
-  
+
     if (!data.tipoTratamiento || !data.servicio || !data.fecha || !data.hour) {
       swal({
         title: "Campos vacíos",
@@ -164,16 +168,21 @@ export function TurnPopUp() {
       try {
         // Enviar los datos al backend
         const response = await axios.post("/bookings", reservaTurno);
-  
+
         // Manejar la respuesta del backend
         if (response.status === 201) {
+          closePopUp();
+
           const formattedDate = formatDate(data.fecha);
           const alertaString = `Te esperamos el ${formattedDate} a las ${data.hour}hs`;
-          swal({
+          await swal({
             title: "¡Reserva confirmada!",
             text: alertaString,
             icon: "success",
           });
+          if (isOnSpecificPage) {
+            window.location.href = "/turnos";
+          }
         }
       } catch (error) {
         console.error("Error al enviar la reserva:", error);
@@ -186,11 +195,9 @@ export function TurnPopUp() {
         reset();
         setPrecio(0);
         setPagoEnLocal(false);
-        closePopUp();
       }
     }
   };
-  
 
   // Funciones para limitar la fecha
   const today = new Date();

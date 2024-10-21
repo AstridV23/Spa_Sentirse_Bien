@@ -12,6 +12,7 @@ type Turno = {
   service: string;
   treatment: string;
   date: string;
+  hour: string;
   info?: string;
   status: string;
   amount: number;
@@ -106,7 +107,15 @@ export default function Turn() {
                   )}
                   <div className="br" />
                   <div className="par">
-                    <p>{new Date(turn.date).toLocaleDateString()}</p>
+                    <p>
+                      {new Date(
+                        new Date(turn.date).getTime() + 86400000
+                      ).toLocaleDateString("es-ES", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </p>
                     <div className="br" />
                     <input
                       type="submit"

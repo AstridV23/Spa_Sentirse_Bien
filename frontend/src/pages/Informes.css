@@ -60,13 +60,16 @@
   color: var(--gris);
   opacity: 0.8;
 }
-.informe-container .buttons select {
+.informe-container .buttons select,
+.informe-container .buttons input[type="date"] {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
-  height: 40px;
   outline: none;
+  color: black;
+  background-color: transparent;
+  font-weight: normal;
 }
 .informe-container .buttons img {
   margin: 0 10px;

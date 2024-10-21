@@ -423,10 +423,22 @@ export default function Informe() {
           setDatos(clientesFalsos);
           break;
         case "turnos":
-          setDatos(turnosFalsos);
+          // Ordenar los turnos por fecha y hora
+          const turnosOrdenados = [...turnosFalsos].sort((a, b) => {
+            const fechaA = new Date(`${a.fecha}T${a.hora}`);
+            const fechaB = new Date(`${b.fecha}T${b.hora}`);
+            return fechaA.getTime() - fechaB.getTime();
+          });
+          setDatos(turnosOrdenados);
           break;
         case "pagos":
-          setDatos(pagosFalsos);
+          // Ordenar los pagos por fecha
+          const pagosOrdenados = [...pagosFalsos].sort((a, b) => {
+            const fechaA = new Date(a.fecha);
+            const fechaB = new Date(b.fecha);
+            return fechaA.getTime() - fechaB.getTime();
+          });
+          setDatos(pagosOrdenados);
           break;
         default:
           setDatos([]);
@@ -462,6 +474,12 @@ export default function Informe() {
   };
   const handleRolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(`Se cambio el rol a ${e.target.value}`);
+  };
+  const handleProfesionalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(`Se cambio el profesional a ${e.target.value}`);
+  };
+  const handleFechaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(`Se cambio la fecha a ${e.target.value}`);
   };
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedMonth(e.target.value);
@@ -758,6 +776,15 @@ export default function Informe() {
                 </select>
               </>
             )}
+            {tipo === "turnos" && (
+              <>
+                <input type="date" onChange={handleFechaChange} />
+                <select onChange={handleProfesionalChange}>
+                  <option value="">Profesional</option>
+                  {/* mapeo de los profesionales */}
+                </select>
+              </>
+            )}
             {(tipo === "pagos" || tipo === "turnos") && (
               <>
                 <select onChange={handleTratamientoChange}>
@@ -767,6 +794,10 @@ export default function Informe() {
                   <option value="faciales">Faciales</option>
                   <option value="corporales">Corporales</option>
                 </select>
+              </>
+            )}
+            {tipo === "pagos" && (
+              <>
                 <select onChange={handleMonthChange}>
                   <option value="">Mes</option>
                   <option value="01">01</option>

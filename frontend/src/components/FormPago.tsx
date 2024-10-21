@@ -5,13 +5,14 @@ import "./FormPopUp.css";
 import swal from "sweetalert";
 import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 
 type Turno = {
   _id: string;
   service: string;
   treatment: string;
   date: string;
+  hour: string;
   info?: string;
   status: string;
   amount: number;
@@ -95,37 +96,32 @@ export default function FormPago({ DatosTurno }: Props) {
       user: user,
       bookingId: DatosTurno._id,
     };
-
     console.log("Datos enviados al servidor:", paymentData);
 
     try {
       // Envía los datos al backend
       const response = await axios.post("/payment", paymentData);
       if (response.data.success) {
-        swal({
+        closePopUp();
+        await swal({
           title: "¡Reserva Pagada!",
           text: `Te esperamos en nuestro local pronto`,
           icon: "success",
         });
+
+        // Recargar la página después de cerrar el popup
+        window.location.reload();
       } else {
         throw new Error("El pago no fue procesado correctamente");
       }
     } catch (error) {
       console.error("Error al procesar el pago:", error);
-      swal({
+      await swal({
         title: "Error",
         text: "Hubo un problema al procesar el pago. Por favor, inténtalo de nuevo.",
         icon: "error",
       });
     }
-
-    closePopUp();
-  };
-
-  // Función para formatear la fecha
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return format(date, "dd/MM/yyyy HH:mm");
   };
 
   const formatCardNumber = (value: string) => {
@@ -162,7 +158,11 @@ export default function FormPago({ DatosTurno }: Props) {
                 Tratamiento: {DatosTurno.treatment} ~ Servicio:{" "}
                 {DatosTurno.service}
               </p>
-              <p>Fecha: {formatDateTime(DatosTurno.date)}</p>
+              <p>
+                Fecha:{" "}
+                {format(addDays(new Date(DatosTurno.date), 1), "dd/MM/yyyy")} ~
+                Hora: {DatosTurno.hour}
+              </p>
             </div>
 
             <div className="par">
