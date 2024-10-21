@@ -123,7 +123,8 @@ export const profile = async (req, res) => {
             phone: userFound.phone,
             sex: userFound.sex,
             createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt
+            updatedAt: userFound.updatedAt,
+            phone: userFound.phone,
         });
     } catch (error) {
         console.error("Error en el perfil:", error);

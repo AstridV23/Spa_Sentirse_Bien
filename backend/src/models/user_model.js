@@ -35,6 +35,10 @@ const userSchema = new Schema({
     role: {
         type: String,
         enum: ["usuario", "admin", "secretario", "profesional"],
+    },
+    phone: {
+        type: String,
+        trim: true
     }
 }, {
     timestamps: true

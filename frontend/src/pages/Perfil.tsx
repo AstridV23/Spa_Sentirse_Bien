@@ -4,7 +4,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import swal from "sweetalert";
 import axios from "../api/axios";
-import { useAuth } from "../context/AuthContext";
+//import { useAuth } from "../context/AuthContext";
 
 // Define el tipo Perfil
 type Perfil = {

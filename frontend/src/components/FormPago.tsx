@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect } from "react";
 import { usePopUp } from "../components/PopUpContext";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";

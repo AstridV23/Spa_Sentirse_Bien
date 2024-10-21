@@ -41,7 +41,7 @@ export function TurnPopUp() {
   const [precio, setPrecio] = useState<number>(0);
   const [servicios, setServicios] = useState<Servicios>({});
   const [, setPagoEnLocal] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const {
     register,

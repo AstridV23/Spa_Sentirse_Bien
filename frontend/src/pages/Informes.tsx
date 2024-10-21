@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "./Informes.css";
-import { PDFDownloadLink } from "@react-pdf/renderer";      
-import axios from "axios";
+import "./Informes.css"; 
+//import axios from "axios";
 
 type Usuario = {
   id: number;
