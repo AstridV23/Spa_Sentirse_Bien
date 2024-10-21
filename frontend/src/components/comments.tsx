@@ -67,12 +67,16 @@ export default function Comments({ mode }: Props) {
         console.error("Error al enviar el comentario:", error);
       }
 
-      swal("Comentario enviado con éxito", {
+      console.log(`comentario: ${text}`);
+
+      // Actualizar la lista de comentarios después de enviar uno nuevo
+      fetchComments();
+      setText("");
+
+      await swal("Comentario enviado con éxito", {
         icon: "success",
         timer: 1000,
       });
-      console.log(`comentario: ${text}`);
-      setText("");
     }
   }
   /*
@@ -94,25 +98,29 @@ export default function Comments({ mode }: Props) {
         try {
           const commentId = comments[index]._id;
           console.log(`Intentando eliminar comentario con ID: ${commentId}`);
-          
+
           const response = await axios.delete(`/comment/${commentId}`);
-          console.log('Respuesta del servidor:', response);
+          console.log("Respuesta del servidor:", response);
 
           if (response.status === 204 || response.status === 200) {
-          setComments(prevComments => prevComments.filter((_, i) => i !== index));
-          swal("Comentario eliminado con éxito", {
-            icon: "success",
+            setComments((prevComments) =>
+              prevComments.filter((_, i) => i !== index)
+            );
+            swal("Comentario eliminado con éxito", {
+              icon: "success",
+              timer: 1500,
+            });
+          } else {
+            throw new Error(
+              `Respuesta inesperada del servidor: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.error("Error detallado al eliminar el comentario:", error);
+          swal("Error al eliminar el comentario", {
+            icon: "error",
             timer: 1500,
           });
-        } else {
-          throw new Error(`Respuesta inesperada del servidor: ${response.status}`);
-        }
-      } catch (error) {
-        console.error("Error detallado al eliminar el comentario:", error);
-        swal("Error al eliminar el comentario", {
-          icon: "error",
-          timer: 1500,
-        });
         }
       }
     });

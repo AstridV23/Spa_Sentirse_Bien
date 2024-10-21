@@ -28,9 +28,13 @@ export function Register({ mode }: Props) {
 
   useEffect(() => {
     if (isAuthenticated && (!user || user.role !== "admin")) {
-      navigate("/");
+      if (mode === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     }
-  }, [isAuthenticated, navigate, user]);
+  }, [isAuthenticated, navigate, user, mode]);
 
   const onSubmit = handleSubmit(async (values) => {
     if (values.password === values.password2) {
@@ -39,6 +43,10 @@ export function Register({ mode }: Props) {
       setIsLoading(true);
       try {
         await signup(convertFieldValuesToUser(values));
+        await swal("Usuario registrado con éxito", {
+          icon: "success",
+          timer: 1000,
+        });
       } finally {
         setIsLoading(false);
       }
