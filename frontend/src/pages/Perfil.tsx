@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import "./Perfil.css";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -23,24 +23,13 @@ type PerfilForm = Perfil & {
   confirmPassword: string;
 };
 
-const DataPerfil: Perfil = {
-  names: "Julian Ismael",
-  surnames: "Codina de Pedro",
-  username: "JulianCodina",
-  email: "depedrojulianismael@gmail.com",
-  phone: "3624242424",
-  genero: "Hombre",
-  password: "StarWars1234",
-  registro: new Date("07-09-24"),
-  //reservas: 3,
-};
-
 export default function Perfil() {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const [perfil, setPerfil] = React.useState<Perfil | null>(null);
+  const [bookingsCount, setBookingsCount] = useState(0);
 
   const { control, handleSubmit, reset, watch, setValue } = useForm<PerfilForm>(
     {
@@ -77,6 +66,13 @@ export default function Perfil() {
           password: "",
           confirmPassword: "",
         });
+
+        if (perfilData.username) {
+          const bookingsResponse = await axios.get(`/bookings?username=${perfilData.username}`);
+          console.log("Respuesta de bookings:", bookingsResponse.data);
+          setBookingsCount(bookingsResponse.data.total);
+        }
+        
       } catch (error) {
         console.error("Error al cargar el perfil:", error);
         swal({
@@ -84,13 +80,15 @@ export default function Perfil() {
           icon: "warning",
           timer: 2000,
         });
-        setPerfil(DataPerfil);
+        setPerfil(perfil);
         reset({
-          ...DataPerfil,
+          ...perfil,
           password: "",
           confirmPassword: "",
-        });
+        });        
       }
+      
+
     };
 
     fetchPerfil();
@@ -176,7 +174,7 @@ export default function Perfil() {
                   <p>{perfil.genero}</p>
                   <img src="assets/perfil.jpg" alt="Foto" />
                   <p>Miembro desde: {registroString}</p>
-                  {/* <p>Reservas: {perfil.reservas}</p> */}
+                  {<p>Reservas: {bookingsCount}</p> }
                 </>
               )}
             </div>

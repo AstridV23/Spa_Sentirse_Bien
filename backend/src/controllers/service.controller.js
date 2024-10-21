@@ -7,6 +7,12 @@ export const createService = async (req, res) => {
         // Validar los datos de entrada usando el schema de Zod
         const validatedData = createServiceSchema.parse(req.body);
 
+        const encargado = await User.findById(validatedData.encargado.id);
+        if (!encargado) {
+            return res.status(404).json({ message: "Encargado no encontrado" });
+        }
+
+        // Crear un array con las horas predeterminadas
         const defaultHours = [
             "09:00", "10:00", "11:00", "12:00", "13:00", 
             "14:00", "15:00", "16:00", "17:00", "18:00"

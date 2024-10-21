@@ -3,20 +3,22 @@ import { useParams } from "react-router-dom";
 import ImagePDFDownloadButton from "../components/PDF/PDFDownloadButton";
 import downloadIcon from "/assets/descargar.png";
 import "./Informes.css"; 
-//import axios from "axios";
+import axios from "axios";
 
 type Usuario = {
-  id: number;
-  status: string;
+  _id: string;
   username: string;
-  nombres: string;
-  apellidos: string;
-  correo: string;
-  genero: string;
-  telefono: string;
-  fechaCreacion: string;
-  reservas: number;
+  email: string;
+  firstname: string;
+  lastname: string;
+  sex: string;
+  role: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+  // bookingsByUser: number;
 };
+/*
 const clientesFalsos: Usuario[] = [
   {
     id: 1,
@@ -139,7 +141,7 @@ const clientesFalsos: Usuario[] = [
     reservas: 5,
   },
 ];
-
+*/
 type Turno = {
   TurnoId: number;
   cliente: {
@@ -417,32 +419,31 @@ export default function Informe() {
   const [totalIngresos, setTotalIngresos] = useState<number>(0);
 
   useEffect(() => {
-    const fetchData = () => {
-      switch (tipo) {
-        case "usuarios":
-          setDatos(clientesFalsos);
-          break;
-        case "turnos":
-          // Ordenar los turnos por fecha y hora
-          const turnosOrdenados = [...turnosFalsos].sort((a, b) => {
-            const fechaA = new Date(`${a.fecha}T${a.hora}`);
-            const fechaB = new Date(`${b.fecha}T${b.hora}`);
-            return fechaA.getTime() - fechaB.getTime();
-          });
-          setDatos(turnosOrdenados);
-          break;
-        case "pagos":
-          // Ordenar los pagos por fecha
-          const pagosOrdenados = [...pagosFalsos].sort((a, b) => {
-            const fechaA = new Date(a.fecha);
-            const fechaB = new Date(b.fecha);
-            return fechaA.getTime() - fechaB.getTime();
-          });
-          setDatos(pagosOrdenados);
-          break;
-        default:
-          setDatos([]);
-          break;
+    const fetchData = async () => {
+      if (tipo === "usuarios") {
+        try {
+          const response = await axios.get<Usuario[]>('/api/users');
+          setDatos(response.data);
+        } catch (error) {
+          console.error('Error al obtener usuarios:', error);
+          // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje al usuario
+        }
+      } else if (tipo === "turnos") {
+        // Ordenar los turnos por fecha y hora
+        const turnosOrdenados = [...turnosFalsos].sort((a, b) => {
+          const fechaA = new Date(`${a.fecha}T${a.hora}`);
+          const fechaB = new Date(`${b.fecha}T${b.hora}`);
+          return fechaA.getTime() - fechaB.getTime();
+        });
+        setDatos(turnosOrdenados);
+      } else if (tipo === "pagos") {
+        // Ordenar los pagos por fecha
+        const pagosOrdenados = [...pagosFalsos].sort((a, b) => {
+          const fechaA = new Date(a.fecha);
+          const fechaB = new Date(b.fecha);
+          return fechaA.getTime() - fechaB.getTime();
+        });
+        setDatos(pagosOrdenados);
       }
     };
     fetchData();
@@ -568,37 +569,30 @@ export default function Informe() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Status</th>
+                <th>Rol</th>
                 <th>Usuario</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Correo</th>
                 <th>Género</th>
                 <th>Teléfono</th>
-                <th>Created</th>
-                <th>Reserv.</th>
+                <th>Creado</th>
               </tr>
             </thead>
             <tbody>
-              {datos.map((dato) => {
-                if (isCliente(dato)) {
-                  return (
-                    <tr key={dato.id}>
-                      <td data-label="ID">{dato.id}</td>
-                      <td data-label="Status">{dato.status}</td>
-                      <td data-label="Usuario">{dato.username}</td>
-                      <td data-label="Nombres">{dato.nombres}</td>
-                      <td data-label="Apellidos">{dato.apellidos}</td>
-                      <td data-label="Correo">{dato.correo}</td>
-                      <td data-label="Género">{dato.genero}</td>
-                      <td data-label="Teléfono">{dato.telefono}</td>
-                      <td data-label="Created">{dato.fechaCreacion}</td>
-                      <td data-label="Reserv.">{dato.reservas}</td>
-                    </tr>
-                  );
-                }
-                return null;
-              })}
+              {datos.filter((dato): dato is Usuario => 'email' in dato).map((dato) => (
+                <tr key={dato._id}>
+                  <td data-label="ID">{dato._id}</td>
+                  <td data-label="Rol">{dato.role}</td>
+                  <td data-label="Usuario">{dato.username}</td>
+                  <td data-label="Nombres">{dato.firstname}</td>
+                  <td data-label="Apellidos">{dato.lastname}</td>
+                  <td data-label="Correo">{dato.email}</td>
+                  <td data-label="Género">{dato.sex}</td>
+                  <td data-label="Teléfono">{dato.phone}</td>
+                  <td data-label="Creado">{new Date(dato.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
