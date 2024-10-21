@@ -122,13 +122,8 @@ export const login = async (req, res) => {
 
         const token = await createAccessToken({id: userFound._id});
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 60 * 60 * 24 * 1000, // 1 día
-        });
-        
+        res.cookie('token', token);
+
         res.json({
             _id: userFound._id,
             username: userFound.username,
@@ -141,7 +136,6 @@ export const login = async (req, res) => {
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt
         });
-        console.log(userFound)
     }
     catch (error) {
         console.error("Error en el registro:", error);

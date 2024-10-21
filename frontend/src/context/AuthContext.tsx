@@ -133,6 +133,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         const res = await verificarToken(cookies.token);
         if (!res.data) return setIsAuthenticated(false);
+        console.log("res.data", res.data);
 
         setIsAuthenticated(true);
         setUser(res.data);
