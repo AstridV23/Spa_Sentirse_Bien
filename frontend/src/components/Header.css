@@ -1,0 +1,118 @@
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: var(--header);
+  backdrop-filter: blur(10px);
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  box-sizing: border-box; /* Incluye el padding en el ancho total */
+  align-items: center;
+  box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.05);
+}
+
+header .marca {
+  display: flex;
+  align-items: center;
+}
+header .options {
+  height: 30px;
+  width: auto;
+  margin-right: 16px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+header .logout {
+  height: 25px;
+  width: auto;
+  margin: 0 10px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+header .options:hover,
+header .logout:hover {
+  opacity: 0.9;
+}
+header .logo {
+  height: 40px;
+  width: auto;
+  margin-right: 8px;
+}
+
+.MarcaName {
+  font-size: 30px;
+}
+
+header .enlaces {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 20px;
+}
+
+header .MainButton,
+header .SecondButton {
+  width: auto;
+  padding: 6px 8px;
+  font-size: 15px;
+}
+
+@font-face {
+  font-family: "Rochester";
+  src: url(../assets/RochesterFont/Rochester-Regular.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (max-width: 780px) {
+  header a {
+    font-size: 12px;
+  }
+  header .enlaces {
+    gap: 10px;
+  }
+  header .MainButton,
+  header .SecondButton {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .marca a p {
+    visibility: hidden;
+    display: none;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  header .enlaces {
+    margin-right: -5px;
+    gap: 8px;
+  }
+  input {
+    font-size: 12px;
+  }
+  header .MainButton,
+  header .SecondButton {
+    font-size: 10px;
+    padding: 5px 5px;
+  }
+  header .logo {
+    height: 30px;
+  }
+  header .options {
+    height: 20px;
+  }
+}
+@media screen and (max-width: 400px) {
+  header .logo {
+    visibility: hidden;
+    display: none;
+  }
+}

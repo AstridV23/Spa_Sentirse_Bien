@@ -1,0 +1,204 @@
+.ingreso .background-image {
+  background-image: url("../assets/Fondo2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  filter: blur(4px);
+  height: 120vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+#admin .background-image {
+  background-color: #49635f;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-image: none;
+  filter: none;
+}
+#admin h1 {
+  color: black;
+  font-size: 24px;
+}
+#admin form .text {
+  color: var(--gris);
+  opacity: 0.8;
+}
+#admin .textbox {
+  border: 1px solid #ddd;
+  background-color: white;
+  color: black;
+}
+#admin .MainButton {
+  background-color: #49635f;
+  color: var(--blanco);
+}
+
+.ingreso .contenedor,
+.ingreso .contenedorRegistro {
+  background-color: var(--blanco);
+  border-radius: 1em;
+  box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
+  width: 370px;
+  height: auto;
+}
+.ingreso .contenedor {
+  margin: 200px 0 208px;
+  padding: 3em 3em;
+}
+.ingreso .contenedorRegistro {
+  margin: 100px 0 100px;
+  padding: 2em 3em;
+}
+
+.ingreso form {
+  margin: 30px 0px 0px;
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ingreso .titulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ingreso .titulo img {
+  height: 45px;
+  width: auto;
+  margin: 0 0 10px 15px;
+}
+
+.ingreso h1 {
+  color: var(--rosa);
+  font-size: 40px;
+  margin: 0;
+}
+
+.ingreso .contenedor p,
+.contenedorRegistro p {
+  text-align: center;
+  margin-left: 3px;
+}
+
+.ingreso label {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.ingreso .par {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+}
+.ingreso .par label {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 45%;
+}
+.ingreso .par .dropdown .SecondButton {
+  width: 90px;
+  text-align: center;
+}
+
+.ingreso form .text {
+  text-align: left;
+  margin: 0 3px 3px;
+  color: var(--rosa);
+}
+
+.ingreso .textbox {
+  width: 100%;
+}
+
+.ingreso .MensajeError {
+  margin: 0px;
+  color: var(--rojo);
+  text-align: left;
+}
+
+.ingreso form .MainButton {
+  width: auto;
+  margin: auto;
+  padding: 10px 20px;
+}
+.ingreso .contenedor form .br {
+  height: 5px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--rosa);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .ingreso h1 {
+    font-size: 35px;
+  }
+  .ingreso .titulo img {
+    height: 35px;
+    margin: 0 0 7px 10px;
+  }
+  .ingreso .contenedor,
+  .ingreso .contenedorRegistro {
+    font-size: 12px;
+    width: 300px;
+  }
+  .ingreso .contenedor p,
+  .contenedorRegistro p {
+    font-size: 12px;
+  }
+  .ingreso .textbox {
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .ingreso .contenedor,
+  .ingreso .contenedorRegistro {
+    box-shadow: none;
+  }
+  .ingreso .background-image {
+    background-color: var(--blanco);
+    background-image: none;
+  }
+}

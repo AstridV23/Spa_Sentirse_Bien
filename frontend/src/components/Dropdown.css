@@ -1,0 +1,55 @@
+/* Estilo del contenedor del dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+}
+
+/* Estilo del botón que abre el dropdown */
+.dropdown .SecondButton {
+  margin-top: 0;
+  width: 100%;
+}
+
+/* Estilo del menú desplegable */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* Estilo de cada elemento del menú desplegable */
+.dropdown-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Estilo al hacer hover sobre un elemento */
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* Eliminar el borde inferior del último elemento */
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+@media screen and (max-width: 500px) {
+  .dropdown .SecondButton {
+    margin-top: 0;
+    font-size: 14px;
+    padding: 10px;
+  }
+}

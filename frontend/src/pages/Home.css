@@ -1,0 +1,249 @@
+.Home-page .background-image {
+  background-image: url("../assets/Fondo2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  filter: blur(4px);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.first-content {
+  margin-top: 80px;
+  align-content: center;
+  width: 90%;
+}
+.first {
+  position: relative; /* Necesario para que el pseudo-elemento esté posicionado correctamente */
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  background-image: url("../assets/Fondo1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  z-index: 1; /* Asegura que el contenido esté encima del pseudo-elemento */
+}
+
+.first::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.637); /* Color negro semitransparente */
+  z-index: -1; /* Coloca el pseudo-elemento detrás del contenido de .first */
+}
+
+.first .text {
+  text-align: center;
+}
+.first h2,
+.first h1 {
+  color: var(--blanco);
+  margin: 10px 0px 0px;
+}
+.first h1 {
+  font-size: 50px;
+}
+.first .titulo {
+  display: flex;
+  flex-direction: column;
+}
+
+.first .MarcaName {
+  margin-top: 10px;
+  font-size: 80px;
+}
+
+.first .buttonsFirst {
+  display: flex;
+  justify-content: center;
+  margin: 50px auto;
+  gap: 40px 5%;
+  min-width: 320px;
+  flex-wrap: wrap;
+}
+.first .buttonsFirst button,
+.first .buttonsFirst a {
+  width: 150px;
+  padding: 15px 5px;
+  font-size: 15px;
+  align-content: center;
+  text-align: center;
+}
+.first .buttonsFirst a {
+  width: 140px;
+}
+.about {
+  padding: 100px 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+.about img {
+  margin-left: -15%;
+  object-fit: cover;
+  height: 500px;
+  width: 400px;
+}
+.about .text {
+  margin: auto -60px;
+  display: block;
+  padding: 30px 30px 40px;
+  background-color: var(--header);
+  backdrop-filter: blur(10px);
+  box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  height: auto;
+  width: 35%;
+}
+.about .text p {
+  text-align: justify;
+  margin: 0 20px 40px;
+}
+.about .text h4 {
+  margin: 20px 0 0;
+  color: var(--gris);
+  padding: 0 20px;
+  letter-spacing: 4px;
+}
+.about .text h1 {
+  margin-bottom: 20px;
+}
+.about .SecondButton {
+  width: 100px;
+  margin: 0 10px 0 auto;
+  text-align: center;
+}
+
+.top {
+  align-content: center;
+  text-align: center;
+  justify-content: center;
+  padding: 30px 20px 10px;
+  background-color: var(--contenedor);
+}
+.top .container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  gap: 3%;
+}
+.top .tituloh2 {
+  color: var(--rosa);
+  margin: 5px 15px 40px;
+  font-size: 30px;
+}
+.top .tituloh1 {
+  margin: 20px 0 0;
+  color: var(--gris);
+  padding: 0 20px;
+  letter-spacing: 4px;
+}
+.top .button .MainButton {
+  display: flex;
+  width: 90px;
+  margin: 25px auto;
+  justify-content: center;
+}
+
+.comments-section {
+  margin: 30px 5% 150px;
+  padding-top: 80px;
+}
+
+@media screen and (max-width: 760px) {
+  .top .button .MainButton {
+    font-size: 13px;
+    padding: 7px;
+    width: 70px;
+  }
+  .about .text p {
+    margin: 0 20px 40px;
+    font-size: 13px;
+  }
+  .about .text h1 {
+    font-size: 30px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .comments-section {
+    margin: 30px 0px 150px;
+  }
+}
+@media screen and (max-width: 620px) {
+  .about .SecondButton {
+    font-size: 12px;
+    width: 80px;
+  }
+  .about .text p {
+    margin: 0 5px 40px;
+    font-size: 11px;
+  }
+  .about .text h1 {
+    font-size: 25px;
+  }
+  .about .text {
+    padding: 20px 15px 40px;
+    margin: 30px;
+    position: absolute;
+    width: 250px;
+  }
+  .about img {
+    margin-left: 0;
+    position: static;
+    object-fit: contain;
+    width: 350px;
+  }
+  .top .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px 15px;
+  }
+  .top h4,
+  .about h4 {
+    padding: 0px 13px 5px;
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .first h2 {
+    font-size: 18px;
+  }
+  .first h1 {
+    font-size: 25px;
+  }
+  .first .MarcaName {
+    margin-top: 8px;
+    font-size: 50px;
+  }
+  .first .buttonsFirst button,
+  .first .buttonsFirst a {
+    width: 30%;
+    padding: 10px 5px;
+    font-size: 12px;
+  }
+  .top .container {
+    gap: 15px 8px;
+  }
+  .top h4 {
+    padding: 5px 13px 0;
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 330px) {
+  .first .buttonsFirst button,
+  .first .buttonsFirst a {
+    width: 100px;
+    padding: 10px 0;
+    font-size: 13px;
+  }
+}

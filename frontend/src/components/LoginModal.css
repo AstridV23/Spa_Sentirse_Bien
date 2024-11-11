@@ -1,0 +1,15 @@
+.swal-title-custom {
+  color: var(--rosa); /* Color rosa para el encabezado */
+}
+
+.swal-button--custom {
+  background-color: var(--rosa) !important; /* Fondo rosa */
+  color: white !important; /* Texto blanco */
+  opacity: 0.8;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+}
+
+.swal-button--custom:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}

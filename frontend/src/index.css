@@ -1,0 +1,137 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --rosa: #d42f69;
+  --amarillo: #eea93b;
+  --verde: #649e4c;
+  --rojo: #ff0000;
+  --text: #111111;
+  --gris: #303030;
+  --gris-claro: #a1a1a1;
+  --blanco: #ffffff;
+  --rosa-claro: #fdf4f7;
+  --rosa-fuerte: #f8dee7;
+  --header: rgba(255, 255, 255, 0.95);
+  --contenedor: rgba(255, 255, 255, 0.8);
+  --footer: #101a0fde;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0px;
+  display: flex;
+  justify-content: center;
+}
+a {
+  color: var(--rosa);
+  text-decoration: none;
+  font-weight: bold;
+}
+h1 {
+  color: var(--rosa);
+  font-size: 35px;
+  margin: 5px 0px;
+}
+.MarcaName {
+  color: var(--amarillo);
+  font-family: "Rochester";
+  font-weight: normal;
+}
+p {
+  font-size: 15px;
+  margin: 0;
+}
+input[type="date"] {
+  padding: 8px;
+  border: 2px solid var(--rosa-fuerte);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--rosa);
+  background-color: var(--rosa-claro);
+  font-weight: bold;
+}
+.textbox {
+  font-family: Arial, sans-serif;
+  padding: 10px 10px;
+  border-style: solid;
+  border-color: var(--rosa-fuerte); /* Color del borde */
+  border-width: 1px;
+  border-radius: 5px;
+  box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+  background-color: var(--rosa-claro);
+  font-size: 15px;
+  color: var(--rosa);
+  outline: none;
+}
+.textbox::placeholder {
+  color: var(--rosa);
+  opacity: 0.6;
+}
+.MainButton {
+  padding: 10px;
+  border: none;
+  background-color: var(--rosa);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  transition: transform 0.3s ease; /* Transición suave */
+  opacity: 85%;
+
+  font-weight: bold;
+  cursor: pointer;
+}
+.SecondButton {
+  padding: 10px;
+  border: none;
+  background-color: var(--rosa-fuerte);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--rosa);
+  transition: transform 0.3s ease; /* Transición suave */
+  opacity: 85%;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Botón de eliminar */
+.delete {
+  background-color: rgba(255, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 10px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 50px;
+  margin: 0px auto 0px;
+  transition: transform 0.3s ease;
+}
+
+.MainButton:hover {
+  transform: scale(1.05);
+  opacity: 95%;
+}
+.SecondButton:hover {
+  transform: scale(1.05);
+  opacity: 95%;
+}
+.delete:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 0, 0, 0.829);
+}
+
+.MensajeError {
+  color: var(--rojo);
+  text-align: left;
+  font-size: 11px;
+  /*display: none*/
+}
+
+@media screen and (max-width: 430px) {
+  #root {
+    padding: 0px;
+  }
+}

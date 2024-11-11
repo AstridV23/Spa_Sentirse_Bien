@@ -1,0 +1,62 @@
+.servicios-page .background-image {
+  background-image: url("../assets/Fondo2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  filter: blur(4px);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.servicios-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 80vw;
+  padding: 30px 40px 40px;
+  margin: 90px 0 100px;
+  background-color: var(--contenedor);
+  border-radius: 30px;
+}
+.servicios-container .titulo h1 {
+  letter-spacing: 5px;
+}
+
+.servicios-container hr {
+  color: var(--rosa);
+  border-style: solid;
+  margin: 20px 0 0;
+}
+
+.servicios-types {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.services-section h3 {
+  font-size: 23px;
+  color: var(--gris);
+  letter-spacing: 1px;
+  margin-top: 2em;
+}
+.services-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 2%;
+  margin: 0;
+  width: 100%;
+  justify-content: stretch;
+}
+
+@media screen and (max-width: 500px) {
+  .servicios-container {
+    margin: 0px 0;
+    border-radius: 0px;
+    padding-top: 80px;
+  }
+}

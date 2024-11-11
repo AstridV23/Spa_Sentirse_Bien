@@ -1,0 +1,151 @@
+.perfil-page .background-image {
+  background-color: var(--rosa-fuerte);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.perfil-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 80vw;
+  padding: 30px 40px 40px;
+  margin: 90px 0 100px;
+  background-color: var(--contenedor);
+  border-radius: 30px;
+}
+.perfil-container .titulo h1 {
+  letter-spacing: 5px;
+}
+
+.perfil-container hr {
+  color: var(--rosa);
+  border-style: solid;
+  margin: 20px 0;
+}
+
+.perfil-container .section-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  gap: 5%;
+}
+
+.perfil-container .perfil-section {
+  display: flex;
+  flex-direction: column;
+  width: 35%;
+  min-width: 300px;
+}
+.perfil-container .editperfil-section {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 300px;
+}
+
+.perfil-container .section-container h3 {
+  font-size: 23px;
+  color: var(--gris);
+  letter-spacing: 1px;
+  margin: 15px 0 10px 10px;
+}
+
+.tarjetaPerfil,
+.tarjetaEditarPerfil {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: auto;
+  height: auto;
+  width: 100%;
+  padding: 20px 40px 20px;
+  align-items: center;
+  text-align: center;
+  background-color: var(--blanco);
+  border-radius: 15px;
+  box-shadow: 0px 5px 15px 1px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+.tarjetaEditarPerfil {
+  padding: 27px 40px 20px;
+}
+.tarjetaPerfil .nombres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px 10px;
+  justify-content: center;
+}
+.tarjetaPerfil h2 {
+  margin: 5px 0 0px;
+  color: var(--rosa);
+  font-size: 23px;
+}
+.tarjetaPerfil p {
+  margin: 5px 0px 0px;
+  font-size: 12px;
+  color: var(--gris);
+}
+.tarjetaPerfil img {
+  border-radius: 50%;
+  margin: 10px 0;
+  max-width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 2px;
+  border-color: var(--rosa-fuerte);
+  border-style: solid;
+  margin-top: 15px;
+}
+.tarjetaPerfil .button {
+  margin: 10px 0 20px;
+}
+.tarjetaEditarPerfil form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.tarjetaEditarPerfil form .par {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+.tarjetaEditarPerfil form .par label {
+  width: 45%;
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+}
+.tarjetaEditarPerfil form .par label p {
+  color: var(--rosa);
+  font-size: 12px;
+}
+.tarjetaEditarPerfil form .par input,
+.tarjetaEditarPerfil form select {
+  width: 100%;
+  min-width: 150px;
+}
+.tarjetaEditarPerfil form .MainButton {
+  width: 160px;
+  margin: 10px auto 0;
+}
+
+@media screen and (max-width: 500px) {
+  .perfil-container {
+    margin: 0px 0;
+    border-radius: 0px;
+    padding-top: 80px;
+  }
+  .tarjetaEditarPerfil {
+    padding: 20px 15px 20px;
+  }
+  .tarjetaEditarPerfil form .par input,
+  .tarjetaEditarPerfil form select {
+    font-size: 11px;
+    min-width: 110px;
+  }
+}

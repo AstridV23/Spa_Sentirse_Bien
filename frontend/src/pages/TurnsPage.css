@@ -1,0 +1,151 @@
+.turn-page .background-image {
+  background-color: var(--rosa-fuerte);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.turn-container {
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+  padding: 30px 40px 40px;
+  margin: 90px 0 100px;
+  background-color: var(--blanco);
+  border-radius: 30px;
+}
+.turn-container .titulo h1 {
+  letter-spacing: 5px;
+}
+.turn-container hr {
+  color: var(--rosa);
+  border-style: solid;
+  margin: 20px 0 0;
+}
+.turn-container h3 {
+  font-size: 23px;
+  color: var(--gris);
+  letter-spacing: 1px;
+  margin-top: 2em;
+}
+.misTurnos-container {
+  display: flex;
+  gap: 2%;
+  overflow-x: auto;
+  width: 90%;
+  margin: 5px auto 30px;
+  padding: 5px 10px 15px;
+}
+.misTurnos-container .turno {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--blanco);
+  border-radius: 15px;
+  box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  justify-content: space-between;
+  width: auto;
+  min-width: 110px;
+}
+.misTurnos-container .turno .br {
+  height: 10px;
+}
+.misTurnos-container .turno .par {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+}
+.misTurnos-container .turno h4 {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  text-align: center; /* Centra el texto */
+  margin: 5px 0;
+  color: var(--rosa);
+  font-size: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  min-height: 2.4em; /* Altura mínima para dos líneas de texto */
+}
+.misTurnos-container .turno h5 {
+  color: var(--gris);
+  font-size: 13px;
+  margin: 0;
+}
+.misTurnos-container .turno .par p {
+  color: var(--gris);
+  opacity: 0.9;
+}
+.misTurnos-container .turno .par .Sinpagar,
+.misTurnos-container .turno .par .PorLocal,
+.misTurnos-container .turno .par .Pagado {
+  color: var(--blanco);
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.misTurnos-container .turno .par .Sinpagar {
+  background-color: var(--rojo);
+}
+.misTurnos-container .turno .par .Pagado {
+  background-color: #0ca70c;
+}
+.misTurnos-container .turno .par .PorLocal {
+  background-color: #ff9900;
+}
+.misTurnos-container .turno .par .Sinpagar:hover,
+.misTurnos-container .turno .par .Pagado:hover,
+.misTurnos-container .turno .par .PorLocal:hover {
+  transform: scale(1.05);
+}
+.newTurnButton .MainButton {
+  display: flex;
+  margin: auto;
+}
+
+@media screen and (max-width: 900px) {
+  .misTurnos-container .turno {
+    padding: 6px;
+  }
+  .misTurnos-container .turno p {
+    margin: 0px;
+    font-size: 11px;
+  }
+  .misTurnos-container .turno h4 {
+    font-size: 15px;
+  }
+  .misTurnos-container {
+    padding: 5px 5px 15px;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .turn-container {
+    margin: 0px 0;
+    border-radius: 0px;
+    padding-top: 80px;
+  }
+  .misTurnos-container .turno {
+    padding: 6px;
+  }
+  .misTurnos-container .turno p {
+    font-size: 10px;
+  }
+  .misTurnos-container .turno h4 {
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 385px) {
+  .misTurnos-container .turno {
+    width: 130px;
+  }
+  .misTurnos-container .turno h4 {
+    font-size: 14px;
+  }
+}

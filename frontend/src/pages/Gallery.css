@@ -1,0 +1,216 @@
+.gallery-page .background-image {
+  background-image: url("../assets/Fondo2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  filter: blur(4px);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 80vw;
+  padding: 30px 40px 40px;
+  margin: 90px 0 100px;
+  background-color: var(--contenedor);
+  border-radius: 30px;
+}
+.gallery-page .titulo h1 {
+  letter-spacing: 5px;
+}
+
+.linea-gallery {
+  color: var(--rosa);
+  border-style: solid;
+  margin: 20px 0 0px;
+}
+.gallery-types {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.gallery-section h3 {
+  font-size: 23px;
+  color: var(--gris);
+  letter-spacing: 1px;
+  margin-top: 2em;
+}
+.gallery-page .element-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 2%;
+  margin: 0;
+  width: 100%;
+  justify-content: center;
+}
+.gallery-page #noticias {
+  justify-content: left;
+}
+
+.gallery-page .element {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 0 0 15px;
+  width: 180px;
+  margin: 0;
+  border-radius: 8px;
+  background-color: var(--blanco);
+  box-shadow: 3px 3px 20px 1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.gallery-page .element-img {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 270px;
+  margin: 10px;
+  border-radius: 8px;
+  background-color: var(--blanco);
+  box-shadow: 3px 3px 20px 1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+}
+.gallery-page .element-img:hover {
+  transform: scale(1.05);
+}
+
+.gallery-page .element h4 {
+  margin: 20px 0 0;
+  color: var(--rosa);
+  padding: 0px 13px 5px;
+  font-size: 13px;
+}
+.gallery-page .element p {
+  padding: 5px 13px 0;
+  font-size: 13px;
+  color: var(--gris);
+}
+.gallery-page .element img {
+  height: 120px;
+  width: 100%;
+  object-fit: cover; /* La imagen llena el contenedor */
+}
+.gallery-page .element-img img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+/* Estilos del modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%; /* Limita el ancho máximo */
+  max-height: 90%; /* Limita la altura máxima */
+  overflow: auto; /* Permite scroll si el contenido es más grande */
+}
+
+.modal-image {
+  width: auto; /* Mantiene el ancho automático */
+  height: auto; /* Mantiene la altura automática */
+  max-height: 80vh; /* Asegura que la imagen no exceda el 80% de la altura de la ventana */
+  max-width: 100%; /* Asegura que no exceda el contenedor */
+  object-fit: contain; /* Ajusta la imagen dentro del contenedor sin estirarla */
+}
+
+.close {
+  display: flex;
+  background-color: var(--gris);
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+}
+.close:hover {
+  opacity: 0.8;
+}
+
+@media screen and (max-width: 740px) {
+  .gallery-container .element {
+    width: 150px;
+  }
+  .gallery-container .element img {
+    height: 150px;
+    width: 100%;
+  }
+  .gallery-container .element-img {
+    width: 150px;
+  }
+  .gallery-container .element-img img {
+    height: 130px;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .gallery-container {
+    margin: 0px 0;
+    border-radius: 0px;
+    padding-top: 80px;
+  }
+}
+@media screen and (max-width: 460px) {
+  .element {
+    width: 150px;
+  }
+  .element p {
+    padding: 5px 13px 0;
+    font-size: 11px;
+  }
+  .element h4 {
+    padding: 5px 13px 0;
+    font-size: 13px;
+  }
+}
+@media screen and (max-width: 435px) {
+  .element {
+    width: 130px;
+  }
+  .element h4 {
+    font-size: 11px;
+  }
+  .gallery-container .element {
+    width: 120px;
+  }
+  .gallery-container .element img {
+    height: 100px;
+    width: 100%;
+  }
+  .gallery-container .element-img {
+    width: 120px;
+  }
+  .gallery-container .element-img img {
+    height: 100px;
+    width: 100%;
+  }
+}
