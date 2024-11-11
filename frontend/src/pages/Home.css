@@ -71,14 +71,39 @@
   min-width: 320px;
   flex-wrap: wrap;
 }
-.first .buttonsFirst button,
-.first .buttonsFirst a {
+.first #descargaAPKdiv{
+  margin-top:-20px;
+}
+.first .buttonsFirst button, .first .buttonsFirst a, .first #descargaAPK {
+  display: flex;
   width: 150px;
-  padding: 15px 5px;
+  padding: 12px 5px;
   font-size: 15px;
   align-content: center;
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
 }
+.first #descargaAPK{
+  border: none;
+  gap: 10px;
+  background-color: #1fa535;
+  color: white;
+  width: 170px;
+  transition: transform 0.3s ease; /* Transición suave */
+  cursor: pointer;
+  opacity: 85%;
+}
+.first #descargaAPK:hover{
+  transform: scale(1.05);
+  opacity: 95%;
+}
+.first #descargaAPK img{
+  height: 16px;
+  width: auto;
+}
+
 .first .buttonsFirst a {
   width: 140px;
 }
