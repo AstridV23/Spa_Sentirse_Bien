@@ -12,7 +12,9 @@ export function createAccessToken (payload) {  //Payload
             payload,
             TOKEN_SECRET,
         {
-            expiresIn: "1d"
+            expiresIn: "1d",
+            semeSite: 'None',
+            secure: true
         },
         (err, token) => {
             if (err) reject(err)
