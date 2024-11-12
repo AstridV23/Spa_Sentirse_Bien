@@ -6,6 +6,7 @@ import { useLayoutEffect } from "react";
 import { TurnPopUp } from "../components/Turno";
 import { usePopUp } from "../components/PopUpContext";
 import { useAuth } from "../context/AuthContext";
+import InstallPWAButton from "../components/InstallPWAButton";
 //import LoginModal from "../components/LoginModal";
 
 const servicios = [
@@ -39,10 +40,6 @@ function Home() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   //const { user } = useAuth();
-
-function handleDownloadAPK(){
-  console.log("*SE DESCARGA EL APK*") //ACA AGREGAR FUNCIONALIDAD PARA DESCARGAR
-}
   
   return (
     <div className="Home-page">
@@ -74,9 +71,9 @@ function handleDownloadAPK(){
                 Contáctanos
               </button>
             </div>
-            <div className="buttonsFirst" id="descargaAPKdiv" onClick={handleDownloadAPK}>
-              <button id="descargaAPK">Descargar App <img src="../assets/descargaAPK.png"/></button>
-            </div>
+
+              <InstallPWAButton />
+
           </div>
         </section>
         <section className="about">
