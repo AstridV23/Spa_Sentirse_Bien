@@ -5,7 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { registerRequest, loginRequest, verificarToken } from "../api/auth";
+import { registerRequest, loginRequest, verificarToken } from "../api/auth.ts";
 import Cookies from 'js-cookie';
 import IUser from '../types/IUser.ts';
 
