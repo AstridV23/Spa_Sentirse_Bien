@@ -66,20 +66,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const logout = () => {
+    Cookies.remove("token");
+    setIsAuthenticated(false);
+    setUser(null);
+    return Promise.resolve();
+  };
+
   const signin = async (credentials: {username: string, password: string}) => {
     try {
       const res = await loginRequest(credentials);
-      console.log('Respuesta del servidor:', res.data);
+      console.log('Respuesta completa:', res);
+      console.log('Token recibido:', res.data.token);
       
-      // Save the token as a cookie if it exists in the response
       if (res.data.token) {
-        Cookies.set('token', res.data.token);
+        // Intentar múltiples configuraciones de cookie
+        try {
+          // Opción 1: Configuración básica
+          Cookies.set('token', res.data.token, {
+            path: '/',
+          });
+          
+          // Verificar si se guardó
+          console.log('Cookie después de guardar:', Cookies.get('token'));
+          
+        } catch (cookieError) {
+          console.error('Error al guardar cookie:', cookieError);
+        }
+      } else {
+        console.error('No se recibió token en la respuesta');
       }
       
       setUser(res.data.user);
       setIsAuthenticated(true);
     } catch (error: any) {
-      console.log(error.response);
+      console.error('Error en signin:', error);
       if (Array.isArray(error.response?.data)) {
         setErrors(error.response.data);
       } else if (typeof error.response?.data === "object") {
@@ -91,42 +112,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setErrors(["An unexpected error occurred."]);
       }
     }
-  };
+};
 
-  const logout = () => {
-    Cookies.remove("token");
-    setIsAuthenticated(false);
-    setUser(null);
-    return Promise.resolve();
-  };
+// Función de utilidad para verificar cookies
+const checkCookieStatus = () => {
+  console.log('Todas las cookies:', Cookies.get());
+  console.log('Cookie de token:', Cookies.get('token'));
+  console.log('Navigator cookieEnabled:', navigator.cookieEnabled);
+  console.log('Document cookie:', document.cookie);
+};
 
-  useEffect(() => {
-    async function checkLogin() {
-      const cookies = Cookies.get();
+useEffect(() => {
+  async function checkLogin() {
+    const cookies = Cookies.get();
+    console.log('Cookies al iniciar:', cookies);
 
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await verificarToken(cookies.token);
-        if (!res.data) return setIsAuthenticated(false);
-        console.log("res.data", res.data);
-
-        setIsAuthenticated(true);
-        setUser(res.data);
-        setLoading(false);
-      } catch (error) {
-        setIsAuthenticated(false);
-        setUser(null);
-        setLoading(false);
-        console.log(error);
-      }
+    if (!cookies.token) {
+      console.log('No se encontró token en cookies');
+      setIsAuthenticated(false);
+      setLoading(false);
+      return;
     }
-    checkLogin();
-  }, []);
+
+    try {
+      const res = await verificarToken(cookies.token);
+      console.log('Respuesta de verificación:', res);
+      
+      if (!res.data) {
+        console.log('Verificación falló - no hay datos');
+        return setIsAuthenticated(false);
+      }
+
+      setIsAuthenticated(true);
+      setUser(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error en verificación:', error);
+      setIsAuthenticated(false);
+      setUser(null);
+      setLoading(false);
+    }
+  }
+  checkLogin();
+  checkCookieStatus(); // Verificar estado de cookies al inicio
+}, []);
 
   return (
     <AuthContext.Provider value={{
