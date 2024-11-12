@@ -9,10 +9,6 @@ import { registerRequest, loginRequest, verificarToken } from "../api/auth.ts";
 import Cookies from 'js-cookie';
 import IUser from '../types/IUser.ts';
 
-
-// Definir la interfaz para el usuario
-
-// Definir la interfaz del contexto de autenticación
 type AuthContextType = {
   signup: (user: any) => Promise<void>; 
   signin: (user: any) => Promise<void>;
@@ -23,7 +19,6 @@ type AuthContextType = {
   loading: boolean;
 };
 
-// Crear contexto con el tipo definido
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
@@ -38,7 +33,6 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-// Definir las props del AuthProvider
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -52,23 +46,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signup = async (user: any) => {
     try {
       const res = await registerRequest(user);
+      if (res.data.token) {
+        Cookies.set('token', res.data.token);
+      }
       setUser(res.data.user);
       setIsAuthenticated(true);
-      
     } catch (error: any) {
       console.log(error.response);
-
-      // Asegúrate de que `error.response.data` sea un array
       if (Array.isArray(error.response?.data)) {
         setErrors(error.response.data);
       } else if (typeof error.response?.data === "object") {
-        // Si es un objeto, convierte los mensajes de error en un array
         const errorMessages = Object.values(error.response.data).filter(
           (msg: unknown) => typeof msg === "string"
         ) as string[];
         setErrors(errorMessages);
       } else {
-        // Si no es ni array ni objeto, establece un error genérico
         setErrors(["An unexpected error occurred."]);
       }
     }
@@ -76,29 +68,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signin = async (credentials: {username: string, password: string}) => {
     try {
-      console.log("user antes de login", user);
       const res = await loginRequest(credentials);
       console.log('Respuesta del servidor:', res.data);
       
-      setUser(res.data.user);
+      // Save the token as a cookie if it exists in the response
+      if (res.data.token) {
+        Cookies.set('token', res.data.token);
+      }
       
-      console.log("user despues de login", user);
+      setUser(res.data.user);
       setIsAuthenticated(true);
-
     } catch (error: any) {
       console.log(error.response);
-
-      // Asegúrate de que `error.response.data` sea un array
       if (Array.isArray(error.response?.data)) {
         setErrors(error.response.data);
       } else if (typeof error.response?.data === "object") {
-        // Si es un objeto, convierte los mensajes de error en un array
         const errorMessages = Object.values(error.response.data).filter(
           (msg: unknown) => typeof msg === "string"
         ) as string[];
         setErrors(errorMessages);
       } else {
-        // Si no es ni array ni objeto, establece un error genérico
         setErrors(["An unexpected error occurred."]);
       }
     }
@@ -110,15 +99,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(null);
     return Promise.resolve();
   };
-  /*
-  useEffect(() => {
-    if (errors.length > 0) {
-      const timer = setTimeout(() => {
-        setErrors([]);
-      }, 10000);
-      return () => clearTimeout(timer);
-    }
-  }, [errors]);*/
 
   useEffect(() => {
     async function checkLogin() {
@@ -127,7 +107,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!cookies.token) {
         setIsAuthenticated(false);
         setLoading(false);
-        return 
+        return;
       }
 
       try {
@@ -138,7 +118,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAuthenticated(true);
         setUser(res.data);
         setLoading(false);
-
       } catch (error) {
         setIsAuthenticated(false);
         setUser(null);

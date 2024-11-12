@@ -11,6 +11,7 @@ console.log("Backend URL:", baseURL);
 const instance = axios.create({
   baseURL: baseURL,
   withCredentials: true,
+  
 });
 
 export default instance;
