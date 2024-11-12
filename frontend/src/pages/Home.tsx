@@ -40,6 +40,10 @@ function Home() {
   const { isAuthenticated } = useAuth();
   //const { user } = useAuth();
 
+function handleDownloadAPK(){
+  console.log("*SE DESCARGA EL APK*") //ACA AGREGAR FUNCIONALIDAD PARA DESCARGAR
+}
+  
   return (
     <div className="Home-page">
       <div className="background-image" />
@@ -69,6 +73,9 @@ function Home() {
               >
                 Contáctanos
               </button>
+            </div>
+            <div className="buttonsFirst" id="descargaAPKdiv" onClick={handleDownloadAPK}>
+              <button id="descargaAPK">Descargar App <img src="../assets/descargaAPK.png"/></button>
             </div>
           </div>
         </section>
