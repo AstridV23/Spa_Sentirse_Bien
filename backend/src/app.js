@@ -24,6 +24,7 @@ console.log("Frontend URL:", origin);
 app.use(
   cors({
     origin: origin,
+    optionsSuccessStatus: 200,
     credentials: true,
   })
 );
