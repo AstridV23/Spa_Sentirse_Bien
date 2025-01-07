@@ -125,8 +125,8 @@ export const login = async (req, res) => {
 
         res.cookie('token', token, {
             httpOnly: true,
-            sameSite: 'none',
-            secure: true // Asegúrate de que tu aplicación esté usando HTTPS
+            secure: process.env.CORS_ORIGIN_PROD === 'true',
+            sameSite: 'none'
         })
 
         res.json({
