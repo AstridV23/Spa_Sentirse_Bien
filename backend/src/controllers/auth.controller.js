@@ -139,7 +139,8 @@ export const login = async (req, res) => {
             phone: userFound.phone,
             sex: userFound.sex,
             createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt
+            updatedAt: userFound.updatedAt,
+            token
         });
         console.log(userFound)
     }
